@@ -1,0 +1,6 @@
+# Services definition override for production
+services:
+
+  app:
+    # Deploy override
+    restart: unless-stopped

@@ -1,0 +1,13 @@
+# Services definition for running npm commands
+services:
+
+  npm:
+    # Build
+    image: ${IMAGES_PREFIX:-app}-npm:${DOCKER_TAG:-latest}
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+      target: npm
+    # Deploy
+    volumes:
+      - ./app/app:/app
