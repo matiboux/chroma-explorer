@@ -1,11 +1,28 @@
 ---
+import { site } from '~/config'
 import Layout from '~/layouts/Layout.astro'
+
+import { i18nFactory } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as any)
 ---
 
 <Layout
 	bodyClass="bg-gray-100 h-screen"
 >
 
-	<p>Hello, world!</p>
+	<div class="flex flex-col justify-center items-center min-h-full overflow-y gap-8 p-8 w-full max-w-[calc(1000px+2*2rem)] mx-auto">
+		<div class="bg-white shadow-lg rounded-lg p-6 w-full space-y-4">
+			<div class="flex items-start justify-between">
+				<h1 class="text-4xl font-bold">
+					{site.title}
+				</h1>
+			</div>
+			{site.description &&
+				<p class="text-gray-600">
+					{site.description}
+				</p>
+			}
+		</div>
+	</div>
 
 </Layout>
