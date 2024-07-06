@@ -1,0 +1,24 @@
+# -- Generic rules:
+
+# Environment files
+.env*.local
+
+# Temporary files
+._*
+*~
+*.cache
+*.log*
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# -- Application rules:
+
+# Node.js
+node_modules/
+
+# Application
+.astro/
+dist/
