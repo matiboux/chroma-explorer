@@ -1,0 +1,75 @@
+name: Deploy CD
+
+on:
+  # Run on push events on primary branches
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+
+  # Run on manual triggers
+  workflow_dispatch:
+
+# Set GITHUB_TOKEN permissions
+permissions:
+  contents: read
+
+# Allow one concurrent deployment
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Build job
+  build:
+    name: Build Astro site artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build for production
+      run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml build
+      env:
+        GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        GITHUB_SHA: ${{ github.sha }}
+
+    - name: Copy application files
+      run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml run --rm app
+
+    - name: Chown dist folder to $USER
+      run: sudo chown -R $USER:$USER ./app/dist
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./app/dist
+
+  # Deployment job
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Dependencies
+    needs:
+      - build
+
+    # Sets permissions for the GITHUB_TOKEN
+    permissions:
+      pages: write
+      id-token: write
+
+    # Sets the GitHub Pages deployment
+    environment:
+      name: production
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
