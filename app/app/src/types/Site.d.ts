@@ -1,7 +1,9 @@
+import type { I18nKeys } from '~/i18n/type.d.ts'
+
 interface Site
 {
 	title: string
-	description?: string
+	description?: I18nKeys
 	author?: string
 	themeColor?: string
 }

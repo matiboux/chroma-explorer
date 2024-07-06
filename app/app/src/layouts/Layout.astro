@@ -3,6 +3,9 @@ import { site } from '~/config'
 import Base from '~/layouts/Base.astro'
 import type { Props as BaseProps } from '~/layouts/Base.astro'
 
+import { i18nFactory } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as any)
+
 export interface Props extends Omit<BaseProps, 'title'>
 {
 	title?: BaseProps['title']
@@ -26,7 +29,7 @@ const baseProps: BaseProps = {
 			: title
 		)
 		: (site.title || ''),
-	description: Astro.props.description || site.description,
+	description: Astro.props.description || (site.description ? _(site.description) : undefined),
 	author: Astro.props.author || site.author,
 	themeColor: Astro.props.themeColor || site.themeColor,
 	favicon: Astro.props.favicon, // || favicon,
