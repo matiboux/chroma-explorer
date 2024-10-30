@@ -1,4 +1,4 @@
-#syntax=docker/dockerfile:1.4
+#syntax=docker/dockerfile:1
 
 # This Dockerfile uses the service folder as context.
 
@@ -8,23 +8,6 @@
 
 FROM node:20-slim AS node_upstream
 FROM nginx:alpine AS nginx_upstream
-
-
-# --
-# Npm image
-
-FROM node_upstream AS npm
-
-# Create app directory
-WORKDIR /app
-
-# Source code should be mounted here
-VOLUME /app
-
-COPY --link --chmod=755 ./docker-npm-entrypoint.sh /usr/local/bin/docker-npm-entrypoint
-
-ENTRYPOINT [ "docker-npm-entrypoint" ]
-CMD [ "--help" ]
 
 
 # --
@@ -38,8 +21,22 @@ ENV GITHUB_REPOSITORY_URL=${GITHUB_REPOSITORY_URL}
 ARG GITHUB_SHA=""
 ENV GITHUB_SHA=${GITHUB_SHA}
 
-# Create app directory
+# Set app directory
 WORKDIR /app
+
+
+# --
+# Npm image
+
+FROM app_base AS app_npm
+
+# Mount source code as volume
+VOLUME /app
+
+# Run npm command
+COPY --link --chmod=755 ./docker/npm-entrypoint.sh /usr/local/bin/app-npm-entrypoint
+ENTRYPOINT [ "app-npm-entrypoint" ]
+CMD [ "--help" ]
 
 
 # --
