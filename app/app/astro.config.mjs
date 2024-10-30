@@ -6,13 +6,6 @@ import { i18n } from '/src/config'
 
 // https://astro.build/config
 export default defineConfig({
-	vite: {
-		server: {
-			watch: {
-				usePolling: true,
-			},
-		},
-	},
 	i18n: i18n,
 	integrations: [
 		svelte(),
