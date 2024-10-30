@@ -5,23 +5,43 @@
 
 # Temporary files
 ._*
-*~
 *.cache
 *.log*
 *.swp
+*~
 
 # System files
 .DS_Store
 Thumbs.db
 
+# -- Editor rules:
+
+# VS Code
+.vscode/**/*
+!.vscode/extensions.json
+
+# Jetbrains
+.idea/
+
+# Other
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
 # -- Application rules:
 
 # Node.js
 node_modules/
-
-# Application
-.astro/
 dist/
+
+# Astro
+.astro/
+.vite/
+
+# Application environment files
+*/**/.env*
 
 # -- Specific to dockerignore:
 
