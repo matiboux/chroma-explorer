@@ -1,4 +1,5 @@
 # Services definition override for CI/CD
+
 services:
 
   app:

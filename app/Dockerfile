@@ -15,12 +15,6 @@ FROM nginx:alpine AS nginx_upstream
 
 FROM node_upstream AS app_base
 
-# GitHub context environment variables
-ARG GITHUB_REPOSITORY_URL=""
-ENV GITHUB_REPOSITORY_URL=${GITHUB_REPOSITORY_URL}
-ARG GITHUB_SHA=""
-ENV GITHUB_SHA=${GITHUB_SHA}
-
 # Set app directory
 WORKDIR /app
 
@@ -40,37 +34,53 @@ CMD [ "--help" ]
 
 
 # --
-# Dev image
+# Runtime base image
 
-FROM app_base AS app_dev
+FROM app_base AS app_runtime_base
 
+# Set runtime environment
 ENV APP_ENV=dev
 ENV NODE_ENV=development
 
-# Source code should be mounted here
-VOLUME /app
-VOLUME /app/node_modules
+# Install dev dependencies, required for build
+RUN --mount=type=bind,source=./app/package.json,target=./package.json \
+	--mount=type=bind,source=./app/package-lock.json,target=./package-lock.json \
+	--mount=type=bind,source=./app/tsconfig.json,target=./tsconfig.json \
+	--mount=type=cache,target=~/.npm \
+	npm clean-install --include=dev
 
-COPY --link --chmod=755 ./docker-dev-command.sh /usr/local/bin/docker-dev-command
+# Copy application source code
+COPY --link ./app .
 
-CMD [ "docker-dev-command" ]
+
+# --
+# Dev image
+
+FROM app_runtime_base AS app_dev
+
+# Set exposed port
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+
+# Start development server
+CMD [ "sh", "-c", "npm run dev -- --host --port \"${PORT}\"" ]
 
 
 # --
 # Prod build image
 
-FROM app_base AS app_prod_build
+FROM app_runtime_base AS app_prod_build
 
+# Set runtime environment
 ENV APP_ENV=prod
 ENV NODE_ENV=production
 
-# Install dev dependencies, required for build
-COPY --link ./app/package*.json ./app/tsconfig*.json ./app/astro.config.mjs .
-RUN npm clean-install --include=dev && \
-	npm cache clean --force
-
-# Copy source code for build
-COPY --link ./app .
+# Use application environment variables
+ARG GITHUB_REPOSITORY_URL=""
+ENV GITHUB_REPOSITORY_URL=${GITHUB_REPOSITORY_URL}
+ARG GITHUB_SHA=""
+ENV GITHUB_SHA=${GITHUB_SHA}
 
 # Build application
 RUN npm run build
@@ -81,6 +91,7 @@ RUN npm run build
 
 FROM nginx_upstream AS app_prod
 
+# Set runtime environment
 ENV APP_ENV=prod
 ENV NODE_ENV=production
 
@@ -89,3 +100,11 @@ WORKDIR /usr/share/nginx/html
 
 # Copy built static website files
 COPY --from=app_prod_build --link /app/dist .
+
+# Set exposed port
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+
+# Start nginx server
+CMD [ "nginx", "-g", "daemon off;" ]
