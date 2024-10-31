@@ -1,0 +1,37 @@
+name: Check CI
+
+on:
+  # Run on pull requests events on primary branches
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'app/**'
+
+# Set GITHUB_TOKEN permissions
+permissions:
+  contents: read
+
+# Allow one concurrent deployment
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Build job
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build application files
+      run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml build
+      env:
+        GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+        GITHUB_SHA: ${{ github.sha }}

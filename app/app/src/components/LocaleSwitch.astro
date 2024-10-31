@@ -1,0 +1,74 @@
+---
+import { getLocaleUrlList } from '~/i18n'
+
+export interface Props
+{
+	class?: string
+	style?: string
+}
+
+const localeMetadata: {
+	[locale: string]: {
+		label?: string
+		icon?: string
+	}
+} = {
+	'en': {
+		label: 'English',
+		icon: 'icon-[twemoji--flag-united-kingdom]',
+	},
+	'fr': {
+		label: 'Français',
+		icon: 'icon-[twemoji--flag-france]',
+	},
+}
+---
+
+<div
+	class={`locale-switch ${Astro.props.class}`}
+	style={Astro.props.style}
+>
+	{getLocaleUrlList(Astro.url).map(({ locale, url }) =>
+		{
+			const label = localeMetadata[locale]?.label || locale
+			const icon = localeMetadata[locale]?.icon
+			return (
+				<a href={url} class={`locale ${Astro.currentLocale === locale ? 'current' : ''}`}>
+					{icon
+						&& (
+							<span class={localeMetadata[locale]?.icon} />
+						)
+					}
+					<span class={icon ? 'sr-only' : ''}>
+						{label}
+					</span>
+				</a>
+			)
+		})
+	}
+</div>
+
+<style lang="scss">
+.locale-switch {
+	@apply
+		flex
+		items-center
+		gap-2
+		;
+
+	.locale {
+		@apply
+			text-2xl
+			opacity-40
+			hover:opacity-60
+			active:opacity-80
+			;
+
+		&.current {
+			@apply
+				opacity-100
+				;
+		}
+	}
+}
+</style>
