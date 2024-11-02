@@ -1,16 +1,28 @@
 <script lang="ts">
+// Generate a random suffix for id attributes
+const idSuffix = Math.random().toString(36).substring(2)
 </script>
 
 <form>
 
 	<div class="input-group">
-		<label>ChromaDB Server URL:</label>
-		<input type="text" name="chromadbServerUrl" required>
+		<label for={`chromadbServerUrl-${idSuffix}`}>
+			ChromaDB Server URL:
+		</label>
+		<input
+			type="text" name="chromadbServerUrl" required
+			id={`chromadbServerUrl-${idSuffix}`}
+		/>
 	</div>
 
 	<div class="input-group">
-		<label>Header Authorization Token:</label>
-		<input type="text" name="headerAuthorizationToken" required>
+		<label for={`headerAuthorizationToken-${idSuffix}`}>
+			Header Authorization Token:
+		</label>
+		<input
+			type="text" name="headerAuthorizationToken" required
+			id={`headerAuthorizationToken-${idSuffix}`}
+		/>
 	</div>
 
 	<button type="submit">Connect</button>
