@@ -29,7 +29,7 @@ const formValues = {
 		/>
 		<p class="hint">
 			<span class="icon icon-[mdi--information-outline] icon-align"></span>
-			Root URL of the ChromaDB server.
+			Provide the root URL of the ChromaDB server.
 			The server must allow CORS from this domain or you can use a proxy:
 			try <a href="http://cors-proxy.matiboux.com/">CORS Proxy</a>.
 		</p>
@@ -180,6 +180,7 @@ form {
 	}
 
 	p.hint {
+		@apply max-w-[80%];
 		@apply text-sm text-gray-500;
 
 		a {
