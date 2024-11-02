@@ -1,4 +1,6 @@
 <script lang="ts">
+import { configStore } from '~/stores/configStore'
+
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
@@ -10,18 +12,29 @@ const defaultFormValues = {
 	basicPassword: '',
 }
 
-const formValues = {
+let formValues = {
 	...defaultFormValues,
 }
 
 function onSubmit()
 {
 	console.log(formValues)
+	$configStore = {
+		...$configStore,
+		serverUrl: formValues.chromadbServerUrl,
+		authConfig: (
+			  (formValues.authProvider === 'token' && formValues.apiToken)
+			? { token: formValues.apiToken }
+			: (formValues.authProvider === 'basic' && formValues.basicUsername && formValues.basicPassword)
+			? { username: formValues.basicUsername, password: formValues.basicPassword }
+			: null
+		),
+	}
 }
 
 function onReset()
 {
-	Object.assign(formValues, defaultFormValues)
+	formValues = { ...defaultFormValues }
 }
 </script>
 
@@ -76,7 +89,7 @@ function onReset()
 				Header Authorization Token:
 			</label>
 			<input
-				type="password" name="headerAuthorizationToken" required
+				type="password" name="headerAuthorizationToken"
 				bind:value={formValues.apiToken}
 				placeholder="API Token"
 				id={`headerAuthorizationToken-${idSuffix}`}
@@ -89,7 +102,7 @@ function onReset()
 					Basic Auth Username:
 				</label>
 				<input
-					type="text" name="basicUsername" required
+					type="text" name="basicUsername"
 					bind:value={formValues.basicUsername}
 					placeholder="user"
 					id={`basicUsername-${idSuffix}`}
@@ -100,7 +113,7 @@ function onReset()
 					Basic Auth Password:
 				</label>
 				<input
-					type="password" name="basicPassword" required
+					type="password" name="basicPassword"
 					bind:value={formValues.basicPassword}
 					placeholder="password"
 					id={`basicPassword-${idSuffix}`}
