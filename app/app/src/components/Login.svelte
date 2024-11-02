@@ -13,9 +13,22 @@ const defaultFormValues = {
 const formValues = {
 	...defaultFormValues,
 }
+
+function onSubmit()
+{
+	console.log(formValues)
+}
+
+function onReset()
+{
+	Object.assign(formValues, defaultFormValues)
+}
 </script>
 
-<form>
+<form
+	on:submit|preventDefault={onSubmit}
+	on:reset|preventDefault={onReset}
+>
 
 	<div class="input-group">
 		<label for={`chromadbServerUrl-${idSuffix}`}>
@@ -63,7 +76,7 @@ const formValues = {
 				Header Authorization Token:
 			</label>
 			<input
-				type="text" name="headerAuthorizationToken" required
+				type="password" name="headerAuthorizationToken" required
 				bind:value={formValues.apiToken}
 				placeholder="API Token"
 				id={`headerAuthorizationToken-${idSuffix}`}
