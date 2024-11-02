@@ -22,6 +22,26 @@ const idSuffix = Math.random().toString(36).substring(2)
 		</p>
 	</div>
 
+	<div class="input-group input-group-inline">
+		<p>
+			Auth Provider:
+		</p>
+		<div class="radio-group">
+			<input
+				type="radio" name="authProvider" value="token" required
+				id={`authProviderToken-${idSuffix}`}
+			/>
+			<label for={`authProviderToken-${idSuffix}`}>API Token</label>
+		</div>
+		<div class="radio-group">
+			<input
+				type="radio" name="authProvider" value="basic"
+				id={`authProviderBasic-${idSuffix}`}
+			/>
+			<label for={`authProviderBasic-${idSuffix}`}>Basic Auth</label>
+		</div>
+	</div>
+
 	<div class="input-group">
 		<label for={`headerAuthorizationToken-${idSuffix}`}>
 			Header Authorization Token:
@@ -45,19 +65,59 @@ form {
 	@apply mt-4;
 
 	.input-group {
-		@apply flex flex-col
+		@apply flex flex-col gap-2;
+
+		.radio-group {
+			@apply flex gap-4;
+		}
+
+		&.input-group-inline {
+			@apply flex-row gap-4 items-center;
+
+			.radio-group {
+				@apply flex-row gap-4 items-center;
+			}
+
+			label {
+				&:has(+ input) {
+					@apply pb-0 pr-2;
+				}
+
+				+ input {
+					@apply mt-0 -ml-4;
+				}
+			}
+
+			input {
+				[type="radio"], [type="checkbox"] {
+					@apply align-[-0.125em];
+				}
+
+				+ label {
+					@apply mt-0 -ml-4 pt-0 pl-2;
+				}
+			}
+		}
 	}
 
 	label {
-		@apply pb-1 text-gray-700;
+		@apply text-gray-700;
+
+		&:has(+ input) {
+			@apply pb-1;
+		}
+
+		+ input {
+			@apply -mt-2;
+		}
 	}
 
 	input {
 		@apply px-2 py-1 border border-gray-300 rounded-md;
 		@apply border border-gray-300 rounded-md;
 
-		+ .hint {
-			@apply mt-1;
+		+ label {
+			@apply -mt-2 pt-1;
 		}
 	}
 
