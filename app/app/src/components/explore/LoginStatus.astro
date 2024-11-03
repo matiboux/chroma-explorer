@@ -1,5 +1,6 @@
 ---
 import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
+import Logout from '~/components/explore/Logout.svelte'
 ---
 
 <div class="login-status-wrapper">
@@ -7,12 +8,7 @@ import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
 		<LoginStatusText client:visible />
 	</div>
 	<div class="logout">
-		<button class="logout-btn">
-			<span class="icon icon-[mdi--logout] icon-align"></span>
-			<span class="sr-only">
-				Logout
-			</span>
-		</button>
+		<Logout client:visible logoutRedirect="/" />
 	</div>
 </div>
 
@@ -25,14 +21,6 @@ import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
 			@apply flex-grow;
 			@apply px-3 py-1;
 			@apply text-sm;
-		}
-
-		.logout .logout-btn {
-			@apply px-2 py-1 aspect-square;
-
-			&:hover {
-				@apply bg-gray-200;
-			}
 		}
 	}
 </style>
