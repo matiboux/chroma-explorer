@@ -4,6 +4,7 @@ import Layout from '~/layouts/Layout.astro'
 import LoginStatus from '~/components/explore/LoginStatus.astro'
 import CollectionsList from '~/components/explore/CollectionsList.astro'
 import LocaleSwitch from '~/components/LocaleSwitch.astro'
+import ExploreView from '~/components/explore/ExploreView.astro'
 
 import { i18nFactory } from '~/i18n'
 const _ = i18nFactory(Astro.currentLocale as any)
@@ -48,7 +49,7 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 		</div>
 
 		<div class="content">
-			...
+			<ExploreView />
 		</div>
 	</div>
 
