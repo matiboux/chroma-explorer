@@ -1,5 +1,14 @@
 <script lang="ts">
 import { collectionsStore } from '~/stores/collectionsStore'
+
+function selectCollection(collectionId: string)
+{
+	const collectionsValue = collectionsStore.get()
+	collectionsStore.set({
+		...collectionsValue,
+		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
+	})
+}
 </script>
 
 {#if !$collectionsStore.collections}
@@ -12,9 +21,9 @@ import { collectionsStore } from '~/stores/collectionsStore'
 	</p>
 {:else}
 	<ul>
-		{#each $collectionsStore.collections as collection}
-			<li>
-				<a href="#" on:click|preventDefault={() => console.log(collection)}>
+		{#each Object.entries($collectionsStore.collections) as [collectionId, collection]}
+			<li class:active={collectionId === $collectionsStore.selectedCollection}>
+				<a href="#" on:click|preventDefault={() => selectCollection(collectionId)}>
 					{collection.name}
 				</a>
 			</li>
@@ -43,12 +52,14 @@ import { collectionsStore } from '~/stores/collectionsStore'
 				@apply block;
 				@apply px-2 py-1;
 				@apply hover:bg-gray-100;
+				@apply active:bg-gray-200;
 				@apply rounded-lg;
 			}
 
 			&.active a, a.active {
 				@apply bg-gray-100;
 				@apply hover:bg-gray-200;
+				@apply active:bg-gray-300;
 			}
 		}
 	}
