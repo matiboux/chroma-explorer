@@ -1,3 +1,4 @@
+import { persistentAtom } from '@nanostores/persistent'
 import { atom } from 'nanostores'
 
 export interface APIAuthConfig
@@ -17,7 +18,16 @@ export interface ConfigStore
 	authConfig: APIAuthConfig | BasicAuthConfig | null
 }
 
-export const configStore = atom<ConfigStore>({
+const defaultConfig: ConfigStore = {
 	serverUrl: '',
 	authConfig: null,
-})
+}
+
+export const configPersistentStore = persistentAtom('config', JSON.stringify(defaultConfig))
+
+export const configStore = atom<ConfigStore>(JSON.parse(configPersistentStore.get()))
+
+configStore.listen((config) =>
+	{
+		configPersistentStore.set(JSON.stringify(config))
+	})

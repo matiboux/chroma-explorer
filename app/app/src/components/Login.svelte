@@ -1,11 +1,14 @@
 <script lang="ts">
+import { onMount } from 'svelte'
+
+import LoginCheck from '~/components/LoginCheck.svelte'
 import { configStore } from '~/stores/configStore'
 
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
 const defaultFormValues = {
-	chromadbServerUrl: 'http://localhost:8000',
+	chromadbServerUrl: '',
 	authProvider: 'token',
 	apiToken: '',
 	basicUsername: '',
@@ -18,7 +21,6 @@ let formValues = {
 
 function onSubmit()
 {
-	console.log(formValues)
 	$configStore = {
 		...$configStore,
 		serverUrl: formValues.chromadbServerUrl,
@@ -34,8 +36,17 @@ function onSubmit()
 
 function onReset()
 {
-	formValues = { ...defaultFormValues }
+	formValues = {
+		...defaultFormValues,
+	}
 }
+
+onMount(() => {
+	formValues = {
+		...defaultFormValues,
+		chromadbServerUrl: $configStore.serverUrl,
+	}
+})
 </script>
 
 <form
@@ -126,6 +137,8 @@ function onReset()
 			Please select an authentication provider.
 		</p>
 	{/if}
+
+	<LoginCheck connectedRedirect="/explore" />
 
 	<div class="button-group">
 		<button type="submit">Connect</button>
