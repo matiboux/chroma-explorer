@@ -8,7 +8,7 @@ import { configStore } from '~/stores/configStore'
 const idSuffix = Math.random().toString(36).substring(2)
 
 const defaultFormValues = {
-	chromadbServerUrl: '',
+	chromaServerUrl: '',
 	authProvider: 'token',
 	apiToken: '',
 	basicUsername: '',
@@ -23,7 +23,7 @@ function onSubmit()
 {
 	$configStore = {
 		...$configStore,
-		serverUrl: formValues.chromadbServerUrl,
+		serverUrl: formValues.chromaServerUrl,
 		authConfig: (
 			  (formValues.authProvider === 'token' && formValues.apiToken)
 			? { token: formValues.apiToken }
@@ -44,7 +44,7 @@ function onReset()
 onMount(() => {
 	formValues = {
 		...defaultFormValues,
-		chromadbServerUrl: $configStore.serverUrl,
+		chromaServerUrl: $configStore.serverUrl,
 	}
 })
 </script>
@@ -55,18 +55,18 @@ onMount(() => {
 >
 
 	<div class="input-group">
-		<label for={`chromadbServerUrl-${idSuffix}`}>
-			ChromaDB Server URL:
+		<label for={`chromaServerUrl-${idSuffix}`}>
+			Chroma Server URL:
 		</label>
 		<input
-			type="text" name="chromadbServerUrl" required
-			bind:value={formValues.chromadbServerUrl}
+			type="text" name="chromaServerUrl" required
+			bind:value={formValues.chromaServerUrl}
 			placeholder="http://localhost:8000"
-			id={`chromadbServerUrl-${idSuffix}`}
+			id={`chromaServerUrl-${idSuffix}`}
 		/>
 		<p class="hint">
 			<span class="icon icon-[mdi--information-outline] icon-align"></span>
-			Provide the root URL of the ChromaDB server.
+			Provide the root URL of the Chroma server.
 			The server must allow CORS from this domain or you can use a proxy:
 			try <a href="http://cors-proxy.matiboux.com/">CORS Proxy</a>.
 		</p>
