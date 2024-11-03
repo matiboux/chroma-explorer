@@ -3,60 +3,11 @@ import { onMount } from 'svelte'
 import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { collectionsStore } from '~/stores/collectionsStore'
+import { collectionsStore, reloadCollections } from '~/stores/collectionsStore'
 
 async function onRefresh()
 {
-	$collectionsStore = {
-		...$collectionsStore,
-		collections: null,
-	}
-
-	try
-	{
-		const config = configStore.get()
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
-		const collections = await chroma.listCollections()
-
-		$collectionsStore = {
-			...$collectionsStore,
-			collections: collections,
-		}
-	}
-	catch (error: unknown)
-	{
-		$collectionsStore = {
-			...$collectionsStore,
-			collections: [],
-		}
-	}
+	return reloadCollections()
 }
 
 onMount(() =>
