@@ -1,0 +1,14 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import Logout from '~/components/Logout.svelte'
+---
+
+<Layout
+	bodyClass="bg-gray-100 h-screen"
+>
+
+	Explore!
+
+	<Logout logoutRedirect="/" client:visible />
+
+</Layout>

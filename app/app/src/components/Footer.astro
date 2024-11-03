@@ -71,12 +71,12 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 		<p>
 			<span class="icon-[mdi--server-network-off] align-icon-inline"></span>
 			{_({
-				'en': 'No data is collected or processed over the network or on any server.',
-				'fr': 'Aucune donnée n\'est collectée ou traitée sur le réseau ou sur un serveur.',
+				'en': 'Data is only collected in your browser.',
+				'fr': 'Les données sont uniquement collectées dans votre navigateur.',
 			})}
 			{_({
-				'en': 'All data is processed locally in your browser, and stays on your own device.',
-				'fr': 'Toutes les données sont traitées localement dans votre navigateur et restent sur votre propre appareil.',
+				'en': 'Data transfer only happens your browser and the Chroma server you chose.',
+				'fr': 'Les transferts de données se font uniquement entre votre navigateur et le serveur Chroma que vous avez choisi.',
 			})}
 		</p>
 		<p>
