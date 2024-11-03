@@ -15,7 +15,7 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 ---
 
 <Layout
-	bodyClass="bg-gray-100 h-screen"
+	bodyClass="bg-gray-100 h-screen overflow-hidden"
 >
 
 	<div class="wrapper">
@@ -95,7 +95,8 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 		}
 
 		.content {
-			@apply w-full;
+			@apply w-full flex-grow;
+			@apply overflow-y-auto;
 		}
 	}
 </style>
