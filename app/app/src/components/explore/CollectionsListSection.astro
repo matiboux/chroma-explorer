@@ -1,3 +1,7 @@
+---
+import CollectionsList from '~/components/explore/CollectionsList.svelte'
+---
+
 <div class="collections-list-wrapper">
 	<div class="btn-group">
 		<button class="btn btn-primary">
@@ -22,23 +26,7 @@
 		</div>
 	</div>
 
-	<ul>
-		<li>
-			<a href="#" class="help-icon">
-				collection-1
-			</a>
-		</li>
-		<li class="active">
-			<a href="#" class="help-icon">
-				collection-2
-			</a>
-		</li>
-		<li>
-			<a href="#" class="help-icon">
-				collection-3
-			</a>
-		</li>
-	</ul>
+	<CollectionsList client:visible />
 </div>
 
 <style lang="scss">
@@ -63,31 +51,6 @@
 
 			&:hover {
 				@apply bg-gray-200;
-			}
-		}
-	}
-
-	ul {
-		@apply w-full;
-		@apply px-1;
-		@apply list-none;
-		@apply space-y-1;
-
-		li {
-			@apply bg-white;
-			@apply rounded-lg;
-
-			a {
-				@apply text-gray-800;
-				@apply block;
-				@apply px-2 py-1;
-				@apply hover:bg-gray-100;
-				@apply rounded-lg;
-			}
-
-			&.active a, a.active {
-				@apply bg-gray-100;
-				@apply hover:bg-gray-200;
 			}
 		}
 	}
