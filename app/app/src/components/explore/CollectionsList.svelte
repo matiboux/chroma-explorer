@@ -1,22 +1,33 @@
 <script lang="ts">
-const collections = [
-	'collection-1',
-	'collection-2',
-	'collection-3',
-]
+import { collectionsStore } from '~/stores/collectionsStore'
 </script>
 
-<ul>
-	{#each collections as collection}
-		<li>
-			<a href="#" on:click|preventDefault={() => console.log(collection)}>
-				{collection}
-			</a>
-		</li>
-	{/each}
-</ul>
+{#if !$collectionsStore.collections}
+	<p class="info-text">
+		Loading collections...
+	</p>
+{:else if $collectionsStore.collections.length <= 0}
+	<p class="info-text">
+		No collections found.
+	</p>
+{:else}
+	<ul>
+		{#each $collectionsStore.collections as collection}
+			<li>
+				<a href="#" on:click|preventDefault={() => console.log(collection)}>
+					{collection.name}
+				</a>
+			</li>
+		{/each}
+	</ul>
+{/if}
 
 <style lang="scss">
+	.info-text {
+		@apply px-3 py-1;
+		@apply text-sm text-gray-600;
+	}
+
 	ul {
 		@apply w-full;
 		@apply px-1;

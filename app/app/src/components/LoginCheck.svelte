@@ -3,6 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
+import { collectionsStore } from '~/stores/collectionsStore'
 
 export let loginRedirect: string = ''
 
@@ -53,6 +54,8 @@ configStore.subscribe(async (config) =>
 
 		version = await chroma.version()
 		collections = await chroma.listCollections()
+
+		collectionsStore.set({ collections: collections })
 	}
 	catch (error: unknown)
 	{}

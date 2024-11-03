@@ -1,5 +1,6 @@
 ---
 import CollectionsList from '~/components/explore/CollectionsList.svelte'
+import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
 ---
 
 <div class="collections-list-wrapper">
@@ -17,12 +18,7 @@ import CollectionsList from '~/components/explore/CollectionsList.svelte'
 					Add collection
 				</span>
 			</button>
-			<button class="btn btn-default">
-				<span class="icon icon-[mdi--refresh] icon-align"></span>
-				<span class="sr-only">
-					Refresh collections
-				</span>
-			</button>
+			<CollectionsReload client:visible />
 		</div>
 	</div>
 
@@ -31,7 +27,7 @@ import CollectionsList from '~/components/explore/CollectionsList.svelte'
 
 <style lang="scss">
 	.collections-list-wrapper {
-		@apply flex flex-col gap-1;
+		@apply flex flex-col gap-2;
 		@apply py-2;
 	}
 
