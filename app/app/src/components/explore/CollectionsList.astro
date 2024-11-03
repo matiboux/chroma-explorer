@@ -1,0 +1,94 @@
+<div class="collections-list-wrapper">
+	<div class="btn-group">
+		<button class="btn btn-primary">
+			<span class="icon icon-[mdi--arrow-left] icon-align"></span>
+			<span class="sr-only">
+				Go back
+			</span>
+		</button>
+		<div class="btn-group">
+			<button class="btn btn-primary">
+				<span class="icon icon-[mdi--folder-plus-outline] icon-align"></span>
+				<span class="sr-only">
+					Add collection
+				</span>
+			</button>
+			<button class="btn btn-default">
+				<span class="icon icon-[mdi--refresh] icon-align"></span>
+				<span class="sr-only">
+					Refresh collections
+				</span>
+			</button>
+		</div>
+	</div>
+
+	<ul>
+		<li>
+			<a href="#" class="help-icon">
+				collection-1
+			</a>
+		</li>
+		<li class="active">
+			<a href="#" class="help-icon">
+				collection-2
+			</a>
+		</li>
+		<li>
+			<a href="#" class="help-icon">
+				collection-3
+			</a>
+		</li>
+	</ul>
+</div>
+
+<style lang="scss">
+	.collections-list-wrapper {
+		@apply flex flex-col gap-1;
+		@apply py-2;
+	}
+
+	.btn-group {
+		@apply flex gap-2 w-full justify-center items-center;
+		@apply px-2;
+
+		.btn-group {
+			@apply flex-grow;
+			@apply p-0;
+		}
+
+		.btn {
+			@apply px-2 py-1;
+			@apply bg-gray-100;
+			@apply border border-gray-200 rounded-lg;
+
+			&:hover {
+				@apply bg-gray-200;
+			}
+		}
+	}
+
+	ul {
+		@apply w-full;
+		@apply px-1;
+		@apply list-none;
+		@apply space-y-1;
+
+		li {
+			@apply bg-white;
+			@apply rounded-lg;
+
+			a {
+				@apply text-gray-800;
+				@apply block;
+				@apply px-2 py-1;
+				@apply hover:bg-gray-100;
+				@apply rounded-lg;
+			}
+
+			&.active a, a.active {
+				@apply bg-gray-100;
+				@apply hover:bg-gray-200;
+			}
+		}
+	}
+</style>

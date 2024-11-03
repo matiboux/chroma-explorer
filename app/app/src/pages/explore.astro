@@ -2,6 +2,7 @@
 import { site } from '~/config'
 import Layout from '~/layouts/Layout.astro'
 import LoginStatus from '~/components/explore/LoginStatus.astro'
+import CollectionsList from '~/components/explore/CollectionsList.astro'
 import LocaleSwitch from '~/components/LocaleSwitch.astro'
 import Logout from '~/components/Logout.svelte'
 
@@ -36,7 +37,7 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 			</div>
 
 			<div class="section section-grow">
-				...
+				<CollectionsList />
 			</div>
 
 			<div class="section section-content section-flex">
