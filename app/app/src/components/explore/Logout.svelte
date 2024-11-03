@@ -9,9 +9,9 @@ onMount(() =>
 {
 	if (logoutRedirect)
 	{
-		configStore.subscribe((value, oldValue) =>
+		configStore.subscribe((value) =>
 		{
-			if (!value.serverUrl)
+			if (!value.confirmed)
 			{
 				// Redirect to the specified URL
 				window.location.href = logoutRedirect
@@ -24,8 +24,8 @@ function onLogout()
 {
 	$configStore = {
 		...$configStore,
-		serverUrl: '',
-		authConfig: null,
+		confirmed: false,
+		authConfig: null, // Clear the auth config (privacy)
 	}
 }
 </script>

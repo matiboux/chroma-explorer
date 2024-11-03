@@ -14,11 +14,13 @@ export interface BasicAuthConfig
 
 export interface ConfigStore
 {
+	confirmed: boolean
 	serverUrl: string
 	authConfig: APIAuthConfig | BasicAuthConfig | null
 }
 
 const defaultConfig: ConfigStore = {
+	confirmed: false,
 	serverUrl: '',
 	authConfig: null,
 }

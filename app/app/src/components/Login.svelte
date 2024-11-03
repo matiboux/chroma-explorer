@@ -23,6 +23,7 @@ function onSubmit()
 {
 	$configStore = {
 		...$configStore,
+		confirmed: true,
 		serverUrl: formValues.chromaServerUrl,
 		authConfig: (
 			  (formValues.authProvider === 'token' && formValues.apiToken)

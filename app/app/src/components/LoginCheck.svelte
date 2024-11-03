@@ -13,14 +13,14 @@ let collections: CollectionParams[] | null = null
 
 configStore.subscribe(async (config) =>
 {
-	checked = false
-	version = null
-	collections = null
-
-	if (!config.serverUrl)
+	if (!config.confirmed)
 	{
 		return
 	}
+
+	checked = false
+	version = null
+	collections = null
 
 	try
 	{
@@ -62,11 +62,21 @@ configStore.subscribe(async (config) =>
 	finally
 	{
 		checked = true
-	}
 
-	if (checked && collections !== null && loginRedirect)
-	{
-		window.location.href = loginRedirect
+		if (checked)
+		{
+			if (!collections)
+			{
+				configStore.set({
+					...configStore.get(),
+					confirmed: false,
+				})
+			}
+			else if (loginRedirect)
+			{
+				window.location.href = loginRedirect
+			}
+		}
 	}
 })
 </script>
