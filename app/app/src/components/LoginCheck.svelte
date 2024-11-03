@@ -3,7 +3,7 @@ import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 
-export let connectedRedirect: string = ''
+export let loginRedirect: string = ''
 
 let checked: boolean = false
 let version: string | null = null
@@ -56,9 +56,9 @@ configStore.subscribe(async (config) =>
 		checked = true
 	}
 
-	if (checked && collections !== null)
+	if (checked && collections !== null && loginRedirect)
 	{
-		alert('Connected to ChromaDB server.')
+		window.location.href = loginRedirect
 	}
 })
 

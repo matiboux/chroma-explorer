@@ -138,7 +138,7 @@ onMount(() => {
 		</p>
 	{/if}
 
-	<LoginCheck connectedRedirect="/explore" />
+	<LoginCheck loginRedirect="/explore" />
 
 	<div class="button-group">
 		<button type="submit">Connect</button>
