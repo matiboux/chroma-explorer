@@ -1,5 +1,6 @@
 ---
 import Layout from '~/layouts/Layout.astro'
+import Logout from '~/components/Logout.svelte'
 ---
 
 <Layout
@@ -7,5 +8,7 @@ import Layout from '~/layouts/Layout.astro'
 >
 
 	Explore!
+
+	<Logout logoutRedirect="/" client:visible />
 
 </Layout>
