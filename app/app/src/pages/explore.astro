@@ -1,6 +1,7 @@
 ---
 import { site } from '~/config'
 import Layout from '~/layouts/Layout.astro'
+import LoginStatus from '~/components/explore/LoginStatus.astro'
 import LocaleSwitch from '~/components/LocaleSwitch.astro'
 import Logout from '~/components/Logout.svelte'
 
@@ -28,6 +29,10 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 						Help
 					</span>
 				</a>
+			</div>
+
+			<div class="section">
+				<LoginStatus />
 			</div>
 
 			<div class="section section-grow">

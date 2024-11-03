@@ -1,0 +1,51 @@
+<div class="login-status-wrapper">
+	<div class="login-status">
+		<p class="status-success">
+			<span class="icon icon-[mdi--check-circle-outline] icon-align"></span>
+			Connected!
+		</p>
+		<!-- <p class="status-error">
+			<span class="icon icon-[mdi--alert-circle-outline] icon-align"></span>
+			Connection lost
+		</p> -->
+	</div>
+	<div class="logout">
+		<button class="logout-btn">
+			<span class="icon icon-[mdi--logout] icon-align"></span>
+			<span class="sr-only">
+				Logout
+			</span>
+		</button>
+	</div>
+</div>
+
+<style lang="scss">
+	.login-status-wrapper {
+		@apply flex justify-between items-center;
+		@apply bg-gray-100;
+
+		.login-status {
+			@apply flex-grow;
+			@apply px-2 py-1;
+			@apply text-sm;
+
+			p {
+				&.status-success {
+					@apply text-green-700;
+				}
+
+				&.status-error {
+					@apply text-red-700;
+				}
+			}
+		}
+
+		.logout .logout-btn {
+			@apply px-2 py-1 aspect-square;
+
+			&:hover {
+				@apply bg-gray-200;
+			}
+		}
+	}
+</style>
