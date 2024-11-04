@@ -1,6 +1,9 @@
 ---
 import CollectionsList from '~/components/explore/CollectionsList.svelte'
 import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
+
+import { i18nFactory } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as any)
 ---
 
 <div class="collections-list-wrapper">
@@ -8,21 +11,27 @@ import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
 		<button class="btn btn-primary hidden">
 			<span class="icon icon-[mdi--arrow-left] icon-align"></span>
 			<span class="sr-only">
-				Go back
+				{_({
+					en: 'Back',
+					fr: 'Retour',
+				})}
 			</span>
 		</button>
 		<div class="btn-group">
 			<button class="btn btn-primary hidden">
 				<span class="icon icon-[mdi--folder-plus-outline] icon-align"></span>
 				<span class="sr-only">
-					Add collection
+					{_({
+						en: 'Add collection',
+						fr: 'Ajouter une collection',
+					})}
 				</span>
 			</button>
-			<CollectionsReload client:visible />
+			<CollectionsReload client:visible locale={Astro.currentLocale} />
 		</div>
 	</div>
 
-	<CollectionsList client:visible />
+	<CollectionsList client:visible locale={Astro.currentLocale} />
 </div>
 
 <style lang="scss">
