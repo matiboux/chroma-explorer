@@ -3,18 +3,18 @@
 export let buttonStyle: string = 'default'
 </script>
 
-<button class={`btn btn-${buttonStyle}`} {...$$restProps} on:click>
+<button class={`btn btn-${buttonStyle}`} type="button" {...$$restProps} on:click>
 	<slot />
 </button>
 
 <style lang="scss">
 	.btn {
 		@apply px-2 py-1;
-		@apply bg-gray-100;
+		@apply bg-gray-100 hover:bg-gray-200 active:bg-gray-300;
 		@apply border border-gray-200 rounded-lg;
 
-		&:hover {
-			@apply bg-gray-200;
+		&-gray {
+			@apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400;
 		}
 	}
 </style>
