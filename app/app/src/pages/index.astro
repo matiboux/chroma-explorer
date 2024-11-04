@@ -27,7 +27,7 @@ const _ = i18nFactory(Astro.currentLocale as any)
 				</p>
 			}
 
-			<Login client:visible />
+			<Login client:visible locale={Astro.currentLocale} />
 		</div>
 
 		<Footer class="w-full" />
