@@ -3,11 +3,11 @@ import { collectionsStore } from '~/stores/collectionsStore'
 </script>
 
 {#if !$collectionsStore.selectedCollection}
-	<p>
+	<p class="splash">
 		No collection selected.
 	</p>
 {:else if true}
-	<p>
+	<p class="splash">
 		Not implemented yet.
 	</p>
 {:else}
@@ -37,6 +37,11 @@ import { collectionsStore } from '~/stores/collectionsStore'
 {/if}
 
 <style lang="scss">
+	p.splash {
+		@apply text-gray-500;
+		@apply p-4;
+	}
+
 	table {
 		@apply w-full;
 		@apply border-collapse;
