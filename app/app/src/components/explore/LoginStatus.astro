@@ -8,7 +8,7 @@ const _ = i18nFactory(Astro.currentLocale as any)
 
 <div class="login-status-wrapper">
 	<div class="login-status">
-		<LoginStatusText client:visible />
+		<LoginStatusText client:visible locale={Astro.currentLocale} />
 	</div>
 	<div class="logout">
 		<Logout client:visible locale={Astro.currentLocale} logoutRedirect="/" />

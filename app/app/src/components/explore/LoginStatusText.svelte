@@ -1,16 +1,26 @@
 <script lang="ts">
 import { configStore } from '~/stores/configStore'
+
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
 </script>
 
 {#if $configStore.serverUrl}
 	<p class="status-success">
 		<span class="icon icon-[mdi--check-circle-outline] icon-align"></span>
-		Connected!
+		{_({
+			en: 'Connected!',
+			fr: 'Connecté !',
+		})}
 	</p>
 {:else}
 	<p class="status-error">
 		<span class="icon icon-[mdi--alert-circle-outline] icon-align"></span>
-		Connection lost
+		{_({
+			en: 'Connection lost',
+			fr: 'Connexion perdue',
+		})}
 	</p>
 {/if}
 
