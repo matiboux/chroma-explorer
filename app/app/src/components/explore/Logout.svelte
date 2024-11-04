@@ -3,6 +3,10 @@ import { onMount } from 'svelte'
 
 import { configStore } from '~/stores/configStore'
 
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
+
 export let logoutRedirect: string = ''
 
 onMount(() =>
@@ -36,15 +40,14 @@ function onLogout()
 >
 	<span class="icon icon-[mdi--logout] icon-align"></span>
 	<span class="sr-only">
-		Logout
+		{_({
+			en: 'Logout',
+			fr: 'Déconnexion',
+		})}
 	</span>
 </button>
 
 <style lang="scss">
-	// button {
-	// 	@apply bg-blue-500 hover:bg-blue-700;
-	// 	@apply text-white font-bold py-2 px-4 rounded;
-	// }
 	.logout-btn {
 		@apply px-2 py-1 aspect-square;
 

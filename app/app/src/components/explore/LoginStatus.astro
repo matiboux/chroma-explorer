@@ -1,6 +1,9 @@
 ---
 import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
 import Logout from '~/components/explore/Logout.svelte'
+
+import { i18nFactory } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as any)
 ---
 
 <div class="login-status-wrapper">
@@ -8,7 +11,7 @@ import Logout from '~/components/explore/Logout.svelte'
 		<LoginStatusText client:visible />
 	</div>
 	<div class="logout">
-		<Logout client:visible logoutRedirect="/" />
+		<Logout client:visible locale={Astro.currentLocale} logoutRedirect="/" />
 	</div>
 </div>
 
