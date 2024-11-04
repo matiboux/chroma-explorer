@@ -3,7 +3,7 @@ import { onMount } from 'svelte'
 import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { collectionsStore, reloadCollections } from '~/stores/collectionsStore'
+import { stateStore, reloadCollections } from '~/stores/stateStore'
 import Button from '~/components/generic/Button.svelte'
 
 import { i18nFactory } from '~/i18n'
@@ -17,7 +17,7 @@ async function onRefresh()
 
 onMount(() =>
 {
-	const collections = collectionsStore.get().collections
+	const collections = stateStore.get().collections
 	if (!collections)
 	{
 		onRefresh()
