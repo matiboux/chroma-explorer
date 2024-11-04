@@ -197,16 +197,18 @@ stateStore.subscribe(async (value, oldValue) =>
 	}
 
 	table {
+		@apply bg-white;
 		@apply w-full;
 		@apply border-collapse;
 
 		th, td {
-			@apply border border-gray-300;
 			@apply p-2;
+			@apply border border-gray-200;
 		}
 
 		th {
-			@apply bg-gray-200;
+			@apply bg-gray-100;
+			@apply border-gray-300;
 		}
 	}
 
