@@ -1,16 +1,16 @@
 <script lang="ts">
-import { onMount } from 'svelte'
 import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { stateStore, reloadCollections } from '~/stores/stateStore'
-import Button from '~/components/generic/Button.svelte'
-
+import { stateStore } from '~/stores/stateStore'
 </script>
 
-<div class="modal" class:active={false}>
-	<div class="wrapper">
-		...
+<div class="modal-wrapper">
+	<div class="modal" class:active={$stateStore.viewMode !== null}>
+		<div class="modal-content">
+			{$stateStore.viewMode}
+			{$stateStore.selectedDocument}
+		</div>
 	</div>
 </div>
 
@@ -24,7 +24,7 @@ import Button from '~/components/generic/Button.svelte'
 			@apply hidden;
 		}
 
-		.wrapper {
+		.modal-content {
 			@apply bg-white;
 			@apply w-full max-w-4xl min-h-32;
 			@apply m-4 p-4;

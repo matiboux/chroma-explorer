@@ -63,6 +63,33 @@ stateStore.subscribe(async (value, oldValue) =>
 	catch (error: unknown)
 	{}
 })
+
+function onView(id: string)
+{
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'view',
+		selectedDocument: id,
+	})
+}
+
+function onEdit(id: string)
+{
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'edit',
+		selectedDocument: id,
+	})
+}
+
+function onDelete(id: string)
+{
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'delete',
+		selectedDocument: id,
+	})
+}
 </script>
 
 <div class="wrapper">
