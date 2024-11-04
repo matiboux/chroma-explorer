@@ -1,0 +1,26 @@
+---
+import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
+import Logout from '~/components/explore/Logout.svelte'
+---
+
+<div class="login-status-wrapper">
+	<div class="login-status">
+		<LoginStatusText client:visible />
+	</div>
+	<div class="logout">
+		<Logout client:visible logoutRedirect="/" />
+	</div>
+</div>
+
+<style lang="scss">
+	.login-status-wrapper {
+		@apply flex justify-between items-center;
+		@apply bg-gray-100;
+
+		.login-status {
+			@apply flex-grow;
+			@apply px-3 py-1;
+			@apply text-sm;
+		}
+	}
+</style>

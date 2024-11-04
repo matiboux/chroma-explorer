@@ -16,11 +16,16 @@ function getLocaleByUrl(url: URL | string, fallback: boolean = true): string | u
 			continue
 		}
 
-		const locale = getLocaleByPath(part)
-		if (locale)
+		try
 		{
-			return locale
+			const locale = getLocaleByPath(part)
+			if (locale)
+			{
+				return locale
+			}
 		}
+		catch (error)
+		{}
 	}
 
 	return fallback ? defaultLocale : undefined

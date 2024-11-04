@@ -8,23 +8,29 @@ function getUrlWithoutLocale(url: URL | string): string
 	let i = !urlParts[0] ? 1 : 0
 	while (i < urlParts.length)
 	{
-		if (urlParts[i])
+		try
 		{
-			const locale = getLocaleByPath(urlParts[i] as string)
-			if (locale)
+			if (urlParts[i])
 			{
-				i++
-				continue
+				const locale = getLocaleByPath(urlParts[i] as string)
+				if (locale)
+				{
+					++i
+					continue
+				}
 			}
 		}
+		catch (error)
+		{}
 
 		urlPathnames.push(urlParts[i])
-		i++
+		++i
 	}
+
 	while (i < urlParts.length)
 	{
 		urlPathnames.push(urlParts[i])
-		i++
+		++i
 	}
 
 	return '/' + urlPathnames.join('/')

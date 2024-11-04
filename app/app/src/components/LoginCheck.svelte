@@ -3,6 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
+import { collectionsStore } from '~/stores/collectionsStore'
 
 export let loginRedirect: string = ''
 
@@ -12,14 +13,14 @@ let collections: CollectionParams[] | null = null
 
 configStore.subscribe(async (config) =>
 {
-	checked = false
-	version = null
-	collections = null
-
-	if (!config.serverUrl)
+	if (!config.confirmed)
 	{
 		return
 	}
+
+	checked = false
+	version = null
+	collections = null
 
 	try
 	{
@@ -53,17 +54,29 @@ configStore.subscribe(async (config) =>
 
 		version = await chroma.version()
 		collections = await chroma.listCollections()
+
+		collectionsStore.set({ collections: collections })
 	}
 	catch (error: unknown)
 	{}
 	finally
 	{
 		checked = true
-	}
 
-	if (checked && collections !== null && loginRedirect)
-	{
-		window.location.href = loginRedirect
+		if (checked)
+		{
+			if (!collections)
+			{
+				configStore.set({
+					...configStore.get(),
+					confirmed: false,
+				})
+			}
+			else if (loginRedirect)
+			{
+				window.location.href = loginRedirect
+			}
+		}
 	}
 })
 </script>

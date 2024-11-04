@@ -1,0 +1,53 @@
+---
+import CollectionsList from '~/components/explore/CollectionsList.svelte'
+import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
+---
+
+<div class="collections-list-wrapper">
+	<div class="btn-group">
+		<button class="btn btn-primary hidden">
+			<span class="icon icon-[mdi--arrow-left] icon-align"></span>
+			<span class="sr-only">
+				Go back
+			</span>
+		</button>
+		<div class="btn-group">
+			<button class="btn btn-primary hidden">
+				<span class="icon icon-[mdi--folder-plus-outline] icon-align"></span>
+				<span class="sr-only">
+					Add collection
+				</span>
+			</button>
+			<CollectionsReload client:visible />
+		</div>
+	</div>
+
+	<CollectionsList client:visible />
+</div>
+
+<style lang="scss">
+	.collections-list-wrapper {
+		@apply flex flex-col gap-2;
+		@apply py-2;
+	}
+
+	.btn-group {
+		@apply flex gap-2 w-full justify-center items-center;
+		@apply px-2;
+
+		.btn-group {
+			@apply flex-grow;
+			@apply p-0;
+		}
+
+		.btn {
+			@apply px-2 py-1;
+			@apply bg-gray-100;
+			@apply border border-gray-200 rounded-lg;
+
+			&:hover {
+				@apply bg-gray-200;
+			}
+		}
+	}
+</style>

@@ -1,14 +1,102 @@
 ---
+import { site } from '~/config'
 import Layout from '~/layouts/Layout.astro'
-import Logout from '~/components/Logout.svelte'
+import LoginStatus from '~/components/explore/LoginStatus.astro'
+import CollectionsListSection from '~/components/explore/CollectionsListSection.astro'
+import LocaleSwitch from '~/components/LocaleSwitch.astro'
+import ExploreView from '~/components/explore/ExploreView.astro'
+
+import { i18nFactory } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as any)
+
+const githubRepositoryUrl = process.env.GITHUB_REPOSITORY_URL || null as string | null
+const githubSha = process.env.GITHUB_SHA || null as string | null
+const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 ---
 
 <Layout
-	bodyClass="bg-gray-100 h-screen"
+	bodyClass="bg-gray-100 h-screen overflow-hidden"
 >
 
-	Explore!
+	<div class="wrapper">
+		<div class="sidebar">
+			<div class="section section-content section-flex">
+				<h1>
+					{site.title}
+				</h1>
+				<a href="#" class="help-icon">
+					<span class="icon icon-[mdi--comment-help-outline] icon-align"></span>
+					<span class="sr-only">
+						Help
+					</span>
+				</a>
+			</div>
 
-	<Logout logoutRedirect="/" client:visible />
+			<div class="section">
+				<LoginStatus />
+			</div>
+
+			<div class="section section-grow">
+				<CollectionsListSection />
+			</div>
+
+			<div class="section section-content section-flex">
+				<LocaleSwitch />
+				<a class="badge bg-gray-200 text-gray-600 rounded-full px-2 text-sm" href={githubRepositoryUrl || '#'}>
+					<small>v. {buildVersion}</small>
+				</a>
+			</div>
+		</div>
+
+		<div class="content">
+			<ExploreView />
+		</div>
+	</div>
 
 </Layout>
+
+<style lang="scss">
+	.wrapper {
+		@apply flex;
+		@apply h-full;
+		//  justify-center items-center min-h-full gap-8 p-8 w-full max-w-[calc(800px+2*2rem)] mx-auto;
+
+		.sidebar {
+			@apply flex flex-col;
+			@apply bg-white;
+			@apply w-full max-w-64;
+			@apply shadow-lg;
+
+			.section {
+				&.section-content {
+					@apply p-4 pr-6;
+				}
+
+				&.section-flex {
+					@apply flex gap-2 justify-between items-center;
+				}
+
+				&.section-grow {
+					@apply flex-grow;
+				}
+			}
+
+			a.help-icon {
+				@apply text-gray-600;
+
+				&:hover {
+					@apply text-gray-800;
+				}
+			}
+
+			h1 {
+				@apply text-xl font-bold;
+			}
+		}
+
+		.content {
+			@apply w-full flex-grow;
+			@apply overflow-y-auto;
+		}
+	}
+</style>
