@@ -5,6 +5,10 @@ import type { CollectionParams } from 'chromadb'
 import { configStore } from '~/stores/configStore'
 import { collectionsStore } from '~/stores/collectionsStore'
 
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
+
 export let loginRedirect: string = ''
 
 let checked: boolean = false
@@ -85,17 +89,26 @@ configStore.subscribe(async (config) =>
 	{#if version === null}
 		<p class="text-error">
 			<span class="icon icon-[mdi--alert-outline] icon-align"></span>
-			Failed to connect to Chroma server. Please check the server URL or CORS settings.
+			{_({
+				'en': 'Failed to connect to Chroma server. Please check the server URL or CORS settings.',
+				'fr': 'Échec de la connexion au serveur Chroma. Veuillez vérifier l\'URL du serveur ou les paramètres CORS.',
+			})}
 		</p>
 	{:else if collections === null}
 		<p class="text-error">
 			<span class="icon icon-[mdi--alert-outline] icon-align"></span>
-			Failed to authenticate with Chroma server. Please check your credentials.
+			{_({
+				'en': 'Failed to authenticate with Chroma server. Please check your credentials.',
+				'fr': 'Échec de l\'authentification avec le serveur Chroma. Veuillez vérifier vos identifiants.',
+			})}
 		</p>
 	{:else}
 		<p class="text-success">
 			<span class="icon icon-[mdi--check-circle-outline] icon-align"></span>
-			Connected to Chroma server. Redirecting...
+			{_({
+				'en': 'Connected to Chroma server. Redirecting...',
+				'fr': 'Connecté au serveur Chroma. Redirection...',
+			})}
 		</p>
 	{/if}
 {/if}

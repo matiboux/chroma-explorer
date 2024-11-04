@@ -180,7 +180,7 @@ onMount(() => {
 		</p>
 	{/if}
 
-	<LoginCheck loginRedirect="/explore" />
+	<LoginCheck locale={locale} loginRedirect="/explore" />
 
 	<div class="button-group">
 		<button type="submit">
