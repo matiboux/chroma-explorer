@@ -3,7 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { MultiGetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { collectionsStore } from '~/stores/collectionsStore'
+import { stateStore } from '~/stores/stateStore'
 
 import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
@@ -11,7 +11,7 @@ const _ = i18nFactory(locale)
 
 let records: MultiGetResponse | null = null
 
-collectionsStore.subscribe(async (value, oldValue) =>
+stateStore.subscribe(async (value, oldValue) =>
 {
 	if (
 		!value.collections ||
@@ -64,7 +64,7 @@ collectionsStore.subscribe(async (value, oldValue) =>
 })
 </script>
 
-{#if !$collectionsStore.selectedCollection}
+{#if !$stateStore.selectedCollection}
 	<p class="splash">
 		{_({
 			en: 'No collection selected.',

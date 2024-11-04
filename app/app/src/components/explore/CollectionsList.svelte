@@ -1,5 +1,5 @@
 <script lang="ts">
-import { collectionsStore } from '~/stores/collectionsStore'
+import { stateStore } from '~/stores/stateStore'
 
 import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
@@ -7,22 +7,22 @@ const _ = i18nFactory(locale)
 
 function selectCollection(collectionId: string)
 {
-	const collectionsValue = collectionsStore.get()
-	collectionsStore.set({
+	const collectionsValue = stateStore.get()
+	stateStore.set({
 		...collectionsValue,
 		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
 	})
 }
 </script>
 
-{#if !$collectionsStore.collections}
+{#if !$stateStore.collections}
 	<p class="info-text">
 		{_({
 			en: 'Loading collections...',
 			fr: 'Chargement des collections...',
 		})}
 	</p>
-{:else if $collectionsStore.collections.length <= 0}
+{:else if $stateStore.collections.length <= 0}
 	<p class="info-text">
 		{_({
 			en: 'No collections found.',
@@ -31,8 +31,8 @@ function selectCollection(collectionId: string)
 	</p>
 {:else}
 	<ul>
-		{#each Object.entries($collectionsStore.collections) as [collectionId, collection]}
-			<li class:active={collectionId === $collectionsStore.selectedCollection}>
+		{#each Object.entries($stateStore.collections) as [collectionId, collection]}
+			<li class:active={collectionId === $stateStore.selectedCollection}>
 				<a href="#" on:click|preventDefault={() => selectCollection(collectionId)}>
 					{collection.name}
 				</a>

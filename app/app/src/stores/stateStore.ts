@@ -4,23 +4,23 @@ import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 
-export interface CollectionsStore
+export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
 }
 
-const defaultValue: CollectionsStore = {
+const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
 }
 
-export const collectionsStore = atom<CollectionsStore>(defaultValue)
+export const stateStore = atom<StateStore>(defaultState)
 
 export async function reloadCollections()
 {
-	collectionsStore.set({
-		...collectionsStore.get(),
+	stateStore.set({
+		...stateStore.get(),
 		collections: null,
 	})
 
@@ -63,18 +63,18 @@ export async function reloadCollections()
 			},
 			{} as Record<string, CollectionParams>,
 		)
-		const selectedCollection = collectionsStore.get().selectedCollection
+		const selectedCollection = stateStore.get().selectedCollection
 
-		collectionsStore.set({
-			...collectionsStore.get(),
+		stateStore.set({
+			...stateStore.get(),
 			collections: collections,
 			selectedCollection: selectedCollection && collections[selectedCollection] ? selectedCollection : null,
 		})
 	}
 	catch (error: unknown)
 	{
-		collectionsStore.set({
-			...collectionsStore.get(),
+		stateStore.set({
+			...stateStore.get(),
 			collections: {},
 			selectedCollection: null,
 		})

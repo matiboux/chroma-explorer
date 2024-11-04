@@ -3,7 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { collectionsStore } from '~/stores/collectionsStore'
+import { stateStore } from '~/stores/stateStore'
 
 import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
@@ -59,7 +59,7 @@ configStore.subscribe(async (config) =>
 		version = await chroma.version()
 		collections = await chroma.listCollections()
 
-		collectionsStore.set({ collections: collections })
+		stateStore.set({ collections: collections })
 	}
 	catch (error: unknown)
 	{}
