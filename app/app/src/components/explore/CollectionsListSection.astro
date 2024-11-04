@@ -27,7 +27,7 @@ const _ = i18nFactory(Astro.currentLocale as any)
 					})}
 				</span>
 			</button>
-			<CollectionsReload client:visible />
+			<CollectionsReload client:visible locale={Astro.currentLocale} />
 		</div>
 	</div>
 
