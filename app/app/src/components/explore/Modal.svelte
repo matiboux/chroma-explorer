@@ -4,6 +4,10 @@ import { ChromaClient } from 'chromadb'
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
+
 function onClose()
 {
 	stateStore.set({
@@ -24,7 +28,10 @@ function onClose()
 					<button class="btn btn-default" on:click={onClose}>
 						<span class="icon icon-[mdi--close] icon-align"></span>
 						<span class="sr-only">
-							Close modal
+							{_({
+								en: 'Close modal',
+								fr: 'Fermer la modale',
+							})}
 						</span>
 					</button>
 				</div>
