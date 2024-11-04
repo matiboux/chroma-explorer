@@ -3,13 +3,35 @@ import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
+
+function onClose()
+{
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: null,
+	})
+}
 </script>
 
 <div class="modal-wrapper">
 	<div class="modal" class:active={$stateStore.viewMode !== null}>
 		<div class="modal-content">
-			{$stateStore.viewMode}
-			{$stateStore.selectedDocument}
+			<div class="modal-header">
+				<h2>
+					{$stateStore.viewMode}
+				</h2>
+				<div class="modal-close">
+					<button class="btn btn-default" on:click={onClose}>
+						<span class="icon icon-[mdi--close] icon-align"></span>
+						<span class="sr-only">
+							Close modal
+						</span>
+					</button>
+				</div>
+			</div>
+			<div class="modal-body">
+				selectedDocument = {$stateStore.selectedDocument}
+			</div>
 		</div>
 	</div>
 </div>
@@ -27,8 +49,37 @@ import { stateStore } from '~/stores/stateStore'
 		.modal-content {
 			@apply bg-white;
 			@apply w-full max-w-4xl min-h-32;
-			@apply m-4 p-4;
-			@apply rounded-lg shadow-lg;
+			@apply flex flex-col;
+			@apply m-4;
+			@apply rounded-lg shadow-lg overflow-hidden;
+
+			.modal-header {
+				@apply flex justify-between items-start;
+
+				h2 {
+					@apply px-4 py-1;
+					@apply text-lg font-semibold;
+				}
+
+				.modal-close {
+					@apply flex items-center;
+
+					.btn {
+						@apply px-2 py-1;
+						@apply text-xl;
+						@apply hover:bg-gray-100 active:bg-gray-200;
+
+						.icon {
+							@apply text-gray-600;
+						}
+					}
+				}
+			}
+
+			.modal-body {
+				@apply flex-grow;
+				@apply px-4 py-2;
+			}
 		}
 	}
 </style>
