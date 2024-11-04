@@ -1,14 +1,24 @@
 <script lang="ts">
 import { collectionsStore } from '~/stores/collectionsStore'
+
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
 </script>
 
 {#if !$collectionsStore.selectedCollection}
 	<p class="splash">
-		No collection selected.
+		{_({
+			en: 'No collection selected.',
+			fr: 'Aucune collection sélectionnée.',
+		})}
 	</p>
 {:else if true}
 	<p class="splash">
-		Not implemented yet.
+		{_({
+			en: 'Not implemented yet.',
+			fr: 'Pas encore implémenté.',
+		})}
 	</p>
 {:else}
 	<table>
@@ -28,9 +38,24 @@ import { collectionsStore } from '~/stores/collectionsStore'
 				<td>Document 1</td>
 				<td>{'{'} ... {'}'}</td>
 				<td>
-					<button type="button" class="btn">View</button>
-					<button type="button" class="btn">Edit</button>
-					<button type="button" class="btn">Delete</button>
+					<button type="button" class="btn">
+						{_({
+							en: 'View',
+							fr: 'Voir',
+						})}
+					</button>
+					<button type="button" class="btn">
+						{_({
+							en: 'Edit',
+							fr: 'Modifier',
+						})}
+					</button>
+					<button type="button" class="btn">
+						{_({
+							en: 'Delete',
+							fr: 'Supprimer',
+						})}
+					</button>
 				</td>
 			</tr>
 	</table>
