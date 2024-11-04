@@ -4,6 +4,7 @@ import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import { collectionsStore, reloadCollections } from '~/stores/collectionsStore'
+import Button from '~/components/generic/Button.svelte'
 
 async function onRefresh()
 {
@@ -20,24 +21,12 @@ onMount(() =>
 })
 </script>
 
-<button
-	class="btn btn-default"
-	on:click={onRefresh}
->
+<Button on:click={onRefresh}>
 	<span class="icon icon-[mdi--refresh] icon-align"></span>
 	<span class="sr-only">
 		Refresh collections
 	</span>
-</button>
+</Button>
 
 <style lang="scss">
-	.btn {
-		@apply px-2 py-1;
-		@apply bg-gray-100;
-		@apply border border-gray-200 rounded-lg;
-
-		&:hover {
-			@apply bg-gray-200;
-		}
-	}
 </style>
