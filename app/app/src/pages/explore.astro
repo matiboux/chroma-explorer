@@ -1,6 +1,7 @@
 ---
 import { site } from '~/config'
 import Layout from '~/layouts/Layout.astro'
+import Modal from '~/components/explore/Modal.svelte'
 import LoginStatus from '~/components/explore/LoginStatus.astro'
 import CollectionsListSection from '~/components/explore/CollectionsListSection.astro'
 import LocaleSwitch from '~/components/LocaleSwitch.astro'
@@ -17,6 +18,8 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 <Layout
 	bodyClass="bg-gray-100 h-screen overflow-hidden"
 >
+
+	<Modal client:visible />
 
 	<div class="wrapper">
 		<div class="sidebar">
