@@ -31,7 +31,7 @@ const _ = i18nFactory(Astro.currentLocale as any)
 		</div>
 	</div>
 
-	<CollectionsList client:visible />
+	<CollectionsList client:visible locale={Astro.currentLocale} />
 </div>
 
 <style lang="scss">

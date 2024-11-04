@@ -1,6 +1,10 @@
 <script lang="ts">
 import { collectionsStore } from '~/stores/collectionsStore'
 
+import { i18nFactory } from '~/i18n'
+export let locale: string | undefined = undefined
+const _ = i18nFactory(locale)
+
 function selectCollection(collectionId: string)
 {
 	const collectionsValue = collectionsStore.get()
@@ -13,11 +17,17 @@ function selectCollection(collectionId: string)
 
 {#if !$collectionsStore.collections}
 	<p class="info-text">
-		Loading collections...
+		{_({
+			en: 'Loading collections...',
+			fr: 'Chargement des collections...',
+		})}
 	</p>
 {:else if $collectionsStore.collections.length <= 0}
 	<p class="info-text">
-		No collections found.
+		{_({
+			en: 'No collections found.',
+			fr: 'Aucune collection trouvée.',
+		})}
 	</p>
 {:else}
 	<ul>
