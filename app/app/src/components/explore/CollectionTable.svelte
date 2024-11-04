@@ -11,10 +11,14 @@ const _ = i18nFactory(locale)
 
 let records: MultiGetResponse | null = null
 
-collectionsStore.subscribe(async (value) =>
+collectionsStore.subscribe(async (value, oldValue) =>
 {
-	console.log('collections', value)
-	if (!value.collections || !value.selectedCollection || !value.collections[value.selectedCollection])
+	if (
+		!value.collections ||
+		!value.selectedCollection ||
+		!value.collections[value.selectedCollection] ||
+		value.selectedCollection === oldValue?.selectedCollection
+	)
 	{
 		return
 	}
