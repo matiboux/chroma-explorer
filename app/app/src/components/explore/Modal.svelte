@@ -8,6 +8,20 @@ import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
 const _ = i18nFactory(locale)
 
+function onKeyup(event: KeyboardEvent)
+{
+	if ($stateStore.viewMode === null)
+	{
+		// Modal is not active, ignore event
+		return
+	}
+
+	if (event.key === 'Escape')
+	{
+		onClose()
+	}
+}
+
 function onClose()
 {
 	stateStore.set({
@@ -16,6 +30,8 @@ function onClose()
 	})
 }
 </script>
+
+<svelte:window on:keyup={onKeyup} />
 
 <div class="modal-wrapper">
 	<div class="modal" class:active={$stateStore.viewMode !== null}>
