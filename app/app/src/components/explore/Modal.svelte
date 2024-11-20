@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ChromaClient } from 'chromadb'
+import type { GetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
@@ -29,6 +30,71 @@ function onClose()
 		viewMode: null,
 	})
 }
+
+let record: GetResponse | null = null
+
+stateStore.subscribe(async (value, oldValue) =>
+{
+	if (value.viewMode === null)
+	{
+		// Modal is not active, clear record
+		record = null
+		return
+	}
+
+	if (
+		// !value.collections ||
+		!value.selectedCollection ||
+		// !value.collections[value.selectedCollection] ||
+		!value.selectedDocument ||
+		value.selectedDocument === oldValue?.selectedDocument
+	)
+	{
+		return
+	}
+
+	record = null
+
+	try
+	{
+		const config = configStore.get()
+		const chroma = new ChromaClient({
+			path: config.serverUrl,
+			...(
+				config.authConfig
+				? (
+					config.authConfig.token
+					? ({
+						auth: {
+							provider: 'token',
+							credentials: config.authConfig.token,
+						},
+					})
+					: config.authConfig.username && config.authConfig.password
+					? ({
+						auth: {
+							provider: 'basic',
+							credentials: {
+								username: config.authConfig.username,
+								password: config.authConfig.password,
+							},
+						},
+					})
+					: undefined
+				)
+				: undefined
+			),
+		})
+
+		const collection = (await chroma.getCollection({ name: value.collections[value.selectedCollection].name }))
+		record = (await collection.get({
+			ids: [ value.selectedDocument ],
+			include: [ 'documents', 'embeddings', 'metadatas' ],
+		}))
+	}
+	catch (error: unknown)
+	{}
+})
 </script>
 
 <svelte:window on:keyup={onKeyup} />
@@ -53,7 +119,25 @@ function onClose()
 				</div>
 			</div>
 			<div class="modal-body">
-				selectedDocument = {$stateStore.selectedDocument}
+				<p>selectedDocument = {$stateStore.selectedDocument}</p>
+				{#if !record}
+					<p>record = null</p>
+				{:else if record.ids.length <= 0}
+					<p>record = empty</p>
+				{:else}
+					<p>record.id = {record.ids[0]}</p>
+					<p>record.document = {record.documents[0]}</p>
+					<p>record.embedding = {record.embeddings?.[0] ? `dimension ${record.embeddings[0].length}` : null}</p>
+					{#if !record.metadatas?.[0]}
+						<p>record.metadata = null</p>
+					{:else if Object.keys(record.metadatas[0]).length <= 0}
+						<p>record.metadata = empty</p>
+					{:else}
+						{#each Object.entries(record.metadatas[0]) as [key, value]}
+							<p>record.metadata.{key} = {value}</p>
+						{/each}
+					{/if}
+				{/if}
 			</div>
 		</div>
 	</div>
