@@ -155,13 +155,14 @@ stateStore.subscribe(async (value, oldValue) =>
 
 		.modal-content {
 			@apply bg-white;
-			@apply w-full max-w-4xl min-h-32;
+			@apply w-full max-w-4xl min-h-32 max-h-[calc(100%_-_2rem)];
 			@apply flex flex-col;
 			@apply m-4;
 			@apply rounded-lg shadow-lg overflow-hidden;
 
 			.modal-header {
 				@apply flex justify-between items-start;
+				@apply border-b-2 border-black border-opacity-10;
 
 				h2 {
 					@apply px-4 py-1;
@@ -184,7 +185,7 @@ stateStore.subscribe(async (value, oldValue) =>
 			}
 
 			.modal-body {
-				@apply flex-grow;
+				@apply flex-grow overflow-y-auto;
 				@apply px-4 py-2;
 			}
 		}
