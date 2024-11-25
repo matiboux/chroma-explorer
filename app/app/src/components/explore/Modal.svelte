@@ -2,6 +2,7 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
+import RecordForm from '~/components/explore/RecordForm.svelte'
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 
@@ -119,25 +120,10 @@ stateStore.subscribe(async (value, oldValue) =>
 				</div>
 			</div>
 			<div class="modal-body">
-				<p>selectedDocument = {$stateStore.selectedDocument}</p>
-				{#if !record}
-					<p>record = null</p>
-				{:else if record.ids.length <= 0}
-					<p>record = empty</p>
-				{:else}
-					<p>record.id = {record.ids[0]}</p>
-					<p>record.document = {record.documents[0]}</p>
-					<p>record.embedding = {record.embeddings?.[0] ? `dimension ${record.embeddings[0].length}` : null}</p>
-					{#if !record.metadatas?.[0]}
-						<p>record.metadata = null</p>
-					{:else if Object.keys(record.metadatas[0]).length <= 0}
-						<p>record.metadata = empty</p>
-					{:else}
-						{#each Object.entries(record.metadatas[0]) as [key, value]}
-							<p>record.metadata.{key} = {value}</p>
-						{/each}
-					{/if}
-				{/if}
+				<RecordForm
+					locale={locale}
+					record={record}
+				/>
 			</div>
 		</div>
 	</div>
@@ -186,7 +172,7 @@ stateStore.subscribe(async (value, oldValue) =>
 
 			.modal-body {
 				@apply flex-grow overflow-y-auto;
-				@apply px-4 py-2;
+				@apply px-4 py-2 pb-8;
 			}
 		}
 	}
