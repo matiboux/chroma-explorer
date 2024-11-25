@@ -1,20 +1,26 @@
 import { i18n as i18nConfig } from '~/config'
 import type { Locales, I18nKeys } from './type'
 
+const defaultLocale = i18nConfig.defaultLocale
+
 function i18n(
-	locale: Locales,
+	locale: Locales | undefined,
 	keys: I18nKeys,
-	...args: string[]
+	...args: any[]
 )
 {
-	const value = keys[locale] ?? keys[i18nConfig.defaultLocale]
+	const value = keys[locale!] ?? keys[defaultLocale]
 
 	return value.replace(/{(\d+)}/g, (match, number) =>
 		{
 			const index = Number.parseInt(number)
-			return args[index] ?? match
+			return String(args[index] ?? match)
 		}
 	)
 }
 
 export default i18n
+
+export {
+	defaultLocale,
+}

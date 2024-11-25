@@ -6,8 +6,9 @@ import { configStore } from '~/stores/configStore'
 import { stateStore, reloadCollections } from '~/stores/stateStore'
 import Button from '~/components/generic/Button.svelte'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 async function onRefresh()

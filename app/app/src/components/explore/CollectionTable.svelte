@@ -6,8 +6,9 @@ import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 import CollectionTableActions from '~/components/explore/CollectionTableActions.svelte'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 let records: MultiGetResponse | null = null

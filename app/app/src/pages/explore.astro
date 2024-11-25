@@ -8,7 +8,8 @@ import LocaleSwitch from '~/components/LocaleSwitch.astro'
 import ExploreView from '~/components/explore/ExploreView.astro'
 
 import { i18nFactory } from '~/i18n'
-const _ = i18nFactory(Astro.currentLocale as any)
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 
 const githubRepositoryUrl = process.env.GITHUB_REPOSITORY_URL || null as string | null
 const githubSha = process.env.GITHUB_SHA || null as string | null
