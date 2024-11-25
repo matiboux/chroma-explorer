@@ -64,6 +64,19 @@ async function copyToClipboard(selector: string, event: MouseEvent)
 					fr: ' :',
 				})}
 				<code>{record.ids[0]}</code>
+				<button
+					type="button" class="copy-button" class:copied={lastCopiedSelector === 'id'}
+					on:click|preventDefault={copyToClipboard.bind(null, 'id')}
+				>
+					<span class="icon icon-[mdi--content-copy] icon-align"></span>
+					{lastCopiedSelector === 'id' ? _({
+						en: 'Copied!',
+						fr: 'Copié !',
+					}) : _({
+						en: 'Copy',
+						fr: 'Copier',
+					})}
+				</button>
 			</p>
 			<input type="hidden" id={`record-id-${idSuffix}`} name="record-id" value={record.ids[0]} readonly />
 		</div>
@@ -207,7 +220,7 @@ async function copyToClipboard(selector: string, event: MouseEvent)
 	code {
 		@apply bg-gray-100;
 		@apply border border-gray-300 rounded;
-		@apply px-1 py-0.5;
+		@apply px-1.5 py-0.5;
 		@apply rounded;
 		@apply font-mono;
 	}
@@ -221,17 +234,17 @@ async function copyToClipboard(selector: string, event: MouseEvent)
 
 		label {
 			@apply font-semibold;
+		}
 
-			.copy-button {
-				@apply inline-block;
-				@apply ml-1 px-2 py-0.5 rounded-full;
-				@apply text-sm font-normal;
-				@apply text-gray-600 active:text-gray-700;
-				@apply bg-gray-50 hover:bg-gray-100 active:bg-gray-200;
+		.copy-button {
+			@apply inline-block;
+			@apply ml-1 px-2 py-0.5 rounded-full;
+			@apply text-sm font-normal;
+			@apply text-gray-600 active:text-gray-700;
+			@apply bg-gray-50 hover:bg-gray-100 active:bg-gray-200;
 
-				&.copied {
-					@apply bg-green-100 active:bg-green-200;
-				}
+			&.copied {
+				@apply bg-green-100 active:bg-green-200;
 			}
 		}
 
