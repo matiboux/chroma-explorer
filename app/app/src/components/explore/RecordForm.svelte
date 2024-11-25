@@ -1,9 +1,5 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
-
-import { configStore } from '~/stores/configStore'
-import { stateStore } from '~/stores/stateStore'
 
 import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
@@ -12,7 +8,7 @@ const _ = i18nFactory(locale)
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
-export let record: GetResponse | null = null
+export let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
 
