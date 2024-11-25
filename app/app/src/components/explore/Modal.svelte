@@ -5,6 +5,7 @@ import type { GetResponse } from 'chromadb'
 import RecordForm from '~/components/explore/RecordForm.svelte'
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
+import type { StateStore } from '~/stores/stateStore'
 
 import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
@@ -98,6 +99,31 @@ stateStore.subscribe(async (value, oldValue) =>
 		record = null
 	}
 })
+
+function translateViewMode(viewMode: StateStore['viewMode'])
+{
+	return _(
+		(
+			{
+				'view': {
+					en: 'Viewing document',
+					fr: 'Visualisation du document',
+				},
+				'edit': {
+					en: 'Editing document',
+					fr: 'Édition du document',
+				},
+				'delete': {
+					en: 'Deleting document',
+					fr: 'Suppression du document',
+				},
+			} satisfies Record<string, Record<string, string>>
+		)[viewMode!] ?? {
+			en: 'Unknown view mode',
+			fr: 'Mode de visualisation inconnu',
+		}
+	)
+}
 </script>
 
 <svelte:window on:keyup={onKeyup} />
@@ -107,7 +133,7 @@ stateStore.subscribe(async (value, oldValue) =>
 		<div class="modal-content">
 			<div class="modal-header">
 				<h2>
-					{$stateStore.viewMode}
+					{translateViewMode($stateStore.viewMode)}
 				</h2>
 				<div class="modal-close">
 					<button class="btn btn-default" on:click={onClose}>
