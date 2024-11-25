@@ -101,6 +101,12 @@ async function copyToClipboard(selector: string, event: MouseEvent)
 					})}
 				</button>
 			</label>
+			<p class="hint">
+				{_({
+					en: 'Document size: {0} bytes',
+					fr: 'Taille du document: {0} octets',
+				}, new Blob([ record.documents[0] ]).size)}
+			</p>
 			<textarea id={`record-collection-${idSuffix}`} readonly>{record.documents[0]}</textarea>
 		</div>
 
@@ -189,6 +195,12 @@ async function copyToClipboard(selector: string, event: MouseEvent)
 									})}
 								</button>
 							</label>
+							<p class="hint">
+								{_({
+									en: 'Metadata value size: {0} bytes',
+									fr: 'Taille de la valeur métadonnée : {0} octets',
+								}, new Blob([ value ]).size)}
+							</p>
 							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly>{value}</textarea>
 						</div>
 					{/each}
