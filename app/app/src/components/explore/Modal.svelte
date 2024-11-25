@@ -32,14 +32,14 @@ function onClose()
 	})
 }
 
-let record: GetResponse | null = null
+let record: GetResponse | null | undefined = undefined
 
 stateStore.subscribe(async (value, oldValue) =>
 {
 	if (value.viewMode === null)
 	{
 		// Modal is not active, clear record
-		record = null
+		record = undefined
 		return
 	}
 
@@ -54,7 +54,7 @@ stateStore.subscribe(async (value, oldValue) =>
 		return
 	}
 
-	record = null
+	record = undefined
 
 	try
 	{
@@ -94,7 +94,9 @@ stateStore.subscribe(async (value, oldValue) =>
 		}))
 	}
 	catch (error: unknown)
-	{}
+	{
+		record = null
+	}
 })
 </script>
 
