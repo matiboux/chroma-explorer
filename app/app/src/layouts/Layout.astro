@@ -4,7 +4,8 @@ import Base from '~/layouts/Base.astro'
 import type { Props as BaseProps } from '~/layouts/Base.astro'
 
 import { i18nFactory } from '~/i18n'
-const _ = i18nFactory(Astro.currentLocale as any)
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 
 export interface Props extends Omit<BaseProps, 'title'>
 {

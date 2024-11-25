@@ -4,7 +4,7 @@ import type { Locales, I18nKeys } from './type'
 const defaultLocale = i18nConfig.defaultLocale
 
 function i18n(
-	locale: Locales,
+	locale: Locales | undefined,
 	keys: I18nKeys,
 	...args: any[]
 )

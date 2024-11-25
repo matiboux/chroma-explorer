@@ -6,7 +6,8 @@ import Login from '~/components/Login.svelte'
 import Footer from '~/components/Footer.astro'
 
 import { i18nFactory } from '~/i18n'
-const _ = i18nFactory(Astro.currentLocale as any)
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 ---
 
 <Layout
