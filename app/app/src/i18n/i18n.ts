@@ -4,7 +4,7 @@ import type { Locales, I18nKeys } from './type'
 function i18n(
 	locale: Locales,
 	keys: I18nKeys,
-	...args: string[]
+	...args: any[]
 )
 {
 	const value = keys[locale] ?? keys[i18nConfig.defaultLocale]
@@ -12,7 +12,7 @@ function i18n(
 	return value.replace(/{(\d+)}/g, (match, number) =>
 		{
 			const index = Number.parseInt(number)
-			return args[index] ?? match
+			return String(args[index] ?? match)
 		}
 	)
 }
