@@ -1,6 +1,6 @@
 import { atom } from 'nanostores'
 import { ChromaClient } from 'chromadb'
-import type { CollectionParams } from 'chromadb'
+import type { CollectionParams, GetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 
@@ -8,11 +8,17 @@ export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
+	viewMode: 'view' | 'edit' | 'delete' | null
+	selectedDocument: string | null
+	document: GetResponse | null
 }
 
 const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
+	viewMode: null,
+	selectedDocument: null,
+	document: null,
 }
 
 export const stateStore = atom<StateStore>(defaultState)
