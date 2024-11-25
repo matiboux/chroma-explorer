@@ -1,8 +1,9 @@
 <script lang="ts">
 import { configStore } from '~/stores/configStore'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 </script>
 

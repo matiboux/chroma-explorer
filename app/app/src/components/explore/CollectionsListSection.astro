@@ -3,7 +3,8 @@ import CollectionsList from '~/components/explore/CollectionsList.svelte'
 import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
 
 import { i18nFactory } from '~/i18n'
-const _ = i18nFactory(Astro.currentLocale as any)
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 ---
 
 <div class="collections-list-wrapper">

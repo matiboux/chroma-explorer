@@ -4,8 +4,9 @@ import { onMount } from 'svelte'
 import LoginCheck from '~/components/LoginCheck.svelte'
 import { configStore } from '~/stores/configStore'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 // Generate a random suffix for id attributes
