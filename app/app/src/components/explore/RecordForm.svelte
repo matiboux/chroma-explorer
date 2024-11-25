@@ -12,11 +12,10 @@ export let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
 
-async function copyToClipboard(selector: string, event: MouseEvent)
+async function copyToClipboard(selector: string)
 {
 	lastCopiedSelector = null
-	const target = event.target as HTMLElement
-	const element = document.getElementById(`record-${selector}-${idSuffix}`) as HTMLElement
+	const element = document.getElementById(`record-${selector}-${idSuffix}`) as HTMLInputElement | HTMLTextAreaElement
 
 	if (!element)
 	{
