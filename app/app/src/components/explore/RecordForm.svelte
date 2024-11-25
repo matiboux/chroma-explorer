@@ -9,11 +9,28 @@ import { i18nFactory } from '~/i18n'
 export let locale: string | undefined = undefined
 const _ = i18nFactory(locale)
 
-export let record: GetResponse | null = null
-let selectedMetadata: string | null = null
-
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
+
+export let record: GetResponse | null = null
+let selectedMetadata: string | null = null
+let lastCopiedSelector: string | null = null
+
+async function copyToClipboard(selector: string, event: MouseEvent)
+{
+	lastCopiedSelector = null
+	const target = event.target as HTMLElement
+	const element = document.getElementById(`record-${selector}-${idSuffix}`) as HTMLElement
+
+	if (!element)
+	{
+		// Element not found
+		return
+	}
+
+	await navigator.clipboard.writeText(element.value)
+	lastCopiedSelector = selector
+}
 </script>
 
 <form class="record-form">
@@ -57,6 +74,19 @@ const idSuffix = Math.random().toString(36).substring(2)
 					en: 'Document',
 					fr: 'Document',
 				})}
+				<button
+					type="button" class="copy-button" class:copied={lastCopiedSelector === 'collection'}
+					on:click|preventDefault={copyToClipboard.bind(null, 'collection')}
+				>
+					<span class="icon icon-[mdi--content-copy] icon-align"></span>
+					{lastCopiedSelector === 'collection' ? _({
+						en: 'Copied!',
+						fr: 'Copié !',
+					}) : _({
+						en: 'Copy',
+						fr: 'Copier',
+					})}
+				</button>
 			</label>
 			<textarea id={`record-collection-${idSuffix}`} readonly>{record.documents[0]}</textarea>
 		</div>
@@ -67,6 +97,19 @@ const idSuffix = Math.random().toString(36).substring(2)
 					en: 'Embedding',
 					fr: 'Vecteur',
 				})}
+				<button
+					type="button" class="copy-button" class:copied={lastCopiedSelector === 'embedding'}
+					on:click|preventDefault={copyToClipboard.bind(null, 'embedding')}
+				>
+					<span class="icon icon-[mdi--content-copy] icon-align"></span>
+					{lastCopiedSelector === 'embedding' ? _({
+						en: 'Copied!',
+						fr: 'Copié !',
+					}) : _({
+						en: 'Copy',
+						fr: 'Copier',
+					})}
+				</button>
 			</label>
 			<p class="hint">
 				{_({
@@ -119,6 +162,19 @@ const idSuffix = Math.random().toString(36).substring(2)
 						<div class="input-group" hidden={selectedMetadata !== key}>
 							<label for={`record-metadata-${key}-${idSuffix}`}>
 								{key}
+								<button
+									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${key}`}
+									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${key}`)}
+								>
+									<span class="icon icon-[mdi--content-copy] icon-align"></span>
+									{lastCopiedSelector === `metadata-${key}` ? _({
+										en: 'Copied!',
+										fr: 'Copié !',
+									}) : _({
+										en: 'Copy',
+										fr: 'Copier',
+									})}
+								</button>
 							</label>
 							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly>{value}</textarea>
 						</div>
@@ -165,6 +221,18 @@ const idSuffix = Math.random().toString(36).substring(2)
 
 		label {
 			@apply font-semibold;
+
+			.copy-button {
+				@apply inline-block;
+				@apply ml-1 px-2 py-0.5 rounded-full;
+				@apply text-sm font-normal;
+				@apply text-gray-600 active:text-gray-700;
+				@apply bg-gray-50 hover:bg-gray-100 active:bg-gray-200;
+
+				&.copied {
+					@apply bg-green-100 active:bg-green-200;
+				}
+			}
 		}
 
 		input, textarea {
