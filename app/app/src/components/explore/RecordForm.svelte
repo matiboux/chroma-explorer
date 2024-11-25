@@ -1,8 +1,9 @@
 <script lang="ts">
 import type { GetResponse } from 'chromadb'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 // Generate a random suffix for id attributes
@@ -100,9 +101,9 @@ async function copyToClipboard(selector: string)
 				{_({
 					en: 'Document size: {0} bytes',
 					fr: 'Taille du document: {0} octets',
-				}, new Blob([ record.documents[0] ]).size)}
+				}, new Blob([ record.documents[0] ?? '' ]).size)}
 			</p>
-			<textarea id={`record-collection-${idSuffix}`} readonly>{record.documents[0]}</textarea>
+			<textarea id={`record-collection-${idSuffix}`} readonly>{record.documents[0] ?? ''}</textarea>
 		</div>
 
 		<div class="input-group">
@@ -190,12 +191,14 @@ async function copyToClipboard(selector: string)
 									})}
 								</button>
 							</label>
-							<p class="hint">
-								{_({
-									en: 'Metadata value size: {0} bytes',
-									fr: 'Taille de la valeur métadonnée : {0} octets',
-								}, new Blob([ value ]).size)}
-							</p>
+							{#if typeof value === 'string'}
+								<p class="hint">
+									{_({
+										en: 'Metadata value size: {0} bytes',
+										fr: 'Taille de la valeur métadonnée : {0} octets',
+									}, new Blob([ value ]).size)}
+								</p>
+							{/if}
 							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly>{value}</textarea>
 						</div>
 					{/each}

@@ -7,8 +7,9 @@ import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 import type { StateStore } from '~/stores/stateStore'
 
+import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
-export let locale: string | undefined = undefined
+export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 function onKeyup(event: KeyboardEvent)
