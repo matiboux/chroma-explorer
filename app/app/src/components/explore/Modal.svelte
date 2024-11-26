@@ -2,6 +2,7 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
+import ManageForm from '~/components/explore/ManageForm.svelte'
 import RecordForm from '~/components/explore/RecordForm.svelte'
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
@@ -17,6 +18,13 @@ const viewModeMap: Record<ViewMode, {
 	component: typeof SvelteComponent,
 	title: Locales,
 }> = {
+	'manage': {
+		component: ManageForm,
+		title: {
+			en: 'Managing collections',
+			fr: 'Gestion des collections',
+		},
+	},
 	'view': {
 		component: RecordForm,
 		title: {
