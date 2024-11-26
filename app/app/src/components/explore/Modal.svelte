@@ -12,6 +12,30 @@ import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
+const viewModeMap = {
+	'view': {
+		component: RecordForm,
+		title: {
+			en: 'Viewing document',
+			fr: 'Visualisation du document',
+		},
+	},
+	'edit': {
+		component: RecordForm,
+		title: {
+			en: 'Editing document',
+			fr: 'Édition du document',
+		},
+	},
+	'delete': {
+		component: RecordForm,
+		title: {
+			en: 'Deleting document',
+			fr: 'Suppression du document',
+		},
+	},
+}
+
 function onKeyup(event: KeyboardEvent)
 {
 	if ($stateStore.viewMode === null)
@@ -100,31 +124,6 @@ stateStore.subscribe(async (value, oldValue) =>
 		record = null
 	}
 })
-
-function translateViewMode(viewMode: StateStore['viewMode'])
-{
-	return _(
-		(
-			{
-				'view': {
-					en: 'Viewing document',
-					fr: 'Visualisation du document',
-				},
-				'edit': {
-					en: 'Editing document',
-					fr: 'Édition du document',
-				},
-				'delete': {
-					en: 'Deleting document',
-					fr: 'Suppression du document',
-				},
-			} satisfies Record<string, Record<string, string>>
-		)[viewMode!] ?? {
-			en: 'Unknown view mode',
-			fr: 'Mode de visualisation inconnu',
-		}
-	)
-}
 </script>
 
 <svelte:window on:keyup={onKeyup} />
@@ -134,7 +133,10 @@ function translateViewMode(viewMode: StateStore['viewMode'])
 		<div class="modal-content">
 			<div class="modal-header">
 				<h2>
-					{translateViewMode($stateStore.viewMode)}
+					{_(viewModeMap[$stateStore.viewMode]?.title ?? {
+						en: 'Unknown view mode',
+						fr: 'Mode de visualisation inconnu',
+					})}
 				</h2>
 				<div class="modal-close">
 					<button class="btn btn-default" on:click={onClose}>
@@ -149,10 +151,19 @@ function translateViewMode(viewMode: StateStore['viewMode'])
 				</div>
 			</div>
 			<div class="modal-body">
-				<RecordForm
-					locale={locale}
-					record={record}
-				/>
+				{#if viewModeMap[$stateStore.viewMode]?.component}
+					<svelte:component this={viewModeMap[$stateStore.viewMode]?.component}
+						locale={locale}
+						record={record}
+					/>
+				{:else}
+					<p>
+						{_({
+							en: 'Unknown view component',
+							fr: 'Composant de visualisation inconnu',
+						})}
+					</p>
+				{/if}
 			</div>
 		</div>
 	</div>
