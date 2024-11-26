@@ -3,12 +3,13 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams, GetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
+import type ViewMode from '~/types/ViewMode.d.ts'
 
 export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
-	viewMode: 'view' | 'edit' | 'delete' | null
+	viewMode: ViewMode | null
 	selectedDocument: string | null
 	document: GetResponse | null
 }
