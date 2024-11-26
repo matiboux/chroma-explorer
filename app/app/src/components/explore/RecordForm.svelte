@@ -1,5 +1,9 @@
 <script lang="ts">
+import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
+
+import { configStore } from '~/stores/configStore'
+import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
@@ -9,9 +13,75 @@ const _ = i18nFactory(locale)
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
-export let record: GetResponse | null | undefined = undefined
+let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
+
+stateStore.subscribe(async (value, oldValue) =>
+{
+	if (value.viewMode === null)
+	{
+		// Modal is not active, clear record
+		record = undefined
+		return
+	}
+
+	if (
+		// !value.collections ||
+		!value.selectedCollection ||
+		// !value.collections[value.selectedCollection] ||
+		!value.selectedDocument ||
+		value.selectedDocument === oldValue?.selectedDocument
+	)
+	{
+		return
+	}
+
+	record = undefined
+
+	try
+	{
+		const config = configStore.get()
+		const chroma = new ChromaClient({
+			path: config.serverUrl,
+			...(
+				config.authConfig
+				? (
+					config.authConfig.token
+					? ({
+						auth: {
+							provider: 'token',
+							credentials: config.authConfig.token,
+						},
+					})
+					: config.authConfig.username && config.authConfig.password
+					? ({
+						auth: {
+							provider: 'basic',
+							credentials: {
+								username: config.authConfig.username,
+								password: config.authConfig.password,
+							},
+						},
+					})
+					: undefined
+				)
+				: undefined
+			),
+		})
+
+		const collection = (await chroma.getCollection({ name: value.collections[value.selectedCollection].name }))
+		record = (await collection.get({
+			ids: [ value.selectedDocument ],
+			include: [ 'documents', 'embeddings', 'metadatas' ],
+		}))
+	}
+	catch (error: unknown)
+	{
+		console.error(error)
+		record = null
+	}
+})
 
 async function copyToClipboard(selector: string)
 {

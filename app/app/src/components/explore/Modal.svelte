@@ -57,73 +57,6 @@ function onClose()
 		viewMode: null,
 	})
 }
-
-let record: GetResponse | null | undefined = undefined
-
-stateStore.subscribe(async (value, oldValue) =>
-{
-	if (value.viewMode === null)
-	{
-		// Modal is not active, clear record
-		record = undefined
-		return
-	}
-
-	if (
-		// !value.collections ||
-		!value.selectedCollection ||
-		// !value.collections[value.selectedCollection] ||
-		!value.selectedDocument ||
-		value.selectedDocument === oldValue?.selectedDocument
-	)
-	{
-		return
-	}
-
-	record = undefined
-
-	try
-	{
-		const config = configStore.get()
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
-		const collection = (await chroma.getCollection({ name: value.collections[value.selectedCollection].name }))
-		record = (await collection.get({
-			ids: [ value.selectedDocument ],
-			include: [ 'documents', 'embeddings', 'metadatas' ],
-		}))
-	}
-	catch (error: unknown)
-	{
-		record = null
-	}
-})
 </script>
 
 <svelte:window on:keyup={onKeyup} />
@@ -152,9 +85,9 @@ stateStore.subscribe(async (value, oldValue) =>
 			</div>
 			<div class="modal-body">
 				{#if viewModeMap[$stateStore.viewMode]?.component}
-					<svelte:component this={viewModeMap[$stateStore.viewMode]?.component}
+					<svelte:component
+						this={viewModeMap[$stateStore.viewMode]?.component}
 						locale={locale}
-						record={record}
 					/>
 				{:else}
 					<p>
