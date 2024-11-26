@@ -1,5 +1,6 @@
 ---
-import CollectionsReload from '~/components/explore/CollectionsReload.svelte'
+import CollectionsManageButton from '~/components/explore/CollectionsManageButton.svelte'
+import CollectionsReloadButton from '~/components/explore/CollectionsReloadButton.svelte'
 
 import { i18nFactory } from '~/i18n'
 import type { Locales } from '~/i18n'
@@ -17,16 +18,8 @@ const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 		</span>
 	</button>
 	<div class="btn-group">
-		<button class="btn btn-primary hidden">
-			<span class="icon icon-[mdi--folder-plus-outline] icon-align"></span>
-			<span class="sr-only">
-				{_({
-					en: 'Add collection',
-					fr: 'Ajouter une collection',
-				})}
-			</span>
-		</button>
-		<CollectionsReload client:visible locale={Astro.currentLocale} />
+		<CollectionsManageButton client:visible locale={Astro.currentLocale as Locales | undefined} />
+		<CollectionsReloadButton client:visible locale={Astro.currentLocale as Locales | undefined} />
 	</div>
 </div>
 
