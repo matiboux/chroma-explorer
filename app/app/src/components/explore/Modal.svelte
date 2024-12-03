@@ -4,14 +4,14 @@ import RecordForm from '~/components/explore/RecordForm.svelte'
 import { stateStore } from '~/stores/stateStore'
 import type ViewMode from '~/types/ViewMode.d.ts'
 
-import type { Locales } from '~/i18n'
+import type { Locales, I18nKeys } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
 const viewModeMap: Record<ViewMode, {
 	component: typeof SvelteComponent,
-	title: Locales,
+	title: I18nKeys,
 }> = {
 	'manage': {
 		component: ManageForm,
