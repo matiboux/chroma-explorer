@@ -115,50 +115,50 @@ function onClose()
 </div>
 
 <style lang="scss">
-	.modal {
-		@apply fixed inset-0 z-50;
-		@apply flex items-center justify-center;
-		@apply bg-black bg-opacity-50;
+.modal {
+	@apply fixed inset-0 z-50;
+	@apply flex items-center justify-center;
+	@apply bg-black bg-opacity-50;
 
-		&:not(.active) {
-			@apply hidden;
-		}
+	&:not(.active) {
+		@apply hidden;
+	}
 
-		.modal-content {
-			@apply bg-white;
-			@apply w-full max-w-4xl min-h-32 max-h-[calc(100%_-_2rem)];
-			@apply flex flex-col;
-			@apply m-4;
-			@apply rounded-lg shadow-lg overflow-hidden;
+	.modal-content {
+		@apply bg-white;
+		@apply w-full max-w-4xl min-h-32 max-h-[calc(100%_-_2rem)];
+		@apply flex flex-col;
+		@apply m-4;
+		@apply rounded-lg shadow-lg overflow-hidden;
 
-			.modal-header {
-				@apply flex justify-between items-start;
-				@apply border-b-2 border-black border-opacity-10;
+		.modal-header {
+			@apply flex justify-between items-start;
+			@apply border-b-2 border-black border-opacity-10;
 
-				h2 {
-					@apply px-4 py-1;
-					@apply text-lg font-semibold;
-				}
+			h2 {
+				@apply px-4 py-1;
+				@apply text-lg font-semibold;
+			}
 
-				.modal-close {
-					@apply flex items-center;
+			.modal-close {
+				@apply flex items-center;
 
-					.btn {
-						@apply px-2 py-1;
-						@apply text-xl;
-						@apply hover:bg-gray-100 active:bg-gray-200;
+				.btn {
+					@apply px-2 py-1;
+					@apply text-xl;
+					@apply hover:bg-gray-100 active:bg-gray-200;
 
-						.icon {
-							@apply text-gray-600;
-						}
+					.icon {
+						@apply text-gray-600;
 					}
 				}
 			}
+		}
 
-			.modal-body {
-				@apply flex-grow overflow-y-auto;
-				@apply px-4 py-2 pb-8;
-			}
+		.modal-body {
+			@apply flex-grow overflow-y-auto;
+			@apply px-4 pt-4 pb-8;
 		}
 	}
+}
 </style>
