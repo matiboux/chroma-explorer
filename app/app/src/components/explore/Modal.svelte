@@ -1,4 +1,5 @@
 <script lang="ts">
+import CreateForm from '~/components/explore/CreateForm.svelte'
 import ManageForm from '~/components/explore/ManageForm.svelte'
 import RecordForm from '~/components/explore/RecordForm.svelte'
 import { stateStore } from '~/stores/stateStore'
@@ -13,6 +14,13 @@ const viewModeMap: Record<ViewMode, {
 	component: typeof SvelteComponent,
 	title: I18nKeys,
 }> = {
+	'create': {
+		component: CreateForm,
+		title: {
+			en: 'Creating collection',
+			fr: 'Création de collection',
+		},
+	},
 	'manage': {
 		component: ManageForm,
 		title: {
