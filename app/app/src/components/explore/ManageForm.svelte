@@ -1,8 +1,4 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { GetResponse } from 'chromadb'
-
-import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -12,6 +8,14 @@ const _ = i18nFactory(locale)
 
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
+
+function onCreate()
+{
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'create',
+	})
+}
 </script>
 
 <div class="collections-manage">
@@ -119,6 +123,20 @@ const idSuffix = Math.random().toString(36).substring(2)
 						</td>
 					</tr>
 				{/each}
+				<tr>
+					<td colSpan="5"></td>
+					<td>
+						<button type="button" class="btn" on:click={() => onCreate()}>
+							<span class="icon icon-[mdi--plus] icon-align"></span>
+							<span class="sr-only">
+								{_({
+									en: 'Create',
+									fr: 'Créer',
+								})}
+							</span>
+						</button>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	{/if}
