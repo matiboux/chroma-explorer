@@ -1,13 +1,8 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { GetResponse } from 'chromadb'
-
 import ManageForm from '~/components/explore/ManageForm.svelte'
 import RecordForm from '~/components/explore/RecordForm.svelte'
-import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
-import type { StateStore } from '~/stores/stateStore'
-import type { ViewMode } from '~/stores/stateStore'
+import type ViewMode from '~/types/ViewMode.d.ts'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
