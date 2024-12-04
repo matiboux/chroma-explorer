@@ -1,8 +1,8 @@
 <script lang="ts">
-import CreateForm from '~/components/explore/CreateForm.svelte'
-import ManageForm from '~/components/explore/ManageForm.svelte'
-import DeleteCollectionForm from '~/components/explore/DeleteCollectionForm.svelte'
-import RecordForm from '~/components/explore/RecordForm.svelte'
+import CreateForm from '~/components/explore/modal/CreateForm.svelte'
+import ManageForm from '~/components/explore/modal/ManageForm.svelte'
+import DeleteCollectionForm from '~/components/explore/modal/DeleteCollectionForm.svelte'
+import RecordForm from '~/components/explore/modal/RecordForm.svelte'
 import { stateStore } from '~/stores/stateStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 
