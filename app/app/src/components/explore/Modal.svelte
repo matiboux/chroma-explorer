@@ -147,7 +147,7 @@ function onClose()
 			@apply border-b-2 border-black border-opacity-10;
 
 			h2 {
-				@apply px-4 py-1;
+				@apply px-4 py-2;
 				@apply text-lg font-semibold;
 			}
 
@@ -155,7 +155,7 @@ function onClose()
 				@apply flex items-center;
 
 				.btn {
-					@apply px-2 py-1;
+					@apply px-3 py-2;
 					@apply text-xl;
 					@apply hover:bg-gray-100 active:bg-gray-200;
 
