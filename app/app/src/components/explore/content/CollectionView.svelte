@@ -1,5 +1,5 @@
 <script lang="ts">
-import CollectionTable from '~/components/explore/CollectionTable.svelte'
+import CollectionTable from '~/components/explore/content/CollectionTable.svelte'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'

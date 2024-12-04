@@ -4,7 +4,7 @@ import type { MultiGetResponse } from 'chromadb'
 
 import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
-import CollectionTableActions from '~/components/explore/CollectionTableActions.svelte'
+import CollectionTableActions from '~/components/explore/content/CollectionTableActions.svelte'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
