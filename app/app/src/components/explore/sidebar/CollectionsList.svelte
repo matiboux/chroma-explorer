@@ -11,6 +11,7 @@ function selectCollection(collectionId: string)
 	const collectionsValue = stateStore.get()
 	stateStore.set({
 		...collectionsValue,
+		contentViewMode: 'table',
 		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
 	})
 }
