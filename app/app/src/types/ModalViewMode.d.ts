@@ -1,5 +1,7 @@
 type ModalViewMode =
+	| 'create'
 	| 'manage'
+	| 'deleteCollection'
 	| 'view'
 	| 'edit'
 	| 'delete'
