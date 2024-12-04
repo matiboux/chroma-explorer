@@ -4,9 +4,9 @@ import { ChromaClient } from 'chromadb'
 import { configStore } from '~/stores/configStore'
 import type { ConfigStore } from '~/stores/configStore'
 
-export const chromaClient = atom<ChromaClient | null>(null)
+export const chromaStore = atom<ChromaClient | null>(null)
 
-function makeChromaClient(config?: ConfigStore | undefined = undefined): ChromaClient | null
+function makeChromaClient(config?: ConfigStore | undefined): ChromaClient | null
 {
 	if (!config)
 	{
@@ -57,16 +57,16 @@ configStore.subscribe(async (config) =>
 		return
 	}
 
-	const newChromaClient = makeChromaClient(config)
-	if (!newChromaClient)
+	const chroma = makeChromaClient(config)
+	if (!chroma)
 	{
 		// Force logout
 		configStore.set({
 			...configStore.get(),
 			confirmed: false,
 		})
-		chromaClient.set(null)
+		chromaStore.set(null)
 	}
 
-	chromaClient.set(newChromaClient)
+	chromaStore.set(chroma)
 })

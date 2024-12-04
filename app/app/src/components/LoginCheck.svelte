@@ -3,7 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { chromaClient } from '~/stores/chromaClient'
+import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -17,7 +17,7 @@ let checked: boolean = false
 let version: string | null = null
 let collections: CollectionParams[] | null = null
 
-chromaClient.subscribe(async (chroma) =>
+chromaStore.subscribe(async (chroma) =>
 {
 	if (!chroma)
 	{
