@@ -1,6 +1,7 @@
 <script lang="ts">
 import CreateForm from '~/components/explore/CreateForm.svelte'
 import ManageForm from '~/components/explore/ManageForm.svelte'
+import DeleteCollectionForm from '~/components/explore/DeleteCollectionForm.svelte'
 import RecordForm from '~/components/explore/RecordForm.svelte'
 import { stateStore } from '~/stores/stateStore'
 import type ViewMode from '~/types/ViewMode.d.ts'
@@ -26,6 +27,13 @@ const viewModeMap: Record<ViewMode, {
 		title: {
 			en: 'Managing collections',
 			fr: 'Gestion des collections',
+		},
+	},
+	'deleteCollection': {
+		component: DeleteCollectionForm,
+		title: {
+			en: 'Deleting collection',
+			fr: 'Suppression de collection',
 		},
 	},
 	'view': {

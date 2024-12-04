@@ -74,7 +74,7 @@ function onClose() {
 	<div class="input-group">
 		<label for={`collection-name-${idSuffix}`}>
 			{_({
-				en: 'Collection Name',
+				en: 'Collection name',
 				fr: 'Nom de la collection',
 			})}
 		</label>
@@ -88,7 +88,7 @@ function onClose() {
 	<div class="input-group">
 		<label for={`hnsw-space-${idSuffix}`}>
 			{_({
-				en: 'HNSW Space',
+				en: 'HNSW space',
 				fr: 'Espace HNSW',
 			})}
 		</label>
@@ -132,7 +132,7 @@ function onClose() {
 	<div class="button-group">
 		<button type="submit">
 			{_({
-				en: 'Create Collection',
+				en: 'Create collection',
 				fr: 'Créer la collection',
 			})}
 		</button>

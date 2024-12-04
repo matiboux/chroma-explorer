@@ -24,24 +24,13 @@ async function onView(id: string)
 async function onEdit(id: string)
 {}
 
-async function onDelete(name: string)
+function onDelete(id: string)
 {
-	try
-	{
-		const chroma = chromaStore.get()!
-		await chroma.deleteCollection({
-			name: name,
-		})
-
-		stateStore.set({
-			...stateStore.get(),
-			collections: null,
-		})
-	}
-	catch (error: unknown)
-	{
-		console.error(error)
-	}
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'deleteCollection',
+		selectedCollection: id,
+	})
 }
 </script>
 
@@ -138,7 +127,7 @@ async function onDelete(name: string)
 									})}
 								</span>
 							</button>
-							<button type="button" class="btn" on:click={() => onDelete(collection.name)}>
+							<button type="button" class="btn" on:click={() => onDelete(collection.id)}>
 								<span class="icon icon-[mdi--delete-outline] icon-align"></span>
 								<span class="sr-only">
 									{_({
