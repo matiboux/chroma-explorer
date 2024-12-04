@@ -1,4 +1,5 @@
 <script lang="ts">
+import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -15,6 +16,32 @@ function onCreate()
 		...stateStore.get(),
 		viewMode: 'create',
 	})
+}
+
+async function onView(id: string)
+{}
+
+async function onEdit(id: string)
+{}
+
+async function onDelete(name: string)
+{
+	try
+	{
+		const chroma = chromaStore.get()!
+		await chroma.deleteCollection({
+			name: name,
+		})
+
+		stateStore.set({
+			...stateStore.get(),
+			collections: null,
+		})
+	}
+	catch (error: unknown)
+	{
+		console.error(error)
+	}
 }
 </script>
 
@@ -93,7 +120,7 @@ function onCreate()
 						<td>{collection.tenant}</td>
 						<td>{collection.database}</td>
 						<td>
-							<button type="button" class="btn" on:click={() => onView(id)}>
+							<button type="button" class="btn" on:click={() => onView(collection.id)}>
 								<span class="icon icon-[mdi--eye-outline] icon-align"></span>
 								<span class="sr-only">
 									{_({
@@ -102,7 +129,7 @@ function onCreate()
 									})}
 								</span>
 							</button>
-							<button type="button" class="btn" on:click={() => onEdit(id)}>
+							<button type="button" class="btn" on:click={() => onEdit(collection.id)}>
 								<span class="icon icon-[mdi--pencil-outline] icon-align"></span>
 								<span class="sr-only">
 									{_({
@@ -111,7 +138,7 @@ function onCreate()
 									})}
 								</span>
 							</button>
-							<button type="button" class="btn" on:click={() => onDelete(id)}>
+							<button type="button" class="btn" on:click={() => onDelete(collection.name)}>
 								<span class="icon icon-[mdi--delete-outline] icon-align"></span>
 								<span class="sr-only">
 									{_({
