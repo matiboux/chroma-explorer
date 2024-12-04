@@ -1,9 +1,9 @@
 type ModalViewMode =
-	| 'create'
-	| 'manage'
+	| 'createCollection'
+	| 'manageCollections'
 	| 'deleteCollection'
-	| 'view'
-	| 'edit'
-	| 'delete'
+	| 'viewDocument'
+	| 'editDocument'
+	| 'deleteDocument'
 
 export default ModalViewMode

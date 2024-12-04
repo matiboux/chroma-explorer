@@ -15,14 +15,14 @@ const modalViewModeMap: Record<ModalViewMode, {
 	component: typeof SvelteComponent,
 	title: I18nKeys,
 }> = {
-	'create': {
+	'createCollection': {
 		component: CreateForm,
 		title: {
 			en: 'Creating collection',
 			fr: 'Création de collection',
 		},
 	},
-	'manage': {
+	'manageCollection': {
 		component: ManageForm,
 		title: {
 			en: 'Managing collections',
@@ -36,21 +36,21 @@ const modalViewModeMap: Record<ModalViewMode, {
 			fr: 'Suppression de collection',
 		},
 	},
-	'view': {
+	'viewDocument': {
 		component: RecordForm,
 		title: {
 			en: 'Viewing document',
 			fr: 'Visualisation du document',
 		},
 	},
-	'edit': {
+	'editDocument': {
 		component: RecordForm,
 		title: {
 			en: 'Editing document',
 			fr: 'Édition du document',
 		},
 	},
-	'delete': {
+	'deleteDocument': {
 		component: RecordForm,
 		title: {
 			en: 'Deleting document',

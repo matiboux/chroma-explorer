@@ -15,7 +15,7 @@ async function onClick()
 {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'manage',
+		modalViewMode: 'manageCollection',
 	})
 }
 </script>

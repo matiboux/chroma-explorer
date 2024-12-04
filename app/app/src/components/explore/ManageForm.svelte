@@ -14,7 +14,7 @@ function onCreate()
 {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'create',
+		modalViewMode: 'createCollection',
 	})
 }
 

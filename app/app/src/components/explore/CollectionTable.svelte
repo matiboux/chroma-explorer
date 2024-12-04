@@ -41,7 +41,7 @@ function onView(id: string)
 {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'view',
+		modalViewMode: 'viewDocument',
 		selectedDocument: id,
 	})
 }
@@ -50,7 +50,7 @@ function onEdit(id: string)
 {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'edit',
+		modalViewMode: 'editDocument',
 		selectedDocument: id,
 	})
 }
@@ -59,7 +59,7 @@ function onDelete(id: string)
 {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'delete',
+		modalViewMode: 'deleteDocument',
 		selectedDocument: id,
 	})
 }

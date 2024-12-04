@@ -35,7 +35,7 @@ async function onDelete()
 function onBack() {
 	stateStore.set({
 		...stateStore.get(),
-		modalViewMode: 'manage',
+		modalViewMode: 'manageCollection',
 	})
 }
 
