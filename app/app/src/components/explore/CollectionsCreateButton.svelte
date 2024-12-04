@@ -3,7 +3,7 @@ import { onMount } from 'svelte'
 import { ChromaClient } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { stateStore, reloadCollections } from '~/stores/stateStore'
+import { stateStore } from '~/stores/stateStore'
 import Button from '~/components/generic/Button.svelte'
 
 import type { Locales } from '~/i18n'

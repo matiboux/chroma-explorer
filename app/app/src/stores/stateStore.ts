@@ -26,11 +26,6 @@ export const stateStore = atom<StateStore>(defaultState)
 
 export async function reloadCollections()
 {
-	stateStore.set({
-		...stateStore.get(),
-		collections: null,
-	})
-
 	try
 	{
 		const config = configStore.get()
