@@ -22,7 +22,7 @@ async function onDelete()
 		// Close form & clear collections list
 		stateStore.set({
 			...stateStore.get(),
-			viewMode: null,
+			modalViewMode: null,
 			collections: null,
 		})
 	}
@@ -35,14 +35,14 @@ async function onDelete()
 function onBack() {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: 'manage',
+		modalViewMode: 'manage',
 	})
 }
 
 function onClose() {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: null,
+		modalViewMode: null,
 	})
 }
 </script>

@@ -19,7 +19,7 @@ let lastCopiedSelector: string | null = null
 
 stateStore.subscribe(async (value, oldValue) =>
 {
-	if (value.viewMode === null)
+	if (value.modalViewMode === null)
 	{
 		// Modal is not active, clear record
 		record = undefined

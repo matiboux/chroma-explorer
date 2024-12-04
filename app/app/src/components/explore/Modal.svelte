@@ -4,14 +4,14 @@ import ManageForm from '~/components/explore/ManageForm.svelte'
 import DeleteCollectionForm from '~/components/explore/DeleteCollectionForm.svelte'
 import RecordForm from '~/components/explore/RecordForm.svelte'
 import { stateStore } from '~/stores/stateStore'
-import type ViewMode from '~/types/ViewMode.d.ts'
+import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 
 import type { Locales, I18nKeys } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
-const viewModeMap: Record<ViewMode, {
+const modalViewModeMap: Record<ModalViewMode, {
 	component: typeof SvelteComponent,
 	title: I18nKeys,
 }> = {
@@ -61,7 +61,7 @@ const viewModeMap: Record<ViewMode, {
 
 function onKeyup(event: KeyboardEvent)
 {
-	if ($stateStore.viewMode === null)
+	if ($stateStore.modalViewMode === null)
 	{
 		// Modal is not active, ignore event
 		return
@@ -77,7 +77,7 @@ function onClose()
 {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: null,
+		modalViewMode: null,
 	})
 }
 </script>
@@ -85,11 +85,11 @@ function onClose()
 <svelte:window on:keyup={onKeyup} />
 
 <div class="modal-wrapper">
-	<div class="modal" class:active={$stateStore.viewMode !== null}>
+	<div class="modal" class:active={$stateStore.modalViewMode !== null}>
 		<div class="modal-content">
 			<div class="modal-header">
 				<h2>
-					{_(viewModeMap[$stateStore.viewMode]?.title ?? {
+					{_(modalViewModeMap[$stateStore.modalViewMode]?.title ?? {
 						en: 'Unknown view mode',
 						fr: 'Mode de visualisation inconnu',
 					})}
@@ -107,9 +107,9 @@ function onClose()
 				</div>
 			</div>
 			<div class="modal-body">
-				{#if viewModeMap[$stateStore.viewMode]?.component}
+				{#if modalViewModeMap[$stateStore.modalViewMode]?.component}
 					<svelte:component
-						this={viewModeMap[$stateStore.viewMode]?.component}
+						this={modalViewModeMap[$stateStore.modalViewMode]?.component}
 						locale={locale}
 					/>
 				{:else}

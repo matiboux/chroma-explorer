@@ -49,7 +49,7 @@ async function onSubmit()
 			// Close form & clear collections list
 			stateStore.set({
 				...stateStore.get(),
-				viewMode: null,
+				modalViewMode: null,
 				collections: null,
 			})
 		}
@@ -61,7 +61,7 @@ async function onSubmit()
 function onClose() {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: null,
+		modalViewMode: null,
 	})
 }
 </script>

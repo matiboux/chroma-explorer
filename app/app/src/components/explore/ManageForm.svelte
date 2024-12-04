@@ -14,7 +14,7 @@ function onCreate()
 {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: 'create',
+		modalViewMode: 'create',
 	})
 }
 
@@ -28,7 +28,7 @@ function onDelete(id: string)
 {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: 'deleteCollection',
+		modalViewMode: 'deleteCollection',
 		selectedCollection: id,
 	})
 }

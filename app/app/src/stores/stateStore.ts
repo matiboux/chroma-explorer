@@ -2,13 +2,13 @@ import { atom } from 'nanostores'
 import type { CollectionParams, GetResponse } from 'chromadb'
 
 import { chromaStore } from '~/stores/chromaStore'
-import type ViewMode from '~/types/ViewMode.d.ts'
+import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 
 export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
-	viewMode: ViewMode | null
+	modalViewMode: ModalViewMode | null
 	selectedDocument: string | null
 	document: GetResponse | null
 }
@@ -16,7 +16,7 @@ export interface StateStore
 const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
-	viewMode: null,
+	modalViewMode: null,
 	selectedDocument: null,
 	document: null,
 }

@@ -15,7 +15,7 @@ async function onClick()
 {
 	stateStore.set({
 		...stateStore.get(),
-		viewMode: 'create',
+		modalViewMode: 'create',
 	})
 }
 </script>
