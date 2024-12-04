@@ -1,8 +1,7 @@
 import { atom } from 'nanostores'
-import { ChromaClient } from 'chromadb'
 import type { CollectionParams, GetResponse } from 'chromadb'
 
-import { configStore } from '~/stores/configStore'
+import { chromaStore } from '~/stores/chromaStore'
 import type ViewMode from '~/types/ViewMode.d.ts'
 
 export interface StateStore
@@ -28,35 +27,7 @@ export async function reloadCollections()
 {
 	try
 	{
-		const config = configStore.get()
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
+		const chroma = chromaStore.get()!
 		const collections = (await chroma.listCollections()).reduce<Record<string, CollectionParams>>(
 			(collections, collection) =>
 			{

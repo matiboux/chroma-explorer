@@ -2,7 +2,7 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
-import { configStore } from '~/stores/configStore'
+import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -41,40 +41,12 @@ stateStore.subscribe(async (value, oldValue) =>
 
 	try
 	{
-		const config = configStore.get()
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
-		const collection = (await chroma.getCollection({ name: value.collections[value.selectedCollection].name }))
-		record = (await collection.get({
+		const chroma = chromaStore.get()!
+		const collection = await chroma.getCollection({ name: value.collections[value.selectedCollection].name })
+		record = await collection.get({
 			ids: [ value.selectedDocument ],
 			include: [ 'documents', 'embeddings', 'metadatas' ],
-		}))
+		})
 	}
 	catch (error: unknown)
 	{
