@@ -32,6 +32,13 @@ async function onDelete()
 	}
 }
 
+function onBack() {
+	stateStore.set({
+		...stateStore.get(),
+		viewMode: 'manage',
+	})
+}
+
 function onClose() {
 	stateStore.set({
 		...stateStore.get(),
@@ -89,15 +96,24 @@ function onClose() {
 
 		<div class="button-group">
 			<button type="submit">
+				<span class="icon icon-[mdi--delete] icon-align"></span>
 				{_({
 					en: 'Delete collection',
 					fr: 'Supprimer la collection',
 				})}
 			</button>
-			<button type="button" on:click={onClose}>
+			<button type="button" on:click={onBack}>
+				<span class="icon icon-[mdi--folder-cog-outline] icon-align"></span>
 				{_({
-					en: 'Cancel',
-					fr: 'Annuler',
+					en: 'Manage collections',
+					fr: 'Gérer les collections',
+				})}
+			</button>
+			<button type="button" on:click={onClose}>
+				<span class="icon icon-[mdi--close] icon-align"></span>
+				{_({
+					en: 'Close',
+					fr: 'Fermer',
 				})}
 			</button>
 		</div>
@@ -138,7 +154,7 @@ function onClose() {
 	}
 
 	.button-group {
-		@apply flex gap-2 mb-3;
+		@apply flex gap-2 mt-3;
 
 		button {
 			@apply px-4 py-2 bg-gray-600 text-white rounded;
@@ -153,14 +169,14 @@ function onClose() {
 			}
 
 			&[type='submit'] {
-				@apply bg-blue-600;
+				@apply bg-red-700;
 
 				&:hover {
-					@apply bg-blue-700;
+					@apply bg-red-800;
 				}
 
 				&:active {
-					@apply bg-blue-800;
+					@apply bg-red-900;
 				}
 			}
 		}
