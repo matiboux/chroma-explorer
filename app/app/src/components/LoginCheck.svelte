@@ -3,6 +3,7 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
+import { chromaClient } from '~/stores/chromaClient'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -16,47 +17,15 @@ let checked: boolean = false
 let version: string | null = null
 let collections: CollectionParams[] | null = null
 
-configStore.subscribe(async (config) =>
+chromaClient.subscribe(async (chroma) =>
 {
-	if (!config.confirmed)
+	if (!chroma)
 	{
 		return
 	}
 
-	checked = false
-	version = null
-	collections = null
-
 	try
 	{
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
 		version = await chroma.version()
 		collections = await chroma.listCollections()
 
@@ -72,6 +41,7 @@ configStore.subscribe(async (config) =>
 		{
 			if (!collections)
 			{
+				// Force logout
 				configStore.set({
 					...configStore.get(),
 					confirmed: false,
