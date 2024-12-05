@@ -47,8 +47,8 @@ const modalViewModeMap: Record<ModalViewMode, {
 	'addDocument': {
 		component: AddDocumentForm,
 		title: {
-			en: 'Adding document',
-			fr: 'Ajout de document',
+			en: 'Adding documents',
+			fr: 'Ajout de documents',
 		},
 	},
 	'editDocument': {

@@ -179,6 +179,16 @@ async function onSubmitBatch()
 					fr: 'Ajouter un lot de documents',
 				})}
 			</label>
+			<p class="hint">
+				{_({
+					en: 'Upload a CSV or JSON file containing multiple documents.',
+					fr: 'Téléversez un fichier CSV ou JSON contenant plusieurs documents.',
+				})}
+				{@html _({
+					en: 'Each record should have an <code>id</code>, <code>document</code>, and <code>embedding</code> field.',
+					fr: 'Chaque enregistrement devrait avoir un champ <code>id</code>, <code>document</code>, et <code>embedding</code>.',
+				})}
+			</p>
 			<input
 				id={`batch-input-${idSuffix}`}
 				type="file" name="batch" accept=".csv, .json"
@@ -187,16 +197,19 @@ async function onSubmitBatch()
 		</div>
 
 		<div class="input-group">
-			<input
-				type="checkbox" id={`input-ignore-errors-${idSuffix}`} name="ignoreErrors"
-				bind:checked={batchFormData.ignoreErrors}
-			/>
-			<label for={`input-ignore-errors-${idSuffix}`}>
-				{_({
-					en: 'Skip records with missing values',
-					fr: 'Ignorer les données avec des valeurs manquantes',
-				})}
-			</label>
+			<div class="radio-group">
+				<input
+					id={`input-ignore-errors-${idSuffix}`}
+					type="checkbox" name="ignoreErrors"
+					bind:checked={batchFormData.ignoreErrors}
+				/>
+				<label for={`input-ignore-errors-${idSuffix}`}>
+					{_({
+						en: 'Skip records with missing values',
+						fr: 'Ignorer les données avec des valeurs manquantes',
+					})}
+				</label>
+			</div>
 		</div>
 
 		<div class="button-group">
@@ -274,8 +287,13 @@ async function onSubmitBatch()
 </div>
 
 <style lang="scss">
-.record-form {
-	@apply flex flex-col gap-4;
+.add-document-wrapper {
+
+	&, .add-batch-form, .add-document-form {
+		> * + * {
+			@apply mt-2;
+		}
+	}
 
 	p {
 		strong {
@@ -296,7 +314,9 @@ async function onSubmitBatch()
 	}
 
 	.input-group {
-		@apply flex flex-col gap-2;
+		> * + * {
+			@apply mt-2;
+		}
 
 		&[hidden] {
 			@apply hidden;
@@ -318,10 +338,26 @@ async function onSubmitBatch()
 			}
 		}
 
+		.hint {
+			@apply mt-1;
+		}
+
 		input, textarea {
 			@apply bg-gray-100 w-full p-2;
 			@apply border border-gray-300 rounded;
 			@apply resize-y;
+
+			&[type="radio"], &[type="checkbox"] {
+				@apply w-[initial] align-[-0.125em];
+			}
+		}
+
+		.radio-group {
+			@apply flex gap-4;
+
+			input + label {
+				@apply mt-0 -ml-4 pt-0 pl-2;
+			}
 		}
 
 		textarea {
@@ -356,6 +392,35 @@ async function onSubmitBatch()
 
 			label {
 				@apply text-sm;
+			}
+		}
+	}
+
+	.button-group {
+		@apply flex gap-2 mt-4;
+
+		button {
+			@apply px-4 py-2 bg-gray-600 text-white rounded;
+			@apply transition-colors duration-200 ease-in-out;
+
+			&:hover {
+				@apply bg-gray-700;
+			}
+
+			&:active {
+				@apply bg-gray-800;
+			}
+
+			&[type='submit'] {
+				@apply bg-blue-600;
+
+				&:hover {
+					@apply bg-blue-700;
+				}
+
+				&:active {
+					@apply bg-blue-800;
+				}
 			}
 		}
 	}
