@@ -76,13 +76,6 @@ async function submitRecordsChunk(chunk: any[])
 	const chroma = chromaStore.get()!
 	const collection = await chroma.getCollection({ name: state.collections[state.selectedCollection].name })
 
-	console.log({
-		ids: ids,
-		documents: documents,
-		embeddings: embeddings,
-		metadatas: metadatas,
-	})
-
 	await collection.add({
 		ids: ids,
 		documents: documents,
@@ -165,6 +158,13 @@ async function onSubmitBatch()
 
 	// Submit records
 	await submitRecords(allRecords, batchFormData.ignoreErrors)
+
+	// Close modal
+	// TODO: Refresh collection records
+	stateStore.set({
+		...stateStore.get(),
+		modalViewMode: null,
+	})
 }
 </script>
 
