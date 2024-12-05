@@ -116,6 +116,8 @@ configStore.subscribe(async (config, oldConfig) =>
 	})
 })
 
+class ResetException extends Error {}
+
 async function reloadCollection(
 	chroma: ChromaClient | null,
 	collections: Record<string, CollectionParams> | null,
@@ -125,48 +127,52 @@ async function reloadCollection(
 ): Promise<boolean>
 {
 	// Inputs: chroma, collections, selectedCollection
-	if (!selectedCollection)
+	try
 	{
-		if (oldCollection)
+		if (!selectedCollection)
 		{
-			// Clear the collection
-			stateStore.set({
-				...currentState,
-				collection: null,
-			})
-			return true
+			if (oldCollection)
+			{
+				// Clear the collection
+				throw new ResetException()
+			}
+
+			return false
 		}
 
-		return false
-	}
-
-	if (!chroma || !collections)
-	{
-		// Chroma client not initialized
-		if (oldCollection)
+		if (!chroma || !collections)
 		{
-			// Clear the collection
-			stateStore.set({
-				...currentState,
-				collection: null,
-			})
-			return true
+			// Chroma client not initialized
+			if (oldCollection)
+			{
+				// Clear the collection
+				throw new ResetException()
+			}
+
+			return false
 		}
 
-		return false
+		// Load the selected collection
+		const collection = await chroma.getCollection({
+			name: collections[selectedCollection!]!.name,
+			embeddingFunction: null!,
+		})
+
+		stateStore.set({
+			...currentState,
+			collection: collection,
+		})
+		return true
 	}
-
-	// Load the selected collection
-	const collection = await chroma.getCollection({
-		name: collections[selectedCollection!]!.name,
-		embeddingFunction: null!,
-	})
-
-	stateStore.set({
-		...currentState,
-		collection: collection,
-	})
-	return true
+	catch (error: unknown)
+	{
+		// Reset the collection, or failed to reload the collection
+		stateStore.set({
+			...currentState,
+			collection: null,
+		})
+		return true
+	}
 }
 
 stateStore.subscribe(async (state, oldState) =>
