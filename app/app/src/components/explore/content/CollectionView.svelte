@@ -1,34 +1,37 @@
 <script lang="ts">
 import { stateStore } from '~/stores/stateStore'
 import CollectionTable from '~/components/explore/content/CollectionTable.svelte'
+import type ContentViewMode from '~/types/ContentViewMode.d.ts'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
-const contentViewModeMap: Record<ModalViewMode, {
+const contentViewModeMap: Record<ContentViewMode | 'default', {
 	component: typeof SvelteComponent,
-	title: I18nKeys,
 }> = {
 	'table': {
+		component: CollectionTable,
+	},
+	'default': {
 		component: CollectionTable,
 	},
 }
 </script>
 
 {#if !$stateStore.contentViewMode}
-	<p>
-		{_({
-			en: 'No view mode selected',
-			fr: 'Aucun mode de visualisation sélectionné',
-		})}
-	</p>
-{:else if contentViewModeMap[$stateStore.contentViewMode]?.component}
 	<svelte:component
-		this={contentViewModeMap[$stateStore.contentViewMode]?.component}
+		this={contentViewModeMap['default'].component}
 		locale={locale}
 	/>
+
+{:else if contentViewModeMap[$stateStore.contentViewMode]}
+	<svelte:component
+		this={contentViewModeMap[$stateStore.contentViewMode].component}
+		locale={locale}
+	/>
+
 {:else}
 	<p>
 		{_({
