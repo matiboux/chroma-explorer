@@ -148,20 +148,10 @@ async function reloadCollection(
 	// Inputs: chroma, collections, selectedCollection
 	try
 	{
-		if (!selectedCollection)
+		if (!chroma || !collections || !collections[selectedCollection!])
 		{
-			if (currentState.collection)
-			{
-				// Clear the collection
-				throw new ResetException()
-			}
-
-			return false
-		}
-
-		if (!chroma || !collections)
-		{
-			// Chroma client not initialized
+			// Chroma client not initialized, or
+			// Unknown selected collection
 			if (currentState.collection)
 			{
 				// Clear the collection
