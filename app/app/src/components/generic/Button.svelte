@@ -3,7 +3,7 @@
 export let buttonStyle: string = 'default'
 </script>
 
-<button class={`btn btn-${buttonStyle}`} type="button" {...$$restProps} on:click>
+<button class={`btn btn-${buttonStyle}`} type="button" {...$$restProps} on:click|preventDefault>
 	<slot />
 </button>
 

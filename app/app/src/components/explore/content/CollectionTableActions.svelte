@@ -1,8 +1,4 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { MultiGetResponse } from 'chromadb'
-
-import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 import Button from '~/components/generic/Button.svelte'
 
@@ -10,11 +6,19 @@ import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
+
+function onAddDocument()
+{
+	stateStore.set({
+		...stateStore.get(),
+		modalViewMode: 'addDocument',
+	})
+}
 </script>
 
 <div class="actions">
 
-	<Button buttonStyle="gray">
+	<Button buttonStyle="gray" on:click={onAddDocument}>
 		<span class="icon icon-[mdi--table-plus] icon-align"></span>
 		<span class="sr-only">
 			{_({

@@ -3,6 +3,7 @@ type ModalViewMode =
 	| 'manageCollections'
 	| 'deleteCollection'
 	| 'viewDocument'
+	| 'addDocument'
 	| 'editDocument'
 	| 'deleteDocument'
 
