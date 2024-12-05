@@ -1,5 +1,5 @@
 import { atom } from 'nanostores'
-import type { CollectionParams, GetResponse } from 'chromadb'
+import type { CollectionParams, ChromaClient, GetResponse } from 'chromadb'
 
 import { chromaStore } from '~/stores/chromaStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
@@ -9,6 +9,7 @@ export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
+	collection: Awaited<ReturnType<ChromaClient['getCollection']>> | null
 	modalViewMode: ModalViewMode | null
 	contentViewMode: ContentViewMode | null
 	selectedDocument: string | null
@@ -18,6 +19,7 @@ export interface StateStore
 const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
+	collection: null,
 	modalViewMode: null,
 	contentViewMode: null,
 	selectedDocument: null,
@@ -56,3 +58,40 @@ export async function reloadCollections()
 		})
 	}
 }
+
+stateStore.subscribe(async (state) =>
+{
+	if (
+		state.collections &&
+		state.collections[state.selectedCollection!]
+	)
+	{
+		if (
+			!state.collection ||
+			state.selectedCollection !== state.collection.id
+		)
+		{
+			// Load the selected collection
+			const chroma = chromaStore.get()!
+			const collection = await chroma.getCollection({
+				name: state.collections[state.selectedCollection!]!.name,
+				embeddingFunction: null!,
+			})
+
+			stateStore.set({
+				...state,
+				collection: collection,
+			})
+			return
+		}
+	}
+	else if (state.collection)
+	{
+		// Clear the collection
+		stateStore.set({
+			...state,
+			collection: null,
+		})
+		return
+	}
+})
