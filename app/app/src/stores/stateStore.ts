@@ -1,21 +1,25 @@
 import { atom } from 'nanostores'
-import type { CollectionParams, ChromaClient, GetResponse } from 'chromadb'
+import type { CollectionParams, ChromaClient, GetResponse, MultiGetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 import type ContentViewMode from '~/types/ContentViewMode.d.ts'
 import { makeChromaClient } from './utils/makeChromaClient'
 
+type Collection = Awaited<ReturnType<ChromaClient['getCollection']>>
+
 export interface StateStore
 {
 	chroma: ChromaClient | null
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
-	collection: Awaited<ReturnType<ChromaClient['getCollection']>> | null
-	modalViewMode: ModalViewMode | null
-	contentViewMode: ContentViewMode | null
+	collection: Collection | null
+	loadDocuments: boolean
+	documents: MultiGetResponse | null
 	selectedDocument: string | null
 	document: GetResponse | null
+	modalViewMode: ModalViewMode | null
+	contentViewMode: ContentViewMode | null
 }
 
 const defaultState: StateStore = {
@@ -23,10 +27,12 @@ const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
 	collection: null,
-	modalViewMode: null,
-	contentViewMode: null,
+	loadDocuments: false,
+	documents: null,
 	selectedDocument: null,
 	document: null,
+	modalViewMode: null,
+	contentViewMode: null,
 }
 
 export const stateStore = atom<StateStore>(defaultState)
@@ -184,6 +190,50 @@ async function reloadCollection(
 	}
 }
 
+async function reloadDocuments(
+	collection: Collection | null,
+	loadDocuments: boolean,
+	currentState: StateStore,
+): Promise<boolean>
+{
+	// Inputs: collection
+	try
+	{
+		if (!collection || !loadDocuments)
+		{
+			// Collection not loaded, or
+			// Load documents disabled
+			if (currentState.documents)
+			{
+				// Clear the collection
+				throw new ResetException()
+			}
+
+			return false
+		}
+
+		// Load collection documents
+		const documents = await collection.peek({
+			limit: 100,
+		})
+
+		stateStore.set({
+			...currentState,
+			documents: documents,
+		})
+		return true
+	}
+	catch (error: unknown)
+	{
+		// Reset collection documents, or failed to reload collection documents
+		stateStore.set({
+			...currentState,
+			documents: null,
+		})
+		return true
+	}
+}
+
 stateStore.subscribe(async (state, oldState) =>
 {
 	if (
@@ -218,6 +268,23 @@ stateStore.subscribe(async (state, oldState) =>
 		))
 		{
 			// Collection reloaded, stop here
+			return
+		}
+	}
+
+	if (
+		state.collection !== (oldState?.collection ?? defaultState.collection) ||
+		(state.selectedCollection !== null && state.collection === null) // Force reload
+	)
+	{
+		// Reload collection documents after input changes
+		if (await reloadDocuments(
+			state.collection,
+			state.loadDocuments,
+			state, // currentState
+		))
+		{
+			// Collection documents reloaded, stop here
 			return
 		}
 	}
