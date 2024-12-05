@@ -1,5 +1,5 @@
 <script lang="ts">
-import { stateStore } from '~/stores/stateStore'
+import { stateStore, reloadCollections } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
@@ -11,9 +11,18 @@ function selectCollection(collectionId: string)
 	const collectionsValue = stateStore.get()
 	stateStore.set({
 		...collectionsValue,
+		contentViewMode: 'table',
 		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
 	})
 }
+
+stateStore.subscribe(async (value) =>
+{
+	if (!value.collections)
+	{
+		reloadCollections()
+	}
+})
 </script>
 
 {#if !$stateStore.collections}

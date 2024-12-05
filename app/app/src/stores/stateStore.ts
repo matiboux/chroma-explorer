@@ -1,14 +1,16 @@
 import { atom } from 'nanostores'
-import { ChromaClient } from 'chromadb'
 import type { CollectionParams, GetResponse } from 'chromadb'
 
-import { configStore } from '~/stores/configStore'
+import { chromaStore } from '~/stores/chromaStore'
+import type ModalViewMode from '~/types/ModalViewMode.d.ts'
+import type ContentViewMode from '~/types/ContentViewMode.d.ts'
 
 export interface StateStore
 {
 	collections: Record<string, CollectionParams> | null
 	selectedCollection: string | null
-	viewMode: 'view' | 'edit' | 'delete' | null
+	modalViewMode: ModalViewMode | null
+	contentViewMode: ContentViewMode | null
 	selectedDocument: string | null
 	document: GetResponse | null
 }
@@ -16,7 +18,8 @@ export interface StateStore
 const defaultState: StateStore = {
 	collections: null,
 	selectedCollection: null,
-	viewMode: null,
+	modalViewMode: null,
+	contentViewMode: null,
 	selectedDocument: null,
 	document: null,
 }
@@ -25,42 +28,9 @@ export const stateStore = atom<StateStore>(defaultState)
 
 export async function reloadCollections()
 {
-	stateStore.set({
-		...stateStore.get(),
-		collections: null,
-	})
-
 	try
 	{
-		const config = configStore.get()
-		const chroma = new ChromaClient({
-			path: config.serverUrl,
-			...(
-				config.authConfig
-				? (
-					config.authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: config.authConfig.token,
-						},
-					})
-					: config.authConfig.username && config.authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: config.authConfig.username,
-								password: config.authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
-				: undefined
-			),
-		})
-
+		const chroma = chromaStore.get()!
 		const collections = (await chroma.listCollections()).reduce<Record<string, CollectionParams>>(
 			(collections, collection) =>
 			{

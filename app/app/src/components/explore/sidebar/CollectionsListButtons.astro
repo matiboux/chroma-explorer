@@ -1,0 +1,48 @@
+---
+import CollectionsCreateButton from '~/components/explore/sidebar/CollectionsCreateButton.svelte'
+import CollectionsManageButton from '~/components/explore/sidebar/CollectionsManageButton.svelte'
+import CollectionsReloadButton from '~/components/explore/sidebar/CollectionsReloadButton.svelte'
+
+import { i18nFactory } from '~/i18n'
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
+---
+
+<div class="btn-group">
+	<button class="btn btn-primary hidden">
+		<span class="icon icon-[mdi--arrow-left] icon-align"></span>
+		<span class="sr-only">
+			{_({
+				en: 'Back',
+				fr: 'Retour',
+			})}
+		</span>
+	</button>
+	<div class="btn-group">
+		<CollectionsCreateButton client:visible locale={Astro.currentLocale as Locales | undefined} />
+		<CollectionsManageButton client:visible locale={Astro.currentLocale as Locales | undefined} />
+		<CollectionsReloadButton client:visible locale={Astro.currentLocale as Locales | undefined} />
+	</div>
+</div>
+
+<style lang="scss">
+	.btn-group {
+		@apply flex gap-2 w-full justify-center items-center;
+		@apply px-2;
+
+		.btn-group {
+			@apply flex-grow;
+			@apply p-0;
+		}
+
+		.btn {
+			@apply px-2 py-1;
+			@apply bg-gray-100;
+			@apply border border-gray-200 rounded-lg;
+
+			&:hover {
+				@apply bg-gray-200;
+			}
+		}
+	}
+</style>

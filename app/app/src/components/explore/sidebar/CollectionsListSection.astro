@@ -1,0 +1,20 @@
+---
+import CollectionsListButtons from '~/components/explore/sidebar/CollectionsListButtons.astro'
+import CollectionsList from '~/components/explore/sidebar/CollectionsList.svelte'
+
+import { i18nFactory } from '~/i18n'
+import type { Locales } from '~/i18n'
+const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
+---
+
+<div class="collections-list-wrapper">
+	<CollectionsListButtons />
+	<CollectionsList client:visible locale={Astro.currentLocale as Locales | undefined} />
+</div>
+
+<style lang="scss">
+	.collections-list-wrapper {
+		@apply flex flex-col gap-2;
+		@apply py-2;
+	}
+</style>
