@@ -82,7 +82,7 @@ function onDelete(id: string)
 			})}
 		</p>
 	{:else if records.ids.length <= 0}
-		<p>
+		<p class="splash">
 			{_({
 				en: 'No records found.',
 				fr: 'Aucun enregistrement trouvé.',
@@ -191,18 +191,18 @@ function onDelete(id: string)
 					</tr>
 				{/each}
 		</table>
-
-		<div class="footer">
-			<CollectionTableActions />
-		</div>
 	{/if}
+
+	<div class="footer">
+		<CollectionTableActions />
+	</div>
 
 </div>
 
 <style lang="scss">
 	.wrapper {
 		@apply bg-gray-50;
-		@apply max-h-full;
+		@apply h-full;
 		@apply pb-16;
 		@apply overflow-y-auto;
 
