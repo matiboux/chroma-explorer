@@ -3,7 +3,6 @@ import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'

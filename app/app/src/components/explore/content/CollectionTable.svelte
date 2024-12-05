@@ -2,7 +2,6 @@
 import { ChromaClient } from 'chromadb'
 import type { MultiGetResponse } from 'chromadb'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 import CollectionTableActions from '~/components/explore/content/CollectionTableActions.svelte'
 
@@ -29,8 +28,8 @@ stateStore.subscribe(async (value, oldValue) =>
 
 	try
 	{
-		const chroma = chromaStore.get()!
-		const collection = await chroma.getCollection({ name: value.collections[value.selectedCollection].name })
+		const chroma = value.chroma!
+		const collection = await value.chroma.getCollection({ name: value.collections[value.selectedCollection].name })
 		records = await collection.peek({ limit: 10 })
 	}
 	catch (error: unknown)

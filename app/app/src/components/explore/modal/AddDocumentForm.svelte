@@ -3,7 +3,6 @@ import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 import { parse } from 'csv-parse/browser/esm'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -73,7 +72,7 @@ async function submitRecordsChunk(chunk: any[])
 	const metadatas = chunk.map(record => typeof record.metadata === 'string' ? JSON.parse(record.metadata) : (record.metadata || {}))
 
 	const state = stateStore.get()
-	const chroma = chromaStore.get()!
+	const chroma = state.chroma!
 	const collection = await chroma.getCollection({ name: state.collections[state.selectedCollection].name })
 
 	await collection.add({

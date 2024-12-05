@@ -2,7 +2,6 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -14,7 +13,7 @@ async function onDelete()
 {
 	try
 	{
-		const chroma = chromaStore.get()!
+		const chroma = stateStore.get().chroma!
 		await chroma.deleteCollection({
 			name: $stateStore.collections[$stateStore.selectedCollection].name,
 		})
