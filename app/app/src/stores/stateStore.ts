@@ -197,7 +197,8 @@ async function reloadCollection(
 stateStore.subscribe(async (state, oldState) =>
 {
 	if (
-		state.chroma !== (oldState?.chroma ?? defaultState.chroma)
+		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
+		(state.chroma !== null && state.collections === null) // Force reload
 	)
 	{
 		// Reload collections list after input changes
@@ -214,7 +215,8 @@ stateStore.subscribe(async (state, oldState) =>
 	if (
 		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
 		state.collections !== (oldState?.collections ?? defaultState.collections) ||
-		state.selectedCollection !== (oldState?.selectedCollection ?? defaultState.selectedCollection)
+		state.selectedCollection !== (oldState?.selectedCollection ?? defaultState.selectedCollection) ||
+		(state.selectedCollection !== null && state.collection === null) // Force reload
 	)
 	{
 		// Reload the collection after input changes
