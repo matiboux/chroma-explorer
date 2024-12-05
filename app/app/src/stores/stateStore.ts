@@ -31,37 +31,6 @@ const defaultState: StateStore = {
 
 export const stateStore = atom<StateStore>(defaultState)
 
-export async function reloadCollections()
-{
-	try
-	{
-		const chroma = stateStore.get().chroma!
-		const collections = (await chroma.listCollections()).reduce<Record<string, CollectionParams>>(
-			(collections, collection) =>
-			{
-				collections[collection.id] = collection
-				return collections
-			},
-			{} as Record<string, CollectionParams>,
-		)
-		const selectedCollection = stateStore.get().selectedCollection
-
-		stateStore.set({
-			...stateStore.get(),
-			collections: collections,
-			selectedCollection: selectedCollection && collections[selectedCollection] ? selectedCollection : null,
-		})
-	}
-	catch (error: unknown)
-	{
-		stateStore.set({
-			...stateStore.get(),
-			collections: {},
-			selectedCollection: null,
-		})
-	}
-}
-
 configStore.subscribe(async (config, oldConfig) =>
 {
 	const state = stateStore.get()
@@ -118,11 +87,61 @@ configStore.subscribe(async (config, oldConfig) =>
 
 class ResetException extends Error {}
 
+async function reloadCollections(
+	chroma: ChromaClient | null,
+	currentState: StateStore,
+): Promise<boolean>
+{
+	// Inputs: chroma
+	try
+	{
+		if (!chroma)
+		{
+			// Chroma client not initialized
+			if (currentState.collections)
+			{
+				// Clear collections list
+				throw new ResetException()
+			}
+
+			return false
+		}
+
+		// Load collections list
+		const collections =
+			(await chroma.listCollections())
+			.reduce<Record<string, CollectionParams>>(
+				(collections, collection) =>
+				{
+					collections[collection.id] = collection
+					return collections
+				},
+				{} as Record<string, CollectionParams>,
+			)
+
+		stateStore.set({
+			...stateStore.get(),
+			collections: collections,
+			selectedCollection: collections[currentState.selectedCollection!] ? currentState.selectedCollection : null,
+		})
+		return true
+	}
+	catch (error: unknown)
+	{
+		// Reset collections list, or failed to reload collections list
+		stateStore.set({
+			...currentState,
+			collections: null,
+			selectedCollection: null,
+		})
+		return true
+	}
+}
+
 async function reloadCollection(
 	chroma: ChromaClient | null,
 	collections: Record<string, CollectionParams> | null,
 	selectedCollection: string | null,
-	oldCollection: Awaited<ReturnType<ChromaClient['getCollection']>> | null,
 	currentState: StateStore,
 ): Promise<boolean>
 {
@@ -131,7 +150,7 @@ async function reloadCollection(
 	{
 		if (!selectedCollection)
 		{
-			if (oldCollection)
+			if (currentState.collection)
 			{
 				// Clear the collection
 				throw new ResetException()
@@ -143,7 +162,7 @@ async function reloadCollection(
 		if (!chroma || !collections)
 		{
 			// Chroma client not initialized
-			if (oldCollection)
+			if (currentState.collection)
 			{
 				// Clear the collection
 				throw new ResetException()
@@ -178,6 +197,21 @@ async function reloadCollection(
 stateStore.subscribe(async (state, oldState) =>
 {
 	if (
+		state.chroma !== (oldState?.chroma ?? defaultState.chroma)
+	)
+	{
+		// Reload collections list after input changes
+		if (await reloadCollections(
+			state.chroma,
+			state, // currentState
+		))
+		{
+			// Collections list reloaded, stop here
+			return
+		}
+	}
+
+	if (
 		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
 		state.collections !== (oldState?.collections ?? defaultState.collections) ||
 		state.selectedCollection !== (oldState?.selectedCollection ?? defaultState.selectedCollection)
@@ -188,7 +222,6 @@ stateStore.subscribe(async (state, oldState) =>
 			state.chroma,
 			state.collections,
 			state.selectedCollection,
-			state.collection, // oldCollection
 			state, // currentState
 		))
 		{
