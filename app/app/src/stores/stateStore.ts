@@ -116,39 +116,78 @@ configStore.subscribe(async (config, oldConfig) =>
 	})
 })
 
-stateStore.subscribe(async (state) =>
+async function reloadCollection(
+	chroma: ChromaClient | null,
+	collections: Record<string, CollectionParams> | null,
+	selectedCollection: string | null,
+	oldCollection: Awaited<ReturnType<ChromaClient['getCollection']>> | null,
+	currentState: StateStore,
+): Promise<boolean>
+{
+	// Inputs: chroma, collections, selectedCollection
+	if (!selectedCollection)
+	{
+		if (oldCollection)
+		{
+			// Clear the collection
+			stateStore.set({
+				...currentState,
+				collection: null,
+			})
+			return true
+		}
+
+		return false
+	}
+
+	if (!chroma || !collections)
+	{
+		// Chroma client not initialized
+		if (oldCollection)
+		{
+			// Clear the collection
+			stateStore.set({
+				...currentState,
+				collection: null,
+			})
+			return true
+		}
+
+		return false
+	}
+
+	// Load the selected collection
+	const collection = await chroma.getCollection({
+		name: collections[selectedCollection!]!.name,
+		embeddingFunction: null!,
+	})
+
+	stateStore.set({
+		...currentState,
+		collection: collection,
+	})
+	return true
+}
+
+stateStore.subscribe(async (state, oldState) =>
 {
 	if (
-		state.collections &&
-		state.collections[state.selectedCollection!]
+		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
+		state.collections !== (oldState?.collections ?? defaultState.collections) ||
+		state.selectedCollection !== (oldState?.selectedCollection ?? defaultState.selectedCollection)
 	)
 	{
-		if (
-			!state.collection ||
-			state.selectedCollection !== state.collection.id
-		)
+		// Reload the collection after input changes
+		if (await reloadCollection(
+			state.chroma,
+			state.collections,
+			state.selectedCollection,
+			state.collection, // oldCollection
+			state, // currentState
+		))
 		{
-			// Load the selected collection
-			const chroma = state.chroma!
-			const collection = await chroma.getCollection({
-				name: state.collections[state.selectedCollection!]!.name,
-				embeddingFunction: null!,
-			})
-
-			stateStore.set({
-				...state,
-				collection: collection,
-			})
+			// Collection reloaded, stop here
 			return
 		}
-	}
-	else if (state.collection)
-	{
-		// Clear the collection
-		stateStore.set({
-			...state,
-			collection: null,
-		})
-		return
 	}
 })
