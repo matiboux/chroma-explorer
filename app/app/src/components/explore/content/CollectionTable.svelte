@@ -10,32 +10,6 @@ import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
 
-let records: MultiGetResponse | null = null
-
-stateStore.subscribe(async (value, oldValue) =>
-{
-	if (
-		!value.collections ||
-		!value.selectedCollection ||
-		!value.collections[value.selectedCollection] ||
-		value.selectedCollection === oldValue?.selectedCollection
-	)
-	{
-		return
-	}
-
-	records = null
-
-	try
-	{
-		const chroma = value.chroma!
-		const collection = await value.chroma.getCollection({ name: value.collections[value.selectedCollection].name })
-		records = await collection.peek({ limit: 10 })
-	}
-	catch (error: unknown)
-	{}
-})
-
 function onView(id: string)
 {
 	stateStore.set({
@@ -75,7 +49,7 @@ function onDelete(id: string)
 		</p>
 
 	{:else}
-		{#if !records}
+		{#if !$stateStore.documents}
 			<p class="splash">
 				{_({
 					en: 'Loading...',
@@ -83,7 +57,7 @@ function onDelete(id: string)
 				})}
 			</p>
 
-		{:else if records.ids.length <= 0}
+		{:else if $stateStore.documents.ids.length <= 0}
 			<p class="splash">
 				{_({
 					en: 'No records found.',
@@ -102,29 +76,29 @@ function onDelete(id: string)
 					</tr>
 				</thead>
 				<tbody>
-					{#each records.ids as id, index}
+					{#each $stateStore.documents.ids as id, index}
 						<tr>
 							<td>{id}</td>
 							<td>
-								{#if !records.documents || !records.documents[index]}
+								{#if !$stateStore.documents.documents || !$stateStore.documents.documents[index]}
 									<span class="badge badge-disabled">
 										N/A
 									</span>
-								{:else if records.documents[index].length <= 0}
+								{:else if $stateStore.documents.documents[index].length <= 0}
 									<span class="badge badge-disabled">
 										{_({
 											en: 'Empty',
 											fr: 'Vide',
 										})}
 									</span>
-								{:else if records.documents[index].length <= 100}
-									<span>{records.documents[index]}</span>
+								{:else if $stateStore.documents.documents[index].length <= 100}
+									<span>{$stateStore.documents.documents[index]}</span>
 								{:else}
 									<span>
-										{records.documents[index].slice(0, 97)}...
+										{$stateStore.documents.documents[index].slice(0, 97)}...
 									</span>
 									<span class="badge">
-										{new Blob([ records.documents[index] ]).size}
+										{new Blob([ $stateStore.documents.documents[index] ]).size}
 										{_({
 											en: 'bytes',
 											fr: 'octets',
@@ -133,11 +107,11 @@ function onDelete(id: string)
 								{/if}
 							</td>
 							<td>
-								{#if !records.metadatas || !records.metadatas[index]}
+								{#if !$stateStore.documents.metadatas || !$stateStore.documents.metadatas[index]}
 									<span class="badge badge-disabled">
 										N/A
 									</span>
-								{:else if Object.keys(records.metadatas[index]).length <= 0}
+								{:else if Object.keys($stateStore.documents.metadatas[index]).length <= 0}
 									<span class="badge badge-primary">
 										{_({
 											en: 'dictionary',
@@ -157,7 +131,7 @@ function onDelete(id: string)
 											fr: 'dictionnaire',
 										})}
 									</span>
-									{#each Object.keys(records.metadatas[index]) as key}
+									{#each Object.keys($stateStore.documents.metadatas[index]) as key}
 										<span class="badge">{key}</span> {' '}
 									{/each}
 								{/if}

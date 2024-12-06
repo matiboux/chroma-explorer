@@ -13,6 +13,7 @@ function selectCollection(collectionId: string)
 		...collectionsValue,
 		contentViewMode: 'table',
 		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
+		loadDocuments: true,
 	})
 }
 </script>
