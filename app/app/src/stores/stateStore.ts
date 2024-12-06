@@ -274,7 +274,8 @@ stateStore.subscribe(async (state, oldState) =>
 
 	if (
 		state.collection !== (oldState?.collection ?? defaultState.collection) ||
-		(state.selectedCollection !== null && state.collection === null) // Force reload
+		state.loadDocuments !== (oldState?.loadDocuments ?? defaultState.loadDocuments) ||
+		(state.loadDocuments && state.documents === null) // Force reload
 	)
 	{
 		// Reload collection documents after input changes
