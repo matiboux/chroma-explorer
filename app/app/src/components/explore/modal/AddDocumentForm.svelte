@@ -64,7 +64,7 @@ async function parseJsonBatch(file: File): Promise<any[]>
 	return JSON.parse(content)
 }
 
-async function submitRecordsChunk(chunk: any[])
+async function submitRecordsChunk(collectionName: string, chunk: any[])
 {
 	const ids = chunk.map(record => record.id)
 	const documents = chunk.map(record => record.document || null)
@@ -73,7 +73,7 @@ async function submitRecordsChunk(chunk: any[])
 
 	const state = stateStore.get()
 	const chroma = state.chroma!
-	const collection = await chroma.getCollection({ name: state.collections[state.selectedCollection].name })
+	const collection = await chroma.getCollection({ name: collectionName })
 
 	await collection.add({
 		ids: ids,
@@ -83,7 +83,7 @@ async function submitRecordsChunk(chunk: any[])
 	})
 }
 
-async function submitRecords(records: any[], ignoreErrors = false)
+async function submitRecords(collectionName: string, records: any[], ignoreErrors = false)
 {
 	// Parse values
 	records = records.map(record => ({
@@ -117,12 +117,19 @@ async function submitRecords(records: any[], ignoreErrors = false)
 
 	for (const chunk of chunks)
 	{
-		await submitRecordsChunk(chunk)
+		await submitRecordsChunk(collectionName, chunk)
 	}
 }
 
 async function onSubmitBatch()
 {
+	const state = stateStore.get()
+	if (!state.collections?.[state.selectedCollection!])
+	{
+		alert('No collection selected')
+		return
+	}
+
 	if (!batchFormData.batch || batchFormData.batch.length <= 0)
 	{
 		alert('No files selected')
@@ -156,7 +163,7 @@ async function onSubmitBatch()
 	}
 
 	// Submit records
-	await submitRecords(allRecords, batchFormData.ignoreErrors)
+	await submitRecords(state.collections?.[state.selectedCollection!].name, allRecords, batchFormData.ignoreErrors)
 
 	// Close modal
 	// TODO: Refresh collection records
