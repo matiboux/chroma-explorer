@@ -11,9 +11,14 @@ function selectCollection(collectionId: string)
 	const collectionsValue = stateStore.get()
 	stateStore.set({
 		...collectionsValue,
+		// Update state
 		contentViewMode: 'table',
-		selectedCollection: collectionsValue.collections[collectionId] ? collectionId : null,
+		selectedCollection: collectionsValue.collections?.[collectionId] ? collectionId : null,
 		loadDocuments: true,
+		// Reset dependent states
+		documents: null,
+		selectedDocument: null,
+		document: null,
 	})
 }
 </script>
