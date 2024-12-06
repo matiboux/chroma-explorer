@@ -14,6 +14,14 @@ function onAddDocument()
 		modalViewMode: 'addDocument',
 	})
 }
+
+function onRefreshDocuments()
+{
+	stateStore.set({
+		...stateStore.get(),
+		documents: null,
+	})
+}
 </script>
 
 <div class="actions">
@@ -34,7 +42,7 @@ function onAddDocument()
 
 	{#if $stateStore.documents}
 
-		<Button buttonStyle="gray">
+		<Button buttonStyle="gray" on:click={onRefreshDocuments}>
 			<span class="icon icon-[mdi--table-refresh] icon-align"></span>
 			<span class="sr-only">
 				{_({
