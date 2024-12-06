@@ -221,8 +221,8 @@ async function onSubmitBatch()
 		<div class="button-group">
 			<button type="submit">
 				{_({
-					en: 'Add document',
-					fr: 'Ajouter le document',
+					en: 'Add documents',
+					fr: 'Ajouter les documents',
 				})}
 			</button>
 

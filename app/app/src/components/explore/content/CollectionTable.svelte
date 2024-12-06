@@ -172,7 +172,7 @@ function onDelete(id: string)
 	{/if}
 
 	<div class="footer">
-		<CollectionTableActions />
+		<CollectionTableActions locale={locale} />
 	</div>
 
 </div>
