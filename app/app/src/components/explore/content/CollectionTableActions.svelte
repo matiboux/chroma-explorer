@@ -18,34 +18,43 @@ function onAddDocument()
 
 <div class="actions">
 
-	<Button buttonStyle="gray" on:click={onAddDocument}>
-		<span class="icon icon-[mdi--table-plus] icon-align"></span>
-		<span class="sr-only">
-			{_({
-				en: 'Add new document',
-				fr: 'Ajouter un nouveau document',
-			})}
-		</span>
-	</Button>
+	{#if $stateStore.selectedCollection}
 
-	<Button buttonStyle="gray">
-		<span class="icon icon-[mdi--table-refresh] icon-align"></span>
-		<span class="sr-only">
-			{_({
-				en: 'Refresh table',
-				fr: 'Rafraîchir le tableau',
-			})}
-		</span>
-	</Button>
+		<Button buttonStyle="gray" on:click={onAddDocument}>
+			<span class="icon icon-[mdi--table-plus] icon-align"></span>
+			<span class="sr-only">
+				{_({
+					en: 'Add new document',
+					fr: 'Ajouter un nouveau document',
+				})}
+			</span>
+		</Button>
 
-	<div class="collection-count">
-		<p class="badge">
-			10 {_({
-				en: 'documents',
-				fr: 'documents',
-			})}
-		</p>
-	</div>
+	{/if}
+
+	{#if $stateStore.documents}
+
+		<Button buttonStyle="gray">
+			<span class="icon icon-[mdi--table-refresh] icon-align"></span>
+			<span class="sr-only">
+				{_({
+					en: 'Refresh table',
+					fr: 'Rafraîchir le tableau',
+				})}
+			</span>
+		</Button>
+
+		<div class="collection-count">
+			<p class="badge">
+				{$stateStore.documents.ids.length}{' '}
+				{_({
+					en: 'documents',
+					fr: 'documents',
+				})}
+			</p>
+		</div>
+
+	{/if}
 
 </div>
 
