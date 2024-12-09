@@ -22,6 +22,14 @@ function onRefreshDocuments()
 		documents: null,
 	})
 }
+
+function onDownloadDocuments()
+{
+	stateStore.set({
+		...stateStore.get(),
+		modalViewMode: 'downloadDocuments',
+	})
+}
 </script>
 
 <div class="actions">
@@ -48,6 +56,16 @@ function onRefreshDocuments()
 				{_({
 					en: 'Refresh table',
 					fr: 'Rafraîchir le tableau',
+				})}
+			</span>
+		</Button>
+
+		<Button buttonStyle="gray" on:click={onDownloadDocuments}>
+			<span class="icon icon-[mdi--tray-download] icon-align"></span>
+			<span class="sr-only">
+				{_({
+					en: 'Download documents',
+					fr: 'Télécharger les documents',
 				})}
 			</span>
 		</Button>
