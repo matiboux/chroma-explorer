@@ -116,6 +116,7 @@ async function reloadCollections(
 		// Load collections list
 		const collections =
 			(await chroma.listCollections())
+			.sort((a, b) => a.name.localeCompare(b.name))
 			.reduce<Record<string, CollectionParams>>(
 				(collections, collection) =>
 				{
