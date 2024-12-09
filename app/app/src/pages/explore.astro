@@ -20,7 +20,7 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 	bodyClass="bg-gray-100 h-screen overflow-hidden"
 >
 
-	<Modal client:visible />
+	<Modal client:visible locale={Astro.currentLocale as Locales | undefined} />
 
 	<div class="wrapper">
 		<div class="sidebar">

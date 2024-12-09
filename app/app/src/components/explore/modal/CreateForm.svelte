@@ -2,7 +2,6 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -24,7 +23,7 @@ async function onSubmit()
 {
 	try
 	{
-		const chroma = chromaStore.get()!
+		const chroma = stateStore.get().chroma!
 
 		if (formData.hnswSpace)
 		{

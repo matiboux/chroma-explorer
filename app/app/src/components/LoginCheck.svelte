@@ -1,9 +1,7 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
 import type { CollectionParams } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -17,19 +15,27 @@ let checked: boolean = false
 let version: string | null = null
 let collections: CollectionParams[] | null = null
 
-chromaStore.subscribe(async (chroma) =>
+stateStore.subscribe(async (state, oldState) =>
 {
-	if (!chroma)
+	if (checked && state.chroma === oldState?.chroma)
 	{
+		return
+	}
+
+	if (!state.chroma)
+	{
+		checked = true
+		version = null
+		collections = null
 		return
 	}
 
 	try
 	{
-		version = await chroma.version()
-		collections = await chroma.listCollections()
+		version = await state.chroma.version()
+		collections = await state.chroma.listCollections()
 
-		stateStore.set({ collections: collections })
+		// stateStore.set({ collections: collections })
 	}
 	catch (error: unknown)
 	{}
@@ -37,20 +43,17 @@ chromaStore.subscribe(async (chroma) =>
 	{
 		checked = true
 
-		if (checked)
+		if (!collections)
 		{
-			if (!collections)
-			{
-				// Force logout
-				configStore.set({
-					...configStore.get(),
-					confirmed: false,
-				})
-			}
-			else if (loginRedirect)
-			{
-				window.location.href = loginRedirect
-			}
+			// Force logout
+			configStore.set({
+				...configStore.get(),
+				confirmed: false,
+			})
+		}
+		else if (loginRedirect)
+		{
+			window.location.href = loginRedirect
 		}
 	}
 })

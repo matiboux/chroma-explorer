@@ -2,7 +2,6 @@
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
@@ -41,7 +40,7 @@ stateStore.subscribe(async (value, oldValue) =>
 
 	try
 	{
-		const chroma = chromaStore.get()!
+		const chroma = value.chroma!
 		const collection = await chroma.getCollection({ name: value.collections[value.selectedCollection].name })
 		record = await collection.get({
 			ids: [ value.selectedDocument ],

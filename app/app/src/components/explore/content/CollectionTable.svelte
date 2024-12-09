@@ -2,7 +2,6 @@
 import { ChromaClient } from 'chromadb'
 import type { MultiGetResponse } from 'chromadb'
 
-import { chromaStore } from '~/stores/chromaStore'
 import { stateStore } from '~/stores/stateStore'
 import CollectionTableActions from '~/components/explore/content/CollectionTableActions.svelte'
 
@@ -10,32 +9,6 @@ import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
 const _ = i18nFactory(locale)
-
-let records: MultiGetResponse | null = null
-
-stateStore.subscribe(async (value, oldValue) =>
-{
-	if (
-		!value.collections ||
-		!value.selectedCollection ||
-		!value.collections[value.selectedCollection] ||
-		value.selectedCollection === oldValue?.selectedCollection
-	)
-	{
-		return
-	}
-
-	records = null
-
-	try
-	{
-		const chroma = chromaStore.get()!
-		const collection = await chroma.getCollection({ name: value.collections[value.selectedCollection].name })
-		records = await collection.peek({ limit: 10 })
-	}
-	catch (error: unknown)
-	{}
-})
 
 function onView(id: string)
 {
@@ -74,135 +47,140 @@ function onDelete(id: string)
 				fr: 'Aucune collection sélectionnée.',
 			})}
 		</p>
-	{:else if !records}
-		<p class="splash">
-			{_({
-				en: 'Loading...',
-				fr: 'Chargement...',
-			})}
-		</p>
-	{:else if records.ids.length <= 0}
-		<p>
-			{_({
-				en: 'No records found.',
-				fr: 'Aucun enregistrement trouvé.',
-			})}
-		</p>
-	{:else}
-		<table>
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Document</th>
-					<th>Metadata</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each records.ids as id, index}
-					<tr>
-						<td>{id}</td>
-						<td>
-							{#if !records.documents || !records.documents[index]}
-								<span class="badge badge-disabled">
-									N/A
-								</span>
-							{:else if records.documents[index].length <= 0}
-								<span class="badge badge-disabled">
-									{_({
-										en: 'Empty',
-										fr: 'Vide',
-									})}
-								</span>
-							{:else if records.documents[index].length <= 100}
-								<span>{records.documents[index]}</span>
-							{:else}
-								<span>
-									{records.documents[index].slice(0, 97)}...
-								</span>
-								<span class="badge">
-									{new Blob([ records.documents[index] ]).size}
-									{_({
-										en: 'bytes',
-										fr: 'octets',
-									})}
-								</span>
-							{/if}
-						</td>
-						<td>
-							{#if !records.metadatas || !records.metadatas[index]}
-								<span class="badge badge-disabled">
-									N/A
-								</span>
-							{:else if Object.keys(records.metadatas[index]).length <= 0}
-								<span class="badge badge-primary">
-									{_({
-										en: 'dictionary',
-										fr: 'dictionnaire',
-									})}
-								</span>
-								<span class="badge badge-disabled">
-									{_({
-										en: 'Empty',
-										fr: 'Vide',
-									})}
-								</span>
-							{:else}
-								<span class="badge badge-primary">
-									{_({
-										en: 'dictionary',
-										fr: 'dictionnaire',
-									})}
-								</span>
-								{#each Object.keys(records.metadatas[index]) as key}
-									<span class="badge">{key}</span> {' '}
-								{/each}
-							{/if}
-						</td>
-						<td>
-							<button type="button" class="btn" on:click={() => onView(id)}>
-								<span class="icon icon-[mdi--eye-outline] icon-align"></span>
-								<span class="sr-only">
-									{_({
-										en: 'View',
-										fr: 'Voir',
-									})}
-								</span>
-							</button>
-							<button type="button" class="btn" on:click={() => onEdit(id)}>
-								<span class="icon icon-[mdi--pencil-outline] icon-align"></span>
-								<span class="sr-only">
-									{_({
-										en: 'Edit',
-										fr: 'Modifier',
-									})}
-								</span>
-							</button>
-							<button type="button" class="btn" on:click={() => onDelete(id)}>
-								<span class="icon icon-[mdi--delete-outline] icon-align"></span>
-								<span class="sr-only">
-									{_({
-										en: 'Delete',
-										fr: 'Supprimer',
-									})}
-								</span>
-							</button>
-						</td>
-					</tr>
-				{/each}
-		</table>
 
-		<div class="footer">
-			<CollectionTableActions />
-		</div>
+	{:else}
+		{#if !$stateStore.documents}
+			<p class="splash">
+				{_({
+					en: 'Loading...',
+					fr: 'Chargement...',
+				})}
+			</p>
+
+		{:else if $stateStore.documents.ids.length <= 0}
+			<p class="splash">
+				{_({
+					en: 'No records found.',
+					fr: 'Aucun enregistrement trouvé.',
+				})}
+			</p>
+
+		{:else}
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Document</th>
+						<th>Metadata</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each $stateStore.documents.ids as id, index}
+						<tr>
+							<td>{id}</td>
+							<td>
+								{#if !$stateStore.documents.documents || !$stateStore.documents.documents[index]}
+									<span class="badge badge-disabled">
+										N/A
+									</span>
+								{:else if $stateStore.documents.documents[index].length <= 0}
+									<span class="badge badge-disabled">
+										{_({
+											en: 'Empty',
+											fr: 'Vide',
+										})}
+									</span>
+								{:else if $stateStore.documents.documents[index].length <= 100}
+									<span>{$stateStore.documents.documents[index]}</span>
+								{:else}
+									<span>
+										{$stateStore.documents.documents[index].slice(0, 97)}...
+									</span>
+									<span class="badge">
+										{new Blob([ $stateStore.documents.documents[index] ]).size}
+										{_({
+											en: 'bytes',
+											fr: 'octets',
+										})}
+									</span>
+								{/if}
+							</td>
+							<td>
+								{#if !$stateStore.documents.metadatas || !$stateStore.documents.metadatas[index]}
+									<span class="badge badge-disabled">
+										N/A
+									</span>
+								{:else if Object.keys($stateStore.documents.metadatas[index]).length <= 0}
+									<span class="badge badge-primary">
+										{_({
+											en: 'dictionary',
+											fr: 'dictionnaire',
+										})}
+									</span>
+									<span class="badge badge-disabled">
+										{_({
+											en: 'Empty',
+											fr: 'Vide',
+										})}
+									</span>
+								{:else}
+									<span class="badge badge-primary">
+										{_({
+											en: 'dictionary',
+											fr: 'dictionnaire',
+										})}
+									</span>
+									{#each Object.keys($stateStore.documents.metadatas[index]) as key}
+										<span class="badge">{key}</span> {' '}
+									{/each}
+								{/if}
+							</td>
+							<td>
+								<button type="button" class="btn" on:click={() => onView(id)}>
+									<span class="icon icon-[mdi--eye-outline] icon-align"></span>
+									<span class="sr-only">
+										{_({
+											en: 'View',
+											fr: 'Voir',
+										})}
+									</span>
+								</button>
+								<button type="button" class="btn" on:click={() => onEdit(id)}>
+									<span class="icon icon-[mdi--pencil-outline] icon-align"></span>
+									<span class="sr-only">
+										{_({
+											en: 'Edit',
+											fr: 'Modifier',
+										})}
+									</span>
+								</button>
+								<button type="button" class="btn" on:click={() => onDelete(id)}>
+									<span class="icon icon-[mdi--delete-outline] icon-align"></span>
+									<span class="sr-only">
+										{_({
+											en: 'Delete',
+											fr: 'Supprimer',
+										})}
+									</span>
+								</button>
+							</td>
+						</tr>
+					{/each}
+			</table>
+		{/if}
 	{/if}
+
+	<div class="footer">
+		<CollectionTableActions locale={locale} />
+	</div>
 
 </div>
 
 <style lang="scss">
 	.wrapper {
 		@apply bg-gray-50;
-		@apply max-h-full;
+		@apply h-full;
 		@apply pb-16;
 		@apply overflow-y-auto;
 

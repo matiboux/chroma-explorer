@@ -3,6 +3,8 @@ import CreateForm from '~/components/explore/modal/CreateForm.svelte'
 import ManageForm from '~/components/explore/modal/ManageForm.svelte'
 import DeleteCollectionForm from '~/components/explore/modal/DeleteCollectionForm.svelte'
 import RecordForm from '~/components/explore/modal/RecordForm.svelte'
+import AddDocumentForm from '~/components/explore/modal/AddDocumentForm.svelte'
+import DownloadDocumentsForm from '~/components/explore/modal/DownloadDocumentsForm.svelte'
 import { stateStore } from '~/stores/stateStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 
@@ -41,6 +43,20 @@ const modalViewModeMap: Record<ModalViewMode, {
 		title: {
 			en: 'Viewing document',
 			fr: 'Visualisation du document',
+		},
+	},
+	'downloadDocuments': {
+		component: DownloadDocumentsForm,
+		title: {
+			en: 'Downloading documents',
+			fr: 'Téléchargement des documents',
+		},
+	},
+	'addDocument': {
+		component: AddDocumentForm,
+		title: {
+			en: 'Adding documents',
+			fr: 'Ajout de documents',
 		},
 	},
 	'editDocument': {
