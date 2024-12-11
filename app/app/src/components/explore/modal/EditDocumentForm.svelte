@@ -18,6 +18,14 @@ let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
 
+let formData = {
+	id: '',
+	document: '',
+	embedding: '',
+	metadatas: {},
+	newMetadatas: {},
+}
+
 async function loadRecord()
 {
 	const state = stateStore.get()
@@ -44,6 +52,18 @@ async function loadRecord()
 	{
 		console.error(error)
 		record = null
+		return
+	}
+
+	if (record && record.ids.length > 0)
+	{
+		formData = {
+			id: record.ids[0],
+			document: record.documents[0] ?? '',
+			embedding: record.embeddings?.[0] ? JSON.stringify(record.embeddings[0]) : '',
+			metadatas: record.metadatas?.[0] ? { ...record.metadatas[0] } : {},
+			newMetadatas: {},
+		}
 	}
 }
 
@@ -118,7 +138,10 @@ async function onReset()
 					})}
 				</button>
 			</p>
-			<input type="hidden" id={`record-id-${idSuffix}`} name="record-id" value={record.ids[0]} readonly={!editable} />
+			<input
+				type="hidden" id={`record-id-${idSuffix}`} name="record-id"
+				bind:value={formData.id} readonly={!editable}
+			/>
 		</div>
 
 		<div class="input-group">
@@ -145,9 +168,12 @@ async function onReset()
 				{_({
 					en: 'Document size: {0} bytes',
 					fr: 'Taille du document: {0} octets',
-				}, new Blob([ record.documents[0] ?? '' ]).size)}
+				}, new Blob([ formData.document ]).size)}
 			</p>
-			<textarea id={`record-collection-${idSuffix}`} readonly={!editable}>{record.documents[0] ?? ''}</textarea>
+			<textarea
+				id={`record-collection-${idSuffix}`} name="record-collection"
+				bind:value={formData.document} readonly={!editable}
+			></textarea>
 		</div>
 
 		<div class="input-group">
@@ -177,8 +203,8 @@ async function onReset()
 				}, record.embeddings?.[0]?.length)}
 			</p>
 			<input
-				type="text" id={`record-embedding-${idSuffix}`} name="record-embedding" readonly={!editable}
-				value={record.embeddings?.[0] ? JSON.stringify(record.embeddings[0]) : null}
+				type="text" id={`record-embedding-${idSuffix}`} name="record-embedding"
+				bind:value={formData.embedding} readonly={!editable}
 			/>
 		</div>
 
@@ -215,9 +241,10 @@ async function onReset()
 								<label for={`metadata-${key}-${idSuffix}`}>{key}</label>
 							</div>
 						{/each}
+						<!-- TODO: Add a button to add a new metadata -->
 					</div>
 
-					{#each Object.entries(record.metadatas[0]) as [key, value]}
+					{#each Object.keys(record.metadatas[0]) as key}
 						<div class="input-group" hidden={selectedMetadata !== key}>
 							<label for={`record-metadata-${key}-${idSuffix}`}>
 								{key}
@@ -235,15 +262,19 @@ async function onReset()
 									})}
 								</button>
 							</label>
-							{#if typeof value === 'string'}
+							{#if typeof formData.metadatas[key] === 'string'}
 								<p class="hint">
 									{_({
 										en: 'Metadata value size: {0} bytes',
 										fr: 'Taille de la valeur métadonnée : {0} octets',
-									}, new Blob([ value ]).size)}
+									}, new Blob([ formData.metadatas[key] ]).size)}
 								</p>
 							{/if}
-							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly={!editable}>{value}</textarea>
+							<textarea
+								id={`record-metadata-${key}-${idSuffix}`} name={`record-metadata-${key}`}
+								bind:value={formData.metadatas[key]} readonly={!editable}
+							></textarea>
+							<!-- FIXME: SET METADATA FIELD TYPE -->
 						</div>
 					{/each}
 
