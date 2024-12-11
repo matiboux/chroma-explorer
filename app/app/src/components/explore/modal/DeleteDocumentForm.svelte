@@ -90,8 +90,8 @@ function onClose() {
 			<button type="submit">
 				<span class="icon icon-[mdi--delete] icon-align"></span>
 				{_({
-					en: 'Delete collection',
-					fr: 'Supprimer la collection',
+					en: 'Delete document',
+					fr: 'Supprimer le document',
 				})}
 			</button>
 			<button type="button" on:click={onClose}>
