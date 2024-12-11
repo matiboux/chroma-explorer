@@ -5,6 +5,7 @@ import DeleteCollectionForm from '~/components/explore/modal/DeleteCollectionFor
 import DownloadDocumentsForm from '~/components/explore/modal/DownloadDocumentsForm.svelte'
 import AddDocumentForm from '~/components/explore/modal/AddDocumentForm.svelte'
 import EditDocumentForm from '~/components/explore/modal/EditDocumentForm.svelte'
+import DeleteDocumentForm from '~/components/explore/modal/DeleteDocumentForm.svelte'
 import { stateStore } from '~/stores/stateStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 
@@ -70,7 +71,7 @@ const modalViewModeMap: Record<ModalViewMode, {
 		},
 	},
 	'deleteDocument': {
-		component: EditDocumentForm, // TODO: Create a DeleteDocumentForm component
+		component: DeleteDocumentForm,
 		title: {
 			en: 'Deleting document',
 			fr: 'Suppression du document',
