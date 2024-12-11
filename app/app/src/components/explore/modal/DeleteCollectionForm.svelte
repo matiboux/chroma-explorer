@@ -72,8 +72,8 @@ function onClose() {
 			<li>
 				<strong>
 					{_({
-						en: 'ID',
-						fr: 'ID',
+						en: 'Collection ID',
+						fr: 'ID de la collection',
 					})}
 				</strong>{_({
 					en: ':',

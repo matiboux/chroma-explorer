@@ -95,8 +95,8 @@ async function copyToClipboard(selector: string)
 		<div class="input-group">
 			<p>
 				<strong>{_({
-					en: 'Record ID',
-					fr: 'ID de la donnée',
+					en: 'Document ID',
+					fr: 'ID du document',
 				})}</strong>{_({
 					en: ':',
 					fr: ' :',
