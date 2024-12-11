@@ -116,7 +116,7 @@ async function copyToClipboard(selector: string)
 					})}
 				</button>
 			</p>
-			<input type="hidden" id={`record-id-${idSuffix}`} name="record-id" value={record.ids[0]} readonly />
+			<input type="hidden" id={`record-id-${idSuffix}`} name="record-id" value={record.ids[0]} readonly={!editable} />
 		</div>
 
 		<div class="input-group">
@@ -145,7 +145,7 @@ async function copyToClipboard(selector: string)
 					fr: 'Taille du document: {0} octets',
 				}, new Blob([ record.documents[0] ?? '' ]).size)}
 			</p>
-			<textarea id={`record-collection-${idSuffix}`} readonly>{record.documents[0] ?? ''}</textarea>
+			<textarea id={`record-collection-${idSuffix}`} readonly={!editable}>{record.documents[0] ?? ''}</textarea>
 		</div>
 
 		<div class="input-group">
@@ -175,7 +175,7 @@ async function copyToClipboard(selector: string)
 				}, record.embeddings?.[0]?.length)}
 			</p>
 			<input
-				type="text" id={`record-embedding-${idSuffix}`} name="record-embedding" readonly
+				type="text" id={`record-embedding-${idSuffix}`} name="record-embedding" readonly={!editable}
 				value={record.embeddings?.[0] ? JSON.stringify(record.embeddings[0]) : null}
 			/>
 		</div>
@@ -241,7 +241,7 @@ async function copyToClipboard(selector: string)
 									}, new Blob([ value ]).size)}
 								</p>
 							{/if}
-							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly>{value}</textarea>
+							<textarea id={`record-metadata-${key}-${idSuffix}`} readonly={!editable}>{value}</textarea>
 						</div>
 					{/each}
 
@@ -250,6 +250,24 @@ async function copyToClipboard(selector: string)
 			</div>
 
 		</div>
+
+		{#if editable}
+			<div class="button-group">
+				<button type="submit">
+					<span class="icon icon-[mdi--content-save] icon-align"></span>
+					{_({
+						en: 'Save',
+						fr: 'Enregistrer',
+					})}
+				</button>
+				<button type="reset">
+					{_({
+						en: 'Reset',
+						fr: 'Réinitialiser',
+					})}
+				</button>
+			</div>
+		{/if}
 
 	{/if}
 
@@ -304,6 +322,11 @@ async function copyToClipboard(selector: string)
 			@apply bg-gray-100 w-full p-2;
 			@apply border border-gray-300 rounded;
 			@apply resize-y;
+
+			&[readonly] {
+				@apply bg-gray-200 text-gray-600;
+				@apply outline-none;
+			}
 		}
 
 		textarea {
@@ -338,6 +361,35 @@ async function copyToClipboard(selector: string)
 
 			label {
 				@apply text-sm;
+			}
+		}
+	}
+
+	.button-group {
+		@apply flex gap-2;
+
+		button {
+			@apply px-4 py-2 bg-gray-600 text-white rounded;
+			@apply transition-colors duration-200 ease-in-out;
+
+			&:hover {
+				@apply bg-gray-700;
+			}
+
+			&:active {
+				@apply bg-gray-800;
+			}
+
+			&[type='submit'] {
+				@apply bg-blue-600;
+
+				&:hover {
+					@apply bg-blue-700;
+				}
+
+				&:active {
+					@apply bg-blue-800;
+				}
 			}
 		}
 	}
