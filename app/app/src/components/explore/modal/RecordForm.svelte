@@ -7,6 +7,7 @@ import { stateStore } from '~/stores/stateStore'
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
 export let locale: Locales | undefined = undefined
+export let editable: boolean = false
 const _ = i18nFactory(locale)
 
 // Generate a random suffix for id attributes

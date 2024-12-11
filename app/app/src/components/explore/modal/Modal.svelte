@@ -38,13 +38,6 @@ const modalViewModeMap: Record<ModalViewMode, {
 			fr: 'Suppression de collection',
 		},
 	},
-	'viewDocument': {
-		component: RecordForm,
-		title: {
-			en: 'Viewing document',
-			fr: 'Visualisation du document',
-		},
-	},
 	'downloadDocuments': {
 		component: DownloadDocumentsForm,
 		title: {
@@ -59,15 +52,25 @@ const modalViewModeMap: Record<ModalViewMode, {
 			fr: 'Ajout de documents',
 		},
 	},
+	'viewDocument': {
+		component: RecordForm,
+		title: {
+			en: 'Viewing document',
+			fr: 'Visualisation du document',
+		},
+	},
 	'editDocument': {
 		component: RecordForm,
+		args: {
+			editable: true,
+		},
 		title: {
 			en: 'Editing document',
 			fr: 'Édition du document',
 		},
 	},
 	'deleteDocument': {
-		component: RecordForm,
+		component: RecordForm, // TODO: Create a DeleteDocumentForm component
 		title: {
 			en: 'Deleting document',
 			fr: 'Suppression du document',
@@ -126,6 +129,7 @@ function onClose()
 				{#if modalViewModeMap[$stateStore.modalViewMode]?.component}
 					<svelte:component
 						this={modalViewModeMap[$stateStore.modalViewMode]?.component}
+						{...modalViewModeMap[$stateStore.modalViewMode]?.args}
 						locale={locale}
 					/>
 				{:else}
