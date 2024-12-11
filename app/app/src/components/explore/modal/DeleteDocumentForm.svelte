@@ -67,8 +67,8 @@ function onClose() {
 
 		<p>
 			{_({
-				en: 'Are you sure you want to delete the following collection?',
-				fr: 'Êtes-vous sûr de vouloir supprimer la collection suivante ?',
+				en: 'Are you sure you want to delete the following document?',
+				fr: 'Êtes-vous sûr de vouloir supprimer le document suivant ?',
 			})}
 		</p>
 
@@ -142,26 +142,26 @@ function onClose() {
 		@apply flex gap-2 mt-3;
 
 		button {
-			@apply px-4 py-2 bg-gray-600 text-white rounded;
+			@apply px-4 py-2 bg-gray-500 text-white rounded;
 			@apply transition-colors duration-200 ease-in-out;
 
 			&:hover {
-				@apply bg-gray-700;
+				@apply bg-gray-600;
 			}
 
 			&:active {
-				@apply bg-gray-800;
+				@apply bg-gray-700;
 			}
 
 			&[type='submit'] {
-				@apply bg-red-700;
+				@apply bg-red-600;
 
 				&:hover {
-					@apply bg-red-800;
+					@apply bg-red-700;
 				}
 
 				&:active {
-					@apply bg-red-900;
+					@apply bg-red-800;
 				}
 			}
 		}
