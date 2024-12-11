@@ -87,13 +87,57 @@ async function copyToClipboard(selector: string)
 	lastCopiedSelector = selector
 }
 
+async function onSubmit()
+{
+	if (!editable)
+	{
+		console.error('Form is not editable')
+		return
+	}
+
+	if (!record)
+	{
+		console.error('Document not found')
+		return
+	}
+
+	if (formData.id !== record.ids[0])
+	{
+		console.error('Document ID mismatch')
+		return
+	}
+
+	try
+	{
+		const state = stateStore.get()
+		await state.collection.update({
+			ids: [ formData.id ],
+			documents: [ formData.document ],
+			embeddings: [ JSON.parse(formData.embedding) ],
+			metadatas: [ { ...formData.metadatas } ],
+		})
+	}
+	catch (error: unknown)
+	{
+		console.error(error)
+	}
+
+	// Close the modal & clear documents list
+	stateStore.set({
+		...stateStore.get(),
+		modalViewMode: null,
+		documents: null,
+		selectedDocument: null,
+	})
+}
+
 async function onReset()
 {
 	loadRecord()
 }
 </script>
 
-<form class="record-form">
+<form class="record-form" on:submit|preventDefault={onSubmit} on:reset|preventDefault={onReset}>
 
 	{#if !record}
 		<p>
@@ -293,7 +337,7 @@ async function onReset()
 						fr: 'Enregistrer',
 					})}
 				</button>
-				<button type="reset" on:click|preventDefault={onReset}>
+				<button type="reset">
 					{_({
 						en: 'Reset',
 						fr: 'Réinitialiser',
