@@ -1,4 +1,5 @@
 <script lang="ts">
+import { onMount } from 'svelte'
 import { ChromaClient } from 'chromadb'
 import type { GetResponse } from 'chromadb'
 
@@ -17,23 +18,16 @@ let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
 
-stateStore.subscribe(async (value, oldValue) =>
+async function loadRecord()
 {
-	if (value.modalViewMode === null)
-	{
-		// Modal is not active, clear record
-		record = undefined
-		return
-	}
+	const state = stateStore.get()
 
 	if (
-		// !value.collections ||
-		!value.selectedCollection ||
-		// !value.collections[value.selectedCollection] ||
-		!value.selectedDocument ||
-		value.selectedDocument === oldValue?.selectedDocument
+		!state.collection ||
+		!state.selectedDocument
 	)
 	{
+		record = null
 		return
 	}
 
@@ -41,10 +35,8 @@ stateStore.subscribe(async (value, oldValue) =>
 
 	try
 	{
-		const chroma = value.chroma!
-		const collection = await chroma.getCollection({ name: value.collections[value.selectedCollection].name })
-		record = await collection.get({
-			ids: [ value.selectedDocument ],
+		record = await state.collection.get({
+			ids: [ state.selectedDocument ],
 			include: [ 'documents', 'embeddings', 'metadatas' ],
 		})
 	}
@@ -53,6 +45,11 @@ stateStore.subscribe(async (value, oldValue) =>
 		console.error(error)
 		record = null
 	}
+}
+
+onMount(() =>
+{
+	loadRecord()
 })
 
 async function copyToClipboard(selector: string)
@@ -68,6 +65,11 @@ async function copyToClipboard(selector: string)
 
 	await navigator.clipboard.writeText(element.value)
 	lastCopiedSelector = selector
+}
+
+async function onReset()
+{
+	loadRecord()
 }
 </script>
 
@@ -260,7 +262,7 @@ async function copyToClipboard(selector: string)
 						fr: 'Enregistrer',
 					})}
 				</button>
-				<button type="reset">
+				<button type="reset" on:click|preventDefault={onReset}>
 					{_({
 						en: 'Reset',
 						fr: 'Réinitialiser',
