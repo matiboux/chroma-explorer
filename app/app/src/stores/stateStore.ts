@@ -83,174 +83,112 @@ configStore.subscribe(async (config, oldConfig) =>
 	})
 })
 
-class ResetException extends Error {}
-
-async function reloadCollections(
+async function getCollections(
 	chroma: ChromaClient | null,
-	currentState: StateStore,
-): Promise<boolean>
+): Promise<Record<string, CollectionParams> | null>
 {
 	// Inputs: chroma
-	try
+
+	if (!chroma)
 	{
-		if (!chroma)
-		{
-			// Chroma client not initialized
-			if (currentState.collections)
+		// Chroma client not initialized
+
+		// Clear collections list
+		return null
+	}
+
+	// Get collections list
+	const collections =
+		(await chroma.listCollections())
+		.sort((a, b) => a.name.localeCompare(b.name))
+		.reduce<Record<string, CollectionParams>>(
+			(collections, collection) =>
 			{
-				// Clear collections list
-				throw new ResetException()
-			}
+				collections[collection.id] = collection
+				return collections
+			},
+			{} as Record<string, CollectionParams>,
+		)
 
-			return false
-		}
-
-		// Load collections list
-		const collections =
-			(await chroma.listCollections())
-			.sort((a, b) => a.name.localeCompare(b.name))
-			.reduce<Record<string, CollectionParams>>(
-				(collections, collection) =>
-				{
-					collections[collection.id] = collection
-					return collections
-				},
-				{} as Record<string, CollectionParams>,
-			)
-
-		stateStore.set({
-			...stateStore.get(),
-			collections: collections,
-			selectedCollection: collections[currentState.selectedCollection!] ? currentState.selectedCollection : null,
-		})
-		return true
-	}
-	catch (error: any)
-	{
-		if (error.name === 'ChromaConnectionError')
-		{
-			// Force logout
-			configStore.set({
-				...configStore.get(),
-				confirmed: false,
-			})
-			return false
-		}
-
-		// Reset collections list, or failed to reload collections list
-		stateStore.set({
-			...currentState,
-			collections: null,
-			selectedCollection: null,
-		})
-		return true
-	}
+	return collections
 }
 
-async function reloadCollection(
+async function getCollection(
 	chroma: ChromaClient | null,
 	collections: Record<string, CollectionParams> | null,
 	selectedCollection: string | null,
-	currentState: StateStore,
-): Promise<boolean>
+): Promise<Collection | null>
 {
 	// Inputs: chroma, collections, selectedCollection
-	try
+
+	if (!chroma || !collections || !collections[selectedCollection!])
 	{
-		if (!chroma || !collections || !collections[selectedCollection!])
-		{
-			// Chroma client not initialized, or
-			// Unknown selected collection
-			if (currentState.collection)
-			{
-				// Clear the collection
-				throw new ResetException()
-			}
+		// Chroma client not initialized, or
+		// Unknown selected collection
 
-			return false
-		}
-
-		// Load the selected collection
-		const collection = await chroma.getCollection({
-			name: collections[selectedCollection!]!.name,
-			embeddingFunction: null!,
-		})
-
-		stateStore.set({
-			...currentState,
-			collection: collection,
-		})
-		return true
+		// Clear the collection
+		return null
 	}
-	catch (error: unknown)
-	{
-		// Reset the collection, or failed to reload the collection
-		stateStore.set({
-			...currentState,
-			collection: null,
-		})
-		return true
-	}
+
+	// Get the selected collection
+	const collection = await chroma.getCollection({
+		name: collections[selectedCollection!]!.name,
+		embeddingFunction: null!,
+	})
+
+	return collection
 }
 
-async function reloadDocuments(
+async function getDocuments(
 	collection: Collection | null,
 	loadDocuments: boolean,
-	currentState: StateStore,
-): Promise<boolean>
+): Promise<MultiGetResponse | null>
 {
-	// Inputs: collection
-	try
+	// Inputs: collection, loadDocuments
+
+	if (!collection || !loadDocuments)
 	{
-		if (!collection || !loadDocuments)
-		{
-			// Collection not loaded, or
-			// Load documents disabled
-			if (currentState.documents)
-			{
-				// Clear the collection
-				throw new ResetException()
-			}
+		// Collection not loaded, or
+		// Load documents disabled
 
-			return false
-		}
-
-		// Load collection documents
-		const documents = await collection.peek({
-			limit: 100,
-		})
-
-		stateStore.set({
-			...currentState,
-			documents: documents,
-		})
-		return true
+		// Clear the collection documents
+		return null
 	}
-	catch (error: unknown)
-	{
-		// Reset collection documents, or failed to reload collection documents
-		stateStore.set({
-			...currentState,
-			documents: null,
-		})
-		return true
-	}
+
+	// Get collection documents
+	const documents = await collection.peek({
+		limit: 100,
+	})
+
+	return documents
 }
 
-stateStore.subscribe(async (state, oldState) =>
+stateStore.subscribe(async (currentState, oldState) =>
 {
+	const state: StateStore = { ...currentState }
+	let changes: boolean = false
+
 	if (
 		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
 		(state.chroma !== null && state.collections === null) // Force reload
 	)
 	{
-		// Reload collections list after input changes
-		if (await reloadCollections(
-			state.chroma,
-			state, // currentState
-		))
+		try
 		{
-			// Collections list reloaded, stop here
+			// Get collections list after input changes
+			const collections = await getCollections(state.chroma)
+			state.collections = collections
+			state.selectedCollection = collections?.[state.selectedCollection!] ? state.selectedCollection : null
+			changes = true
+		}
+		catch (error: any)
+		{
+			// Request error
+			// Force logout
+			configStore.set({
+				...configStore.get(),
+				confirmed: false,
+			})
 			return
 		}
 	}
@@ -262,15 +200,21 @@ stateStore.subscribe(async (state, oldState) =>
 		(state.selectedCollection !== null && state.collection === null) // Force reload
 	)
 	{
-		// Reload the collection after input changes
-		if (await reloadCollection(
-			state.chroma,
-			state.collections,
-			state.selectedCollection,
-			state, // currentState
-		))
+		try
 		{
-			// Collection reloaded, stop here
+			// Get the collection after input changes
+			const collection = await getCollection(state.chroma, state.collections, state.selectedCollection)
+			state.collection = collection
+			changes = true
+		}
+		catch (error: any)
+		{
+			// Request error
+			// Force logout
+			configStore.set({
+				...configStore.get(),
+				confirmed: false,
+			})
 			return
 		}
 	}
@@ -282,14 +226,27 @@ stateStore.subscribe(async (state, oldState) =>
 	)
 	{
 		// Reload collection documents after input changes
-		if (await reloadDocuments(
-			state.collection,
-			state.loadDocuments,
-			state, // currentState
-		))
+		try
 		{
-			// Collection documents reloaded, stop here
+			const documents = await getDocuments(state.collection, state.loadDocuments)
+			state.documents = documents
+			changes = true
+		}
+		catch (error: any)
+		{
+			// Request error
+			// Force logout
+			configStore.set({
+				...configStore.get(),
+				confirmed: false,
+			})
 			return
 		}
+	}
+
+	if (changes)
+	{
+		// Apply changes
+		stateStore.set(state)
 	}
 })
