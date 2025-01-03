@@ -28,6 +28,8 @@ stateStore.subscribe(async (state, oldState) =>
 		return
 	}
 
+	checked = false
+
 	try
 	{
 		version = await state.chroma.version()
