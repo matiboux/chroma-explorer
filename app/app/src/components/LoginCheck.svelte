@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { CollectionParams } from 'chromadb'
+
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 
@@ -11,7 +13,7 @@ export let loginRedirect: string = ''
 
 let checked: boolean = false
 let version: string | null = null
-let collections: string[] | null = null
+let collections: CollectionParams[] | null = null
 
 stateStore.subscribe(async (state, oldState) =>
 {
