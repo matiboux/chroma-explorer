@@ -1,31 +1,23 @@
-import type { AstroUserConfig } from 'astro/config'
-
-import type Site from '~/types/Site.d.ts'
-
-export const site: Site = {
-	title: 'Chroma Explorer',
-	description: {
-		'en': 'Online tool to explore the contents of a Chroma database.',
-		'fr': 'Outil en ligne pour explorer le contenu d\'une base de données Chroma.',
-	},
-	author: 'Matiboux',
-	themeColor: '#ffffff',
-}
+import type { AstroConfig } from 'astro'
 
 export const i18n =
 {
-	defaultLocale: 'en',
 	locales: [
 		{
-			codes: ['en', 'en-US'],
+			codes: ['en', 'en_US'],
 			path: 'en',
 		},
 		{
-			codes: ['fr', 'fr-FR'],
+			codes: ['fr', 'fr_FR'],
 			path: 'fr',
 		},
 	],
+	defaultLocale: 'en',
+	fallback: {
+		fr: 'en',
+	},
 	routing: {
 		prefixDefaultLocale: false,
+		fallbackType: 'rewrite',
 	},
-} as const satisfies AstroUserConfig['i18n']
+} as const satisfies AstroConfig['i18n']

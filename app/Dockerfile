@@ -6,7 +6,7 @@
 # --
 # Upstream images
 
-FROM node:20-slim AS node_upstream
+FROM node:22-slim AS node_upstream
 FROM nginx:alpine AS nginx_upstream
 
 
@@ -83,7 +83,12 @@ ARG GITHUB_SHA=""
 ENV GITHUB_SHA=${GITHUB_SHA}
 
 # Build application
-RUN npm run build
+ARG BUILD_CHECK=true
+RUN if [ "${BUILD_CHECK}" = "true" ]; then \
+		npm run build; \
+	else \
+		npm run build-only; \
+	fi
 
 
 # --

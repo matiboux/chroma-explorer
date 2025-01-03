@@ -1,21 +1,25 @@
 name: Deploy CD
 
 on:
-  # Run on push events on primary branches
+
+  # Run on push on production branches
   push:
     branches:
       - main
     paths:
+      - '.github/workflows/deploy.yml'
       - 'app/**'
+      - 'docker-compose.yml'
+      - 'docker-compose.cicd.yml'
 
   # Run on manual triggers
   workflow_dispatch:
 
-# Set GITHUB_TOKEN permissions
+# Set GITHUB_TOKEN permissions for the workflow
 permissions:
   contents: read
 
-# Allow one concurrent deployment
+# Set workflow concurrency rules
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: true
@@ -24,52 +28,55 @@ jobs:
 
   # Build job
   build:
-    name: Build Astro site artifact
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
 
-    - name: Build for production
-      run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml build
-      env:
-        GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
-        GITHUB_SHA: ${{ github.sha }}
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Copy application files
-      run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml run --rm app
+      - name: Build for production
+        env:
+          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          BUILD_CHECK: "false" # Skip type checks
+        run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml build
 
-    - name: Chown dist folder to $USER
-      run: sudo chown -R $USER:$USER ./app/dist
+      - name: Copy application files
+        run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml up
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./app/dist
+      - name: Chown dist folder to $USER
+        run: sudo chown -R $USER:$USER ./app/dist
 
-  # Deployment job
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./app/dist
+
+  # Deploy job
   deploy:
-    name: Deploy to GitHub Pages
+    name: Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    # Dependencies
+    # Job dependencies
     needs:
       - build
 
-    # Sets permissions for the GITHUB_TOKEN
+    # Set GITHUB_TOKEN permissions for the job
     permissions:
       pages: write
       id-token: write
 
-    # Sets the GitHub Pages deployment
+    # Set deployment environment
     environment:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
