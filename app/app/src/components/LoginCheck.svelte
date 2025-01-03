@@ -22,11 +22,13 @@ stateStore.subscribe(async (state, oldState) =>
 		return
 	}
 
+	checked = false
+	version = null
+	collections = null
+
 	if (!state.chroma)
 	{
 		checked = true
-		version = null
-		collections = null
 		return
 	}
 
