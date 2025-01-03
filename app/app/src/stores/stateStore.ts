@@ -39,10 +39,11 @@ export const stateStore = atom<StateStore>(defaultState)
 
 configStore.subscribe(async (config, oldConfig) =>
 {
+	const state = stateStore.get()
+
 	if (
-		oldConfig &&
-		config.confirmed === oldConfig.confirmed &&
-		config.confirmed === (stateStore.get().chroma !== null)
+		oldConfig !== undefined &&
+		config.confirmed === (state.chroma !== null)
 	)
 	{
 		// Nothing to do
@@ -53,15 +54,12 @@ configStore.subscribe(async (config, oldConfig) =>
 	{
 		// Logged out
 
+		// state.chroma is set
 		// Clear the Chroma client
-		const state = stateStore.get()
-		if (state.chroma !== null)
-		{
-			stateStore.set({
-				...state,
-				chroma: null,
-			})
-		}
+		stateStore.set({
+			...state,
+			chroma: null,
+		})
 
 		return
 	}
@@ -80,7 +78,7 @@ configStore.subscribe(async (config, oldConfig) =>
 
 	// Set the Chroma client
 	stateStore.set({
-		...stateStore.get(),
+		...state,
 		chroma: chroma,
 	})
 })
@@ -127,8 +125,18 @@ async function reloadCollections(
 		})
 		return true
 	}
-	catch (error: unknown)
+	catch (error: any)
 	{
+		if (error.name === 'ChromaConnectionError')
+		{
+			// Force logout
+			configStore.set({
+				...configStore.get(),
+				confirmed: false,
+			})
+			return false
+		}
+
 		// Reset collections list, or failed to reload collections list
 		stateStore.set({
 			...currentState,
