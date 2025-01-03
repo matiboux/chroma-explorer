@@ -39,12 +39,10 @@ export const stateStore = atom<StateStore>(defaultState)
 
 configStore.subscribe(async (config, oldConfig) =>
 {
-	const state = stateStore.get()
-
 	if (
 		oldConfig &&
 		config.confirmed === oldConfig.confirmed &&
-		config.confirmed === (state.chroma !== null)
+		config.confirmed === (stateStore.get().chroma !== null)
 	)
 	{
 		// Nothing to do
@@ -54,14 +52,17 @@ configStore.subscribe(async (config, oldConfig) =>
 	if (!config.confirmed)
 	{
 		// Logged out
+
 		// Clear the Chroma client
-		if (state.chroma)
+		const state = stateStore.get()
+		if (state.chroma !== null)
 		{
 			stateStore.set({
 				...state,
 				chroma: null,
 			})
 		}
+
 		return
 	}
 
@@ -74,19 +75,12 @@ configStore.subscribe(async (config, oldConfig) =>
 			...configStore.get(),
 			confirmed: false,
 		})
-
-		if (state.chroma)
-		{
-			stateStore.set({
-				...state,
-				chroma: null,
-			})
-		}
+		return
 	}
 
 	// Set the Chroma client
 	stateStore.set({
-		...state,
+		...stateStore.get(),
 		chroma: chroma,
 	})
 })
