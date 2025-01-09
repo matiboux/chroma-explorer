@@ -18,12 +18,16 @@ let record: GetResponse | null | undefined = undefined
 let selectedMetadata: string | null = null
 let lastCopiedSelector: string | null = null
 
-let formData = {
+let formData: {
+	id: string,
+	document: string,
+	embedding: string,
+	metadatas: Array<{ key: string, value: string, type: string, created: boolean, updated: boolean }>,
+} = {
 	id: '',
 	document: '',
 	embedding: '',
-	metadatas: {},
-	newMetadatas: {},
+	metadatas: [],
 }
 
 async function loadRecord()
@@ -61,8 +65,17 @@ async function loadRecord()
 			id: record.ids[0],
 			document: record.documents[0] ?? '',
 			embedding: record.embeddings?.[0] ? JSON.stringify(record.embeddings[0]) : '',
-			metadatas: record.metadatas?.[0] ? { ...record.metadatas[0] } : {},
-			newMetadatas: {},
+			metadatas: record.metadatas?.[0]
+				? Object.entries(record.metadatas[0]).map(
+					([ key, value ]) => ({
+						key,
+						value: typeof value === 'string' ? value : JSON.stringify(value),
+						type: typeof value,
+						created: false,
+						deleted: false,
+					})
+				)
+				: [],
 		}
 	}
 }
@@ -114,7 +127,18 @@ async function onSubmit()
 			ids: [ formData.id ],
 			documents: [ formData.document ],
 			embeddings: [ JSON.parse(formData.embedding) ],
-			metadatas: [ { ...formData.metadatas } ],
+			metadatas: [ formData.metadatas.reduce(
+				(acc, metadata) =>
+				{
+					if (!metadata.deleted)
+					{
+						// TODO: Use metadata type
+						acc[metadata.key] = metadata.value
+					}
+					return acc
+				},
+				{},
+			) ],
 		})
 	}
 	catch (error: unknown)
@@ -134,6 +158,15 @@ async function onSubmit()
 async function onReset()
 {
 	loadRecord()
+}
+
+async function onAddMetadata()
+{
+	const newLength = formData.metadatas.push({
+		key: 'new',
+		value: '',
+	})
+	selectedMetadata = newLength - 1
 }
 </script>
 
@@ -275,29 +308,33 @@ async function onReset()
 					</label>
 
 					<div class="radio-badges">
-						{#each Object.keys(record.metadatas[0]) as key}
+						{#each formData.metadatas as metadata}
 							<div class="radio-badge">
 								<input
-									type="radio" name="metadata" value={key}
+									type="radio" name="metadata" value={metadata.key}
 									bind:group={selectedMetadata}
-									id={`metadata-${key}-${idSuffix}`}
+									id={`metadata-${metadata.key}-${idSuffix}`}
 								/>
-								<label for={`metadata-${key}-${idSuffix}`}>{key}</label>
+								<label for={`metadata-${metadata.key}-${idSuffix}`}>{metadata.key}</label>
 							</div>
 						{/each}
-						<!-- TODO: Add a button to add a new metadata -->
+						{#if editable}
+							<div class="radio-badge-button" on:click={onAddMetadata}>
+								<span class="icon icon-[mdi--plus] icon-align"></span>
+							</div>
+						{/if}
 					</div>
 
-					{#each Object.keys(record.metadatas[0]) as key}
-						<div class="input-group" hidden={selectedMetadata !== key}>
-							<label for={`record-metadata-${key}-${idSuffix}`}>
-								{key}
+					{#each formData.metadatas as metadata}
+						<div class="input-group" hidden={selectedMetadata !== metadata.key}>
+							<label for={`record-metadata-${metadata.key}-${idSuffix}`}>
+								{metadata.key}
 								<button
-									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${key}`}
-									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${key}`)}
+									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${metadata.key}`}
+									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${metadata.key}`)}
 								>
 									<span class="icon icon-[mdi--content-copy] icon-align"></span>
-									{lastCopiedSelector === `metadata-${key}` ? _({
+									{lastCopiedSelector === `metadata-${metadata.key}` ? _({
 										en: 'Copied!',
 										fr: 'Copié !',
 									}) : _({
@@ -306,17 +343,17 @@ async function onReset()
 									})}
 								</button>
 							</label>
-							{#if typeof formData.metadatas[key] === 'string'}
+							{#if typeof metadata.value === 'string'}
 								<p class="hint">
 									{_({
 										en: 'Metadata value size: {0} bytes',
 										fr: 'Taille de la valeur métadonnée : {0} octets',
-									}, new Blob([ formData.metadatas[key] ]).size)}
+									}, new Blob([ metadata.value ]).size)}
 								</p>
 							{/if}
 							<textarea
-								id={`record-metadata-${key}-${idSuffix}`} name={`record-metadata-${key}`}
-								bind:value={formData.metadatas[key]} readonly={!editable}
+								id={`record-metadata-${metadata.key}-${idSuffix}`} name={`record-metadata-${metadata.key}`}
+								bind:value={metadata.value} readonly={!editable}
 							></textarea>
 							<!-- FIXME: SET METADATA FIELD TYPE -->
 						</div>
@@ -420,7 +457,7 @@ async function onReset()
 					@apply sr-only;
 				}
 
-				label {
+				label, &-button {
 					// Badge style
 					@apply inline-block bg-gray-200 px-2 py-1 rounded-full;
 					@apply text-sm font-normal;
@@ -429,6 +466,10 @@ async function onReset()
 
 				input[type="radio"]:checked + label {
 					@apply bg-blue-500 text-white;
+				}
+
+				&-button {
+					@apply hover:bg-gray-300 active:bg-gray-400;
 				}
 			}
 		}
