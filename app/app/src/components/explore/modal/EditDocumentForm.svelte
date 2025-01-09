@@ -15,7 +15,7 @@ const _ = i18nFactory(locale)
 const idSuffix = Math.random().toString(36).substring(2)
 
 let record: GetResponse | null | undefined = undefined
-let selectedMetadata: string | null = null
+let selectedMetadata: number | null = null
 let lastCopiedSelector: string | null = null
 
 let formData: {
@@ -309,15 +309,15 @@ async function onAddMetadata()
 					</label>
 
 					<div class="radio-badges">
-						{#each formData.metadatas as metadata}
+						{#each formData.metadatas as metadata, metadataIndex}
 							<div class="radio-badge">
 								<input
-									type="radio" name="metadata" value={metadata.key}
+									type="radio" name="metadata" value={metadataIndex}
 									bind:group={selectedMetadata}
-									id={`metadata-${metadata.key}-${idSuffix}`}
+									id={`metadata-${metadataIndex}-${idSuffix}`}
 									disabled={metadata.deleted}
 								/>
-								<label for={`metadata-${metadata.key}-${idSuffix}`}>
+								<label for={`metadata-${metadataIndex}-${idSuffix}`}>
 									{#if !metadata.deleted}
 										{metadata.key}
 									{:else}
@@ -333,19 +333,19 @@ async function onAddMetadata()
 						{/if}
 					</div>
 
-					{#each formData.metadatas as metadata}
-						<div class="input-group" hidden={selectedMetadata !== metadata.key || metadata.deleted}>
-							<label for={`record-metadata-${metadata.key}-${idSuffix}`}>
+					{#each formData.metadatas as metadata, metadataIndex}
+						<div class="input-group" hidden={selectedMetadata !== metadataIndex || metadata.deleted}>
+							<label for={`record-metadata-${metadataIndex}-${idSuffix}`}>
 								{metadata.key}
 								{#if metadata.created}
 									<small>(new)</small>
 								{/if}
 								<button
-									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${metadata.key}`}
-									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${metadata.key}`)}
+									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${metadataIndex}`}
+									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${metadataIndex}`)}
 								>
 									<span class="icon icon-[mdi--content-copy] icon-align"></span>
-									{lastCopiedSelector === `metadata-${metadata.key}` ? _({
+									{lastCopiedSelector === `metadata-${metadataIndex}` ? _({
 										en: 'Copied!',
 										fr: 'Copié !',
 									}) : _({
@@ -363,7 +363,7 @@ async function onAddMetadata()
 								</p>
 							{/if}
 							<textarea
-								id={`record-metadata-${metadata.key}-${idSuffix}`} name={`record-metadata-${metadata.key}`}
+								id={`record-metadata-${metadataIndex}-${idSuffix}`} name={`record-metadata-${metadataIndex}`}
 								bind:value={metadata.value} readonly={!editable}
 							></textarea>
 							<!-- FIXME: SET METADATA FIELD TYPE -->
