@@ -315,8 +315,15 @@ async function onAddMetadata()
 									type="radio" name="metadata" value={metadata.key}
 									bind:group={selectedMetadata}
 									id={`metadata-${metadata.key}-${idSuffix}`}
+									disabled={metadata.deleted}
 								/>
-								<label for={`metadata-${metadata.key}-${idSuffix}`}>{metadata.key}</label>
+								<label for={`metadata-${metadata.key}-${idSuffix}`}>
+									{#if !metadata.deleted}
+										{metadata.key}
+									{:else}
+										<del>{metadata.key}</del>
+									{/if}
+								</label>
 							</div>
 						{/each}
 						{#if editable}
@@ -327,9 +334,12 @@ async function onAddMetadata()
 					</div>
 
 					{#each formData.metadatas as metadata}
-						<div class="input-group" hidden={selectedMetadata !== metadata.key}>
+						<div class="input-group" hidden={selectedMetadata !== metadata.key || metadata.deleted}>
 							<label for={`record-metadata-${metadata.key}-${idSuffix}`}>
 								{metadata.key}
+								{#if metadata.created}
+									<small>(new)</small>
+								{/if}
 								<button
 									type="button" class="copy-button" class:copied={lastCopiedSelector === `metadata-${metadata.key}`}
 									on:click|preventDefault={copyToClipboard.bind(null, `metadata-${metadata.key}`)}
