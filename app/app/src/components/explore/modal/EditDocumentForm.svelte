@@ -130,11 +130,8 @@ async function onSubmit()
 			metadatas: [ formData.metadatas.reduce(
 				(acc, metadata) =>
 				{
-					if (!metadata.deleted)
-					{
-						// TODO: Use metadata type
-						acc[metadata.key] = metadata.value
-					}
+					// TODO: Use metadata type
+					acc[metadata.key] = !metadata.deleted ? metadata.value : null
 					return acc
 				},
 				{},
