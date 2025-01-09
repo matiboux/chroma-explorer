@@ -165,6 +165,7 @@ async function onAddMetadata()
 	const newLength = formData.metadatas.push({
 		key: 'new',
 		value: '',
+		created: true,
 	})
 	selectedMetadata = newLength - 1
 }
