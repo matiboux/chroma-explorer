@@ -169,6 +169,22 @@ async function onAddMetadata()
 	})
 	selectedMetadata = newLength - 1
 }
+
+async function onDeleteMetadata(index: number)
+{
+	if (index < 0 || index >= formData.metadatas.length)
+	{
+		console.error('Invalid metadata index')
+		return
+	}
+
+	formData.metadatas[index].deleted = true
+
+	if (selectedMetadata === index)
+	{
+		selectedMetadata = null
+	}
+}
 </script>
 
 <form class="record-form" on:submit|preventDefault={onSubmit} on:reset|preventDefault={onReset}>
@@ -351,6 +367,16 @@ async function onAddMetadata()
 									}) : _({
 										en: 'Copy',
 										fr: 'Copier',
+									})}
+								</button>
+								<button
+									type="button" class="delete-button"
+									on:click|preventDefault={onDeleteMetadata.bind(null, metadataIndex)}
+								>
+									<span class="icon icon-[mdi--delete] icon-align"></span>
+									{_({
+										en: 'Delete',
+										fr: 'Supprimer',
 									})}
 								</button>
 							</label>
