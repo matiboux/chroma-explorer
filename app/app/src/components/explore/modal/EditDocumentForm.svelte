@@ -162,6 +162,12 @@ async function onReset()
 
 async function onAddMetadata()
 {
+	if (!editable)
+	{
+		console.error('Form is not editable')
+		return
+	}
+
 	const newLength = formData.metadatas.push({
 		key: 'new',
 		value: '',
@@ -172,6 +178,12 @@ async function onAddMetadata()
 
 async function onDeleteMetadata(index: number)
 {
+	if (!editable)
+	{
+		console.error('Form is not editable')
+		return
+	}
+
 	if (index < 0 || index >= formData.metadatas.length)
 	{
 		console.error('Invalid metadata index')
@@ -369,16 +381,18 @@ async function onDeleteMetadata(index: number)
 										fr: 'Copier',
 									})}
 								</button>
-								<button
-									type="button" class="delete-button"
-									on:click|preventDefault={onDeleteMetadata.bind(null, metadataIndex)}
-								>
-									<span class="icon icon-[mdi--delete] icon-align"></span>
-									{_({
-										en: 'Delete',
-										fr: 'Supprimer',
-									})}
-								</button>
+								{#if editable}
+									<button
+										type="button" class="delete-button"
+										on:click|preventDefault={onDeleteMetadata.bind(null, metadataIndex)}
+									>
+										<span class="icon icon-[mdi--delete] icon-align"></span>
+										{_({
+											en: 'Delete',
+											fr: 'Supprimer',
+										})}
+									</button>
+								{/if}
 							</label>
 							{#if typeof metadata.value === 'string'}
 								<p class="hint">
