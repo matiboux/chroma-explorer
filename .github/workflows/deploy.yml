@@ -7,6 +7,9 @@ on:
     branches:
       # Production
       - main
+      - master
+      - prod
+      - production
     paths:
       # CI files
       - '.github/workflows/deploy.yml'
@@ -45,6 +48,14 @@ jobs:
 
       # Execution steps
 
+      - name: Pull dependencies
+        run: |
+          # docker compose pull --ignore-buildable
+          docker compose \
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            pull --ignore-buildable
+
       - name: Build for production
         env:
           GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
@@ -52,6 +63,7 @@ jobs:
           BUILD_CHECK: "false" # Skip type checks
         run: |
           # docker compose build
+          export UID="$(id -u)"
           docker compose \
             -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
             --env-file .env \
@@ -60,15 +72,11 @@ jobs:
       - name: Copy application files
         run: |
           # docker compose up
+          export UID="$(id -u)"
           docker compose \
             -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
             --env-file .env \
             up
-
-      - name: Chown dist folder to $USER
-        run: |
-          # chown -R $USER:$USER ./app/dist
-          sudo chown -R $USER:$USER ./app/dist
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
