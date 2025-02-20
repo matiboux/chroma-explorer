@@ -162,7 +162,7 @@ function onClose()
 
 		.modal-header {
 			@apply flex justify-between items-start;
-			@apply border-b-2 border-black border-opacity-10;
+			@apply border-b-2 border-black/10;
 
 			h2 {
 				@apply px-4 py-2;
