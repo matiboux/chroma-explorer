@@ -1,4 +1,4 @@
-# Services definition for running npm commands
+# Services definition for running CLI commands
 
 services:
 
@@ -8,12 +8,17 @@ services:
       file: ./docker-compose.yml
       service: app
     # Build override
-    image: ${IMAGES_PREFIX:-app}-npm:${DOCKER_TAG:-latest}
+    image: ${IMAGES_PREFIX:-app}-cli:${IMAGES_TAG:-latest}
     build:
-      target: app_npm
+      target: app_cli
       args: !reset []
+      args:
+        UID: ${UID:-1000}
     # Deploy override
+    user: ${UID:-1000}
     environment: !reset []
+    tmpfs:
+      - /tmp:mode=775,uid=${UID:-1000},gid=0
     volumes:
       - ./app/app:/app
     ports: !reset []

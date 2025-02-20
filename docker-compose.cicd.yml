@@ -10,6 +10,6 @@ services:
       args:
         BUILD_CHECK: ${BUILD_CHECK:-true}
     # Deploy override
+    command: [ "sh", "-c", "rm -rf /tmp/dist/* && cp -r /app/dist/* /tmp/dist" ]
     volumes:
       - ./app/dist:/tmp/dist
-    command: [ "sh", "-c", "rm -rf /tmp/dist/* && cp -r /app/dist/* /tmp/dist" ]
