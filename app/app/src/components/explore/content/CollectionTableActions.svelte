@@ -85,16 +85,17 @@ function onDownloadDocuments()
 </div>
 
 <style lang="scss">
-	.actions {
-		@apply flex gap-2 items-center;
-	}
+@reference '~/styles/tailwind.css';
 
+.actions {
+	@apply flex gap-2 items-center;
+}
 
-	.badge {
-		@apply inline-block;
-		@apply bg-gray-200;
-		@apply px-2;
-		@apply text-sm text-gray-700;
-		@apply rounded-full;
-	}
+.badge {
+	@apply inline-block;
+	@apply bg-gray-200;
+	@apply px-2;
+	@apply text-sm text-gray-700;
+	@apply rounded-full;
+}
 </style>

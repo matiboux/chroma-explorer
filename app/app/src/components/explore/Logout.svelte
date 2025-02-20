@@ -49,11 +49,13 @@ function onLogout()
 </button>
 
 <style lang="scss">
-	.logout-btn {
-		@apply px-2 py-1 aspect-square;
+@reference '~/styles/tailwind.css';
 
-		&:hover {
-			@apply bg-gray-200;
-		}
+.logout-btn {
+	@apply px-2 py-1 aspect-square;
+
+	&:hover {
+		@apply bg-gray-200;
 	}
+}
 </style>

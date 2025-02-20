@@ -122,6 +122,8 @@ function onClose() {
 </form>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
+
 .delete-form {
 
 	p, ul {

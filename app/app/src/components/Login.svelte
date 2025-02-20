@@ -201,6 +201,8 @@ onMount(() => {
 </form>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
+
 form {
 	@apply flex flex-col gap-4;
 	@apply mt-4;

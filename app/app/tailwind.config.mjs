@@ -1,5 +1,3 @@
-import { addDynamicIconSelectors } from '@iconify/tailwind'
-
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: [
@@ -8,7 +6,5 @@ export default {
 	theme: {
 		extend: {},
 	},
-	plugins: [
-		addDynamicIconSelectors(),
-	],
+	plugins: [],
 }

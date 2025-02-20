@@ -31,4 +31,5 @@ async function onClick()
 </Button>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
 </style>

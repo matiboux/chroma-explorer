@@ -159,6 +159,8 @@ function onDelete(id: string)
 </div>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
+
 table {
 	@apply bg-white;
 	@apply w-full;

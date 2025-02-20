@@ -26,11 +26,13 @@ const _ = i18nFactory(locale)
 {/if}
 
 <style lang="scss">
-	.status-success {
-		@apply text-green-700;
-	}
+@reference '~/styles/tailwind.css';
 
-	.status-error {
-		@apply text-red-700;
-	}
+.status-success {
+	@apply text-green-700;
+}
+
+.status-error {
+	@apply text-red-700;
+}
 </style>

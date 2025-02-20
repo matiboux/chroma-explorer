@@ -142,6 +142,8 @@ function onClose()
 </div>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
+
 .modal {
 	@apply fixed inset-0 z-50;
 	@apply flex items-center justify-center;

@@ -50,35 +50,37 @@ function selectCollection(collectionId: string)
 {/if}
 
 <style lang="scss">
-	.info-text {
-		@apply px-3 py-1;
-		@apply text-sm text-gray-600;
-	}
+@reference '~/styles/tailwind.css';
 
-	ul {
-		@apply w-full;
-		@apply px-1;
-		@apply list-none;
-		@apply space-y-1;
+.info-text {
+	@apply px-3 py-1;
+	@apply text-sm text-gray-600;
+}
 
-		li {
-			@apply bg-white;
+ul {
+	@apply w-full;
+	@apply px-1;
+	@apply list-none;
+	@apply space-y-1;
+
+	li {
+		@apply bg-white;
+		@apply rounded-lg;
+
+		a {
+			@apply text-gray-800;
+			@apply block;
+			@apply px-2 py-1;
+			@apply hover:bg-gray-100;
+			@apply active:bg-gray-200;
 			@apply rounded-lg;
+		}
 
-			a {
-				@apply text-gray-800;
-				@apply block;
-				@apply px-2 py-1;
-				@apply hover:bg-gray-100;
-				@apply active:bg-gray-200;
-				@apply rounded-lg;
-			}
-
-			&.active a, a.active {
-				@apply bg-gray-100;
-				@apply hover:bg-gray-200;
-				@apply active:bg-gray-300;
-			}
+		&.active a, a.active {
+			@apply bg-gray-100;
+			@apply hover:bg-gray-200;
+			@apply active:bg-gray-300;
 		}
 	}
+}
 </style>

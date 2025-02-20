@@ -178,58 +178,60 @@ function onDelete(id: string)
 </div>
 
 <style lang="scss">
-	.wrapper {
-		@apply bg-gray-50;
-		@apply h-full;
-		@apply pb-16;
-		@apply overflow-y-auto;
+@reference '~/styles/tailwind.css';
 
-		.footer {
-			@apply absolute left-0 bottom-0;
-			@apply flex justify-between items-center;
-			@apply w-full min-h-16;
-			@apply px-4 py-2;
-			@apply z-10;
-		}
+.wrapper {
+	@apply bg-gray-50;
+	@apply h-full;
+	@apply pb-16;
+	@apply overflow-y-auto;
+
+	.footer {
+		@apply absolute left-0 bottom-0;
+		@apply flex justify-between items-center;
+		@apply w-full min-h-16;
+		@apply px-4 py-2;
+		@apply z-10;
+	}
+}
+
+p.splash {
+	@apply text-gray-500;
+	@apply p-4;
+}
+
+table {
+	@apply bg-white;
+	@apply w-full;
+	@apply border-collapse;
+
+	th, td {
+		@apply p-2;
+		@apply border border-gray-200;
 	}
 
-	p.splash {
-		@apply text-gray-500;
-		@apply p-4;
+	th {
+		@apply bg-gray-100;
+		@apply border-gray-300;
 	}
+}
 
-	table {
-		@apply bg-white;
-		@apply w-full;
-		@apply border-collapse;
+.badge {
+	@apply inline-block;
+	@apply bg-gray-200;
+	@apply px-2;
+	@apply text-sm text-gray-600;
+	@apply rounded-full;
 
-		th, td {
-			@apply p-2;
-			@apply border border-gray-200;
-		}
-
-		th {
-			@apply bg-gray-100;
-			@apply border-gray-300;
-		}
+	&-primary {
+		@apply bg-blue-100;
+		@apply text-blue-500;
 	}
+}
 
-	.badge {
-		@apply inline-block;
-		@apply bg-gray-200;
-		@apply px-2;
-		@apply text-sm text-gray-600;
-		@apply rounded-full;
-
-		&-primary {
-			@apply bg-blue-100;
-			@apply text-blue-500;
-		}
-	}
-
-	.btn {
-		@apply px-2 py-1;
-		@apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400;
-		@apply border border-gray-300 rounded-lg;
-	}
+.btn {
+	@apply px-2 py-1;
+	@apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400;
+	@apply border border-gray-300 rounded-lg;
+}
 </style>

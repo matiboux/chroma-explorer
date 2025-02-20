@@ -293,6 +293,8 @@ async function onSubmitBatch()
 </div>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
+
 .add-document-wrapper {
 
 	&, .add-batch-form, .add-document-form {

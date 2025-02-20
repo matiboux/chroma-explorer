@@ -13,8 +13,10 @@ const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 </div>
 
 <style lang="scss">
-	.collections-list-wrapper {
-		@apply flex flex-col gap-2;
-		@apply py-2;
-	}
+@reference '~/styles/tailwind.css';
+
+.collections-list-wrapper {
+	@apply flex flex-col gap-2;
+	@apply py-2;
+}
 </style>

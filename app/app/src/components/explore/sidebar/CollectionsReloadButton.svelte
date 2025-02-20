@@ -31,4 +31,5 @@ async function onRefresh()
 </Button>
 
 <style lang="scss">
+@reference '~/styles/tailwind.css';
 </style>

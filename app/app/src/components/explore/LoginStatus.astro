@@ -17,14 +17,16 @@ const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 </div>
 
 <style lang="scss">
-	.login-status-wrapper {
-		@apply flex justify-between items-center;
-		@apply bg-gray-100;
+@reference '~/styles/tailwind.css';
 
-		.login-status {
-			@apply flex-grow;
-			@apply px-3 py-1;
-			@apply text-sm;
-		}
+.login-status-wrapper {
+	@apply flex justify-between items-center;
+	@apply bg-gray-100;
+
+	.login-status {
+		@apply flex-grow;
+		@apply px-3 py-1;
+		@apply text-sm;
 	}
+}
 </style>
