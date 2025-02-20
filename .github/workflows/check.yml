@@ -55,17 +55,17 @@ jobs:
         run: |
           # docker compose build
           docker compose \
-              -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
-              --env-file .env \
-              build
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            build
 
       - name: Copy application files
         run: |
           # docker compose up
           docker compose \
-              -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
-              --env-file .env \
-              up
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            up
 
       - name: Check application files
         run: |
