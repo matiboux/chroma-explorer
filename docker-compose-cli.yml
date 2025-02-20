@@ -13,12 +13,12 @@ services:
       target: app_cli
       args: !reset []
       args:
-        UID: ${UID:-1000}
+        UID: ${DOCKER_UID:-${UID:-1000}}
     # Deploy override
-    user: ${UID:-1000}
+    user: ${DOCKER_UID:-${UID:-1000}}
     environment: !reset []
     tmpfs:
-      - /tmp:mode=775,uid=${UID:-1000},gid=0
+      - /tmp:mode=775,uid=${DOCKER_UID:-${UID:-1000}},gid=0
     volumes:
       - ./app/app:/app
     ports: !reset []

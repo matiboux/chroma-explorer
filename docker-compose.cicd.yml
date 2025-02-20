@@ -7,7 +7,7 @@ services:
     image: matiboux/chown-volumes:latest
     # Deploy
     environment:
-      UID: ${UID:-1000}
+      UID: ${DOCKER_UID:-${UID:-1000}}
       VOLUMES: |
         /dist
     volumes:
@@ -19,13 +19,13 @@ services:
     build:
       target: app_prod_build
       args:
-        UID: ${UID:-1000}
+        UID: ${DOCKER_UID:-${UID:-1000}}
         BUILD_CHECK: ${BUILD_CHECK:-true}
     # Deploy override
     depends_on:
       app-volumes:
         condition: service_completed_successfully
-    user: ${UID:-1000}
+    user: ${DOCKER_UID:-${UID:-1000}}
     command: [ "sh", "-c", "rm -rf /dist/* && cp -r /app/dist/* /dist" ]
     volumes:
       - ./app/dist:/dist

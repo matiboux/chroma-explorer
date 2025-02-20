@@ -8,9 +8,9 @@ services:
     build:
       target: app_dev
       args:
-        UID: ${UID:-1000}
+        UID: ${DOCKER_UID:-${UID:-1000}}
     # Deploy override
-    user: ${UID:-1000}
+    user: ${DOCKER_UID:-${UID:-1000}}
     develop:
       watch:
         # Docker image
