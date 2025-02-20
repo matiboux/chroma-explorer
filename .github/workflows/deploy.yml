@@ -7,9 +7,6 @@ on:
     branches:
       # Production
       - main
-      - master
-      - prod
-      - production
     paths:
       # CI files
       - '.github/workflows/deploy.yml'
