@@ -147,7 +147,7 @@ function onClose()
 .modal {
 	@apply fixed inset-0 z-50;
 	@apply flex items-center justify-center;
-	@apply bg-black bg-opacity-50;
+	@apply bg-black/50;
 
 	&:not(.active) {
 		@apply hidden;
