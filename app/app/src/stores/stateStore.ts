@@ -143,7 +143,7 @@ async function getCollection(
 async function getDocuments(
 	collection: Collection | null,
 	loadDocuments: boolean,
-): Promise<MultiGetResponse | null>
+): Promise<GetResponse | null> // Promise<MultiGetResponse | null>
 {
 	// Inputs: collection, loadDocuments
 

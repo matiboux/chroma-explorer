@@ -1,7 +1,4 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { MultiGetResponse } from 'chromadb'
-
 import { stateStore } from '~/stores/stateStore'
 import CollectionTableActions from '~/components/explore/content/CollectionTableActions.svelte'
 
