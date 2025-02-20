@@ -1,5 +1,5 @@
 import { atom } from 'nanostores'
-import type { CollectionParams, ChromaClient, GetResponse, MultiGetResponse } from 'chromadb'
+import type { CollectionParams, ChromaClient, GetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
@@ -15,7 +15,7 @@ export interface StateStore
 	selectedCollection: string | null
 	collection: Collection | null
 	loadDocuments: boolean
-	documents: MultiGetResponse | null
+	documents: GetResponse | null // MultiGetResponse | null
 	selectedDocument: string | null
 	document: GetResponse | null
 	modalViewMode: ModalViewMode | null
@@ -100,11 +100,12 @@ async function getCollections(
 	// Get collections list
 	const collections =
 		(await chroma.listCollections())
-		.sort((a, b) => a.name.localeCompare(b.name))
+		.sort((a: any, b: any) => a.name.localeCompare(b.name))
 		.reduce<Record<string, CollectionParams>>(
-			(collections, collection) =>
+			// FIXME: Fix types
+			(collections, collection: any) =>
 			{
-				collections[collection.id] = collection
+				collections[collection.id as any] = collection
 				return collections
 			},
 			{} as Record<string, CollectionParams>,
