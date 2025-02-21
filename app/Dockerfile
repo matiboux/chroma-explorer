@@ -52,22 +52,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 
 # --
-# Build prod image
-
-FROM app_build_base AS app_build_prod
-
-# Copy app build configuration
-COPY --link \
-	./app/package.json \
-	./app/pnpm-lock.yaml \
-	./
-
-# Install app production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-	pnpm install --prod --frozen-lockfile
-
-
-# --
 # CLI image
 
 FROM app_build_base AS app_cli
@@ -138,8 +122,8 @@ ARG UID
 ENV APP_ENV=prod
 ENV NODE_ENV=production
 
-# Copy app production dependencies
-COPY --link --from=app_build_prod --chown="${UID}:0" /app/node_modules ./node_modules
+# Copy app development dependencies
+COPY --link --from=app_build_dev --chown="${UID}:0" /app/node_modules ./node_modules
 
 # Copy source code
 COPY --link --chown="${UID}:0" ./app .
