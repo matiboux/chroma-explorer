@@ -1,5 +1,5 @@
 @layer utilities {
-	.icon-align, .align-icon-inline {
+	.icon-align {
 		@apply align-[-0.125em];
 	}
 
