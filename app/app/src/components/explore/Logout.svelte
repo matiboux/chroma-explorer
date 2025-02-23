@@ -48,7 +48,7 @@ function onLogout()
 	</span>
 </button>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .logout-btn {

@@ -141,7 +141,7 @@ function onClose()
 	</div>
 </div>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .modal {

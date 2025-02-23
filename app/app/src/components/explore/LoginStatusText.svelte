@@ -25,7 +25,7 @@ const _ = i18nFactory(locale)
 	</p>
 {/if}
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .status-success {

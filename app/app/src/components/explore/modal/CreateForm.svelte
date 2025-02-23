@@ -145,7 +145,7 @@ function onClose() {
 
 </form>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .create-form {

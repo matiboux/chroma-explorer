@@ -254,7 +254,7 @@ async function copyToClipboard(selector: string)
 
 </form>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .record-form {

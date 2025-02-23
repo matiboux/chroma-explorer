@@ -49,7 +49,7 @@ function selectCollection(collectionId: string)
 	</ul>
 {/if}
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .info-text {

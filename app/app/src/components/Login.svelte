@@ -200,7 +200,7 @@ onMount(() => {
 
 </form>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 form {

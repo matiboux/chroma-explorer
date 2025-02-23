@@ -89,7 +89,7 @@ stateStore.subscribe(async (state, oldState) =>
 	{/if}
 {/if}
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .text-success, .text-error {

@@ -158,7 +158,7 @@ function onDelete(id: string)
 
 </div>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 table {

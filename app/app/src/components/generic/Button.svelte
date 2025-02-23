@@ -7,7 +7,7 @@ export let buttonStyle: string = 'default'
 	<slot />
 </button>
 
-<style lang="scss">
+<style>
 @reference "tailwindcss/theme";
 
 .btn {
