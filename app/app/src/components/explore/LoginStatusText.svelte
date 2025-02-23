@@ -26,7 +26,7 @@ const _ = i18nFactory(locale)
 {/if}
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .status-success {
 	@apply text-green-700;

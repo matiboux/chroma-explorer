@@ -85,7 +85,7 @@ function onDownloadDocuments()
 </div>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .actions {
 	@apply flex gap-2 items-center;

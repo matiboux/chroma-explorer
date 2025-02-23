@@ -42,5 +42,5 @@ const contentViewModeMap: Record<ContentViewMode | 'default', {
 {/if}
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 </style>

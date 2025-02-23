@@ -142,7 +142,7 @@ function onClose()
 </div>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .modal {
 	@apply fixed inset-0 z-50;

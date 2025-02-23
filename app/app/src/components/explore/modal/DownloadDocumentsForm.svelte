@@ -128,7 +128,7 @@ async function onSubmitDownload()
 </form>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .download-documents-form {
 

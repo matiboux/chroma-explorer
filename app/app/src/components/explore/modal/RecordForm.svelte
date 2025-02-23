@@ -255,7 +255,7 @@ async function copyToClipboard(selector: string)
 </form>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .record-form {
 	@apply flex flex-col gap-4;

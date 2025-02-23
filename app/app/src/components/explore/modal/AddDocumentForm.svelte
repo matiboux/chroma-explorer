@@ -293,7 +293,7 @@ async function onSubmitBatch()
 </div>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .add-document-wrapper {
 

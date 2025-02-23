@@ -122,7 +122,7 @@ function onClose() {
 </form>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .delete-form {
 

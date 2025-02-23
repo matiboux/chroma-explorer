@@ -159,7 +159,7 @@ function onDelete(id: string)
 </div>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 table {
 	@apply bg-white;

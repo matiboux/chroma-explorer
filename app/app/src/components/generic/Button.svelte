@@ -8,7 +8,7 @@ export let buttonStyle: string = 'default'
 </button>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .btn {
 	@apply px-2 py-1;

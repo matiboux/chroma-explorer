@@ -146,7 +146,7 @@ function onClose() {
 </form>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .create-form {
 	// @apply flex flex-col gap-4;

@@ -50,7 +50,7 @@ function selectCollection(collectionId: string)
 {/if}
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .info-text {
 	@apply px-3 py-1;

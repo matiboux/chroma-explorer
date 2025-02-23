@@ -49,7 +49,7 @@ function onLogout()
 </button>
 
 <style lang="scss">
-@reference '~/styles/tailwind.css';
+@reference "tailwindcss/theme";
 
 .logout-btn {
 	@apply px-2 py-1 aspect-square;
