@@ -149,14 +149,14 @@ function onClose() {
 @reference "tailwindcss/theme";
 
 .create-form {
-	// @apply flex flex-col gap-4;
+	/* @apply flex flex-col gap-4; */
 
 	.input-group, .button-group {
 		@apply mb-3;
 	}
 
 	.input-group {
-		// @apply flex flex-col gap-2;
+		/* @apply flex flex-col gap-2; */
 
 		label {
 			@apply block font-semibold mb-1;
