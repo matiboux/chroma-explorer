@@ -26,7 +26,7 @@ export interface Props
 	socialTitle?: string | I18nKeys | true | undefined
 	socialDescription?: string | I18nKeys | true | undefined
 	socialImage?: URL | string | undefined
-	socialUrl?: URL | string | undefined
+	socialUrl?: URL | string | true | undefined
 	socialType?: string | undefined
 	socialTwitterCard?: string | undefined
 	// Body attributes
@@ -53,6 +53,8 @@ const socialDescription =
 	typeof Astro.props.socialDescription !== 'string' && Astro.props.socialDescription !== undefined
 	? (Astro.props.socialDescription === true ? title : _(Astro.props.socialDescription))
 	: Astro.props.socialDescription
+
+const socialUrl = Astro.props.socialUrl === true ? Astro.site : Astro.props.socialUrl
 
 const formatsToType = {
 	'ico': 'image/x-icon',
@@ -122,8 +124,8 @@ const formatsToType = {
 		{Astro.props.socialImage &&
 			<meta property="og:image" content={Astro.props.socialImage} />
 		}
-		{Astro.props.socialUrl &&
-			<meta property="og:url" content={Astro.props.socialUrl} />
+		{socialUrl &&
+			<meta property="og:url" content={socialUrl} />
 		}
 		{Astro.props.socialType &&
 			<meta property="og:type" content={Astro.props.socialType} />

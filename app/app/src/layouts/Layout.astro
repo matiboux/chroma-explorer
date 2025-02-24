@@ -3,6 +3,8 @@ import { site } from '~/site'
 import Base from '~/layouts/Base.astro'
 import type { Props as BaseProps } from '~/layouts/Base.astro'
 
+export interface Props extends BaseProps {}
+
 const baseProps: BaseProps = {
 	...site,
 	...Astro.props,
