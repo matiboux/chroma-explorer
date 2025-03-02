@@ -278,10 +278,7 @@ form {
 		@apply text-sm text-gray-500;
 
 		a {
-			@apply
-			text-blue-500
-			hover:text-blue-600 hover:underline
-			;
+			@apply text-blue-500 hover:text-blue-600 hover:underline;
 		}
 	}
 
@@ -290,22 +287,12 @@ form {
 	}
 
 	button {
-		@apply
-			bg-gray-400
-			enabled:hover:bg-gray-500
-			enabled:active:bg-gray-600
-			disabled:bg-gray-300
-			px-4 py-2 text-white font-semibold rounded-md
-			disabled:cursor-not-allowed
-			;
+		color: #fff;
+		@apply bg-gray-400 enabled:hover:bg-gray-500 enabled:active:bg-gray-600 disabled:bg-gray-300;
+		@apply px-4 py-2 text-white font-semibold rounded-md disabled:cursor-not-allowed;
 
 		&[type="submit"] {
-			@apply
-				bg-blue-500
-				enabled:hover:bg-blue-600
-				enabled:active:bg-blue-700
-				disabled:bg-blue-300
-				;
+			@apply bg-blue-500 enabled:hover:bg-blue-600 enabled:active:bg-blue-700 disabled:bg-blue-300;
 		}
 	}
 }
