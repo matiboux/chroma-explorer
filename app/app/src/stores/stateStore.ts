@@ -1,9 +1,10 @@
 import { atom } from 'nanostores'
-import type { CollectionParams, ChromaClient, GetResponse } from 'chromadb'
+import type { CollectionParams, GetResponse } from 'chromadb'
 
 import { configStore } from '~/stores/configStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
 import type ContentViewMode from '~/types/ContentViewMode.d.ts'
+import type { ChromaClient } from '~/chroma/ChromaClient'
 import { makeChromaClient } from './utils/makeChromaClient'
 
 type Collection = Awaited<ReturnType<ChromaClient['getCollection']>>
@@ -64,7 +65,7 @@ configStore.subscribe(async (config, oldConfig) =>
 		return
 	}
 
-	const chroma = makeChromaClient(config.serverUrl, config.authConfig)
+	const chroma = makeChromaClient(config.serverUrl, config.apiVersion, config.authConfig)
 	if (!chroma)
 	{
 		// Failed to initialize Chroma client
