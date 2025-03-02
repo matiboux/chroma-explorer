@@ -254,7 +254,9 @@ async function copyToClipboard(selector: string)
 
 </form>
 
-<style lang="scss">
+<style>
+@reference "tailwindcss/theme";
+
 .record-form {
 	@apply flex flex-col gap-4;
 
@@ -320,7 +322,7 @@ async function copyToClipboard(selector: string)
 				}
 
 				label {
-					// Badge style
+					/* Badge style */
 					@apply inline-block bg-gray-200 px-2 py-1 rounded-full;
 					@apply text-sm font-normal;
 					@apply cursor-pointer;

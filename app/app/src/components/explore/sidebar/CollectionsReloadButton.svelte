@@ -30,5 +30,6 @@ async function onRefresh()
 	</span>
 </Button>
 
-<style lang="scss">
+<style>
+@reference "tailwindcss/theme";
 </style>

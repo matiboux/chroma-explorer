@@ -1,6 +1,20 @@
 import { ChromaClient } from 'chromadb'
 
-import type { ConfigStore } from '~/stores/configStore'
+import type { ConfigStore, APIAuthConfig, BasicAuthConfig } from '~/stores/configStore'
+
+function isAPIAuthConfig(
+	authConfig: ConfigStore['authConfig'],
+): authConfig is APIAuthConfig
+{
+	return authConfig != null && 'token' in authConfig
+}
+
+function isBasicAuthConfig(
+	authConfig: ConfigStore['authConfig'],
+): authConfig is BasicAuthConfig
+{
+	return authConfig != null && 'username' in authConfig && 'password' in authConfig
+}
 
 export function makeChromaClient(
 	serverUrl: string,
@@ -12,27 +26,23 @@ export function makeChromaClient(
 		return new ChromaClient({
 			path: serverUrl,
 			...(
-				authConfig
-				? (
-					authConfig.token
-					? ({
-						auth: {
-							provider: 'token',
-							credentials: authConfig.token,
+				isAPIAuthConfig(authConfig)
+				? ({
+					auth: {
+						provider: 'token',
+						credentials: authConfig.token,
+					},
+				})
+				: isBasicAuthConfig(authConfig)
+				? ({
+					auth: {
+						provider: 'basic',
+						credentials: {
+							username: authConfig.username,
+							password: authConfig.password,
 						},
-					})
-					: authConfig.username && authConfig.password
-					? ({
-						auth: {
-							provider: 'basic',
-							credentials: {
-								username: authConfig.username,
-								password: authConfig.password,
-							},
-						},
-					})
-					: undefined
-				)
+					},
+				})
 				: undefined
 			),
 		})

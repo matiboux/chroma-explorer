@@ -1,0 +1,24 @@
+# Services definition for running CLI commands
+
+services:
+
+  app:
+    # Extend
+    extends:
+      file: ./docker-compose.yml
+      service: app
+    # Build override
+    image: ${IMAGES_PREFIX:-app}-cli:${IMAGES_TAG:-latest}
+    build:
+      target: app_cli
+      args: !reset []
+      args:
+        UID: ${DOCKER_UID:-${UID:-1000}}
+    # Deploy override
+    user: ${DOCKER_UID:-${UID:-1000}}
+    environment: !reset []
+    tmpfs:
+      - /tmp:mode=775,uid=${DOCKER_UID:-${UID:-1000}},gid=0
+    volumes:
+      - ./app/app:/app
+    ports: !reset []

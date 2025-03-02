@@ -62,49 +62,51 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 
 </Layout>
 
-<style lang="scss">
-	.wrapper {
-		@apply flex;
-		@apply h-full;
+<style>
+@reference "tailwindcss/theme";
 
-		.sidebar {
-			@apply flex flex-col;
-			@apply bg-white;
-			@apply w-full max-w-64;
-			@apply shadow-lg;
-			@apply z-10;
+.wrapper {
+	@apply flex;
+	@apply h-full;
 
-			.section {
-				&.section-content {
-					@apply p-4 pr-6;
-				}
+	.sidebar {
+		@apply flex flex-col;
+		@apply bg-white;
+		@apply w-full max-w-64;
+		@apply shadow-lg;
+		@apply z-10;
 
-				&.section-flex {
-					@apply flex gap-2 justify-between items-center;
-				}
-
-				&.section-grow {
-					@apply flex-grow;
-				}
+		.section {
+			&.section-content {
+				@apply p-4 pr-6;
 			}
 
-			a.help-icon {
-				@apply text-gray-600;
-
-				&:hover {
-					@apply text-gray-800;
-				}
+			&.section-flex {
+				@apply flex gap-2 justify-between items-center;
 			}
 
-			h1 {
-				@apply text-xl font-bold;
+			&.section-grow {
+				@apply flex-grow;
 			}
 		}
 
-		.content {
-			@apply relative;
-			@apply w-full flex-grow;
-			@apply overflow-hidden;
+		a.help-icon {
+			@apply text-gray-600;
+
+			&:hover {
+				@apply text-gray-800;
+			}
+		}
+
+		h1 {
+			@apply text-xl font-bold;
 		}
 	}
+
+	.content {
+		@apply relative;
+		@apply w-full flex-grow;
+		@apply overflow-hidden;
+	}
+}
 </style>

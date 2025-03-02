@@ -89,16 +89,18 @@ stateStore.subscribe(async (state, oldState) =>
 	{/if}
 {/if}
 
-<style lang="scss">
-	.text-success, .text-error {
-		@apply text-sm;
-	}
+<style>
+@reference "tailwindcss/theme";
 
-	.text-success {
-		@apply text-green-700;
-	}
+.text-success, .text-error {
+	@apply text-sm;
+}
 
-	.text-error {
-		@apply text-red-700;
-	}
+.text-success {
+	@apply text-green-700;
+}
+
+.text-error {
+	@apply text-red-700;
+}
 </style>

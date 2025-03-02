@@ -5,12 +5,16 @@ on:
   # Run on push on production branches
   push:
     branches:
+      # Production
       - main
     paths:
+      # CI files
       - '.github/workflows/deploy.yml'
-      - 'app/**'
       - 'docker-compose.yml'
       - 'docker-compose.cicd.yml'
+      - '.env'
+      # Application files
+      - 'app/**'
 
   # Run on manual triggers
   workflow_dispatch:
@@ -30,27 +34,48 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
 
+      # Steps dependencies
+
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Execution steps
+
+      - name: Pull dependencies
+        run: |
+          # docker compose pull --ignore-buildable
+          docker compose \
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            pull --ignore-buildable
 
       - name: Build for production
         env:
           GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
           GITHUB_SHA: ${{ github.sha }}
           BUILD_CHECK: "false" # Skip type checks
-        run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml build
+        run: |
+          # docker compose build
+          export DOCKER_UID="$(id -u)"
+          docker compose \
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            build
 
       - name: Copy application files
-        run: docker compose -f docker-compose.yml -f docker-compose.cicd.yml up
+        run: |
+          # docker compose up
+          export DOCKER_UID="$(id -u)"
+          docker compose \
+            -f ./docker-compose.yml -f ./docker-compose.cicd.yml \
+            --env-file .env \
+            up
 
-      - name: Chown dist folder to $USER
-        run: sudo chown -R $USER:$USER ./app/dist
-
-      - name: Upload artifact
+      - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./app/dist
@@ -59,7 +84,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     # Job dependencies
     needs:

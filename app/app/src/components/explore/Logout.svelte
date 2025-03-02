@@ -48,12 +48,14 @@ function onLogout()
 	</span>
 </button>
 
-<style lang="scss">
-	.logout-btn {
-		@apply px-2 py-1 aspect-square;
+<style>
+@reference "tailwindcss/theme";
 
-		&:hover {
-			@apply bg-gray-200;
-		}
+.logout-btn {
+	@apply px-2 py-1 aspect-square;
+
+	&:hover {
+		@apply bg-gray-200;
 	}
+}
 </style>

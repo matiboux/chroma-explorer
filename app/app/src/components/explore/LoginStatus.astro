@@ -2,9 +2,9 @@
 import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
 import Logout from '~/components/explore/Logout.svelte'
 
-import { i18nFactory } from '~/i18n'
-import type { Locales } from '~/i18n'
-const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
+// import { i18nFactory } from '~/i18n'
+// import type { Locales } from '~/i18n'
+// const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 ---
 
 <div class="login-status-wrapper">
@@ -16,15 +16,17 @@ const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
 	</div>
 </div>
 
-<style lang="scss">
-	.login-status-wrapper {
-		@apply flex justify-between items-center;
-		@apply bg-gray-100;
+<style>
+@reference "tailwindcss/theme";
 
-		.login-status {
-			@apply flex-grow;
-			@apply px-3 py-1;
-			@apply text-sm;
-		}
+.login-status-wrapper {
+	@apply flex justify-between items-center;
+	@apply bg-gray-100;
+
+	.login-status {
+		@apply flex-grow;
+		@apply px-3 py-1;
+		@apply text-sm;
 	}
+}
 </style>

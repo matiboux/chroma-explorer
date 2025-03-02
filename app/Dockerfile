@@ -4,10 +4,16 @@
 
 
 # --
+# Global build arguments
+
+ARG UID=1001
+
+
+# --
 # Upstream images
 
 FROM node:22-slim AS node_upstream
-FROM nginx:alpine AS nginx_upstream
+FROM bitnami/nginx:1.27 AS nginx_upstream
 
 
 # --
@@ -20,43 +26,81 @@ WORKDIR /app
 
 
 # --
-# Npm image
+# Build base image
 
-FROM app_base AS app_npm
+FROM app_base AS app_build_base
 
-# Mount source code as volume
-VOLUME /app
-
-# Run npm command
-COPY --link --chmod=755 ./docker/npm-entrypoint.sh /usr/local/bin/app-npm-entrypoint
-ENTRYPOINT [ "app-npm-entrypoint" ]
-CMD [ "--help" ]
+# Install pnpm
+RUN --mount=type=cache,target=~/.npm \
+	npm install -g pnpm
 
 
 # --
-# Runtime base image
+# Build dev image
 
-FROM app_base AS app_runtime_base
+FROM app_build_base AS app_build_dev
 
-# Set runtime environment
-ENV APP_ENV=dev
-ENV NODE_ENV=development
+# Copy app build configuration
+COPY --link \
+	./app/package.json \
+	./app/pnpm-lock.yaml \
+	./
 
-# Install dev dependencies, required for build
-RUN --mount=type=bind,source=./app/package.json,target=./package.json \
-	--mount=type=bind,source=./app/package-lock.json,target=./package-lock.json \
-	--mount=type=bind,source=./app/tsconfig.json,target=./tsconfig.json \
-	--mount=type=cache,target=~/.npm \
-	npm clean-install --include=dev
+# Install app development dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+	pnpm install --frozen-lockfile
 
-# Copy application source code
-COPY --link ./app .
+
+# --
+# CLI image
+
+FROM app_build_base AS app_cli
+
+ARG UID
+
+# Use temporary directory as home
+ENV HOME=/tmp
+
+# Run as non-root user
+USER ${UID}:0
+
+# Mount source code
+VOLUME /app
+
+# Run CLI command
+COPY --link --chmod=755 ./docker/cli-entrypoint.sh /usr/local/bin/app-cli-entrypoint
+ENTRYPOINT [ "app-cli-entrypoint" ]
+CMD [ "--help" ]
 
 
 # --
 # Dev image
 
-FROM app_runtime_base AS app_dev
+FROM app_base AS app_dev
+
+ARG UID
+
+# Set runtime environment
+ENV APP_ENV=dev
+ENV NODE_ENV=development
+
+# Copy app development dependencies
+COPY --link --from=app_build_dev --chown="${UID}:0" /app/node_modules ./node_modules
+
+# Copy source code
+COPY --link --chown="${UID}:0" ./app .
+RUN mkdir -p ./.astro && chown -R "${UID}:0" ./.astro
+
+# Create user 'user' in group 'root'
+RUN USERNAME="$(getent passwd "${UID}" | cut -d: -f1)"; \
+	if [ -z "${USERNAME}" ]; then \
+		useradd -lm -u "${UID}" -g "${UID}" -G 0 user; \
+	else \
+		usermod -a -G 0 "${USERNAME}"; \
+	fi
+
+# Run as non-root user
+USER ${UID}:0
 
 # Set exposed port
 ARG PORT=8080
@@ -70,13 +114,21 @@ CMD [ "sh", "-c", "npm run dev -- --host --port \"${PORT}\"" ]
 # --
 # Prod build image
 
-FROM app_runtime_base AS app_prod_build
+FROM app_base AS app_prod_build
+
+ARG UID
 
 # Set runtime environment
 ENV APP_ENV=prod
 ENV NODE_ENV=production
 
-# Use application environment variables
+# Copy app development dependencies
+COPY --link --from=app_build_dev --chown="${UID}:0" /app/node_modules ./node_modules
+
+# Copy source code
+COPY --link --chown="${UID}:0" ./app .
+
+# Set client environment variables
 ARG GITHUB_REPOSITORY_URL=""
 ENV GITHUB_REPOSITORY_URL=${GITHUB_REPOSITORY_URL}
 ARG GITHUB_SHA=""
@@ -98,18 +150,11 @@ FROM nginx_upstream AS app_prod
 
 # Set runtime environment
 ENV APP_ENV=prod
-ENV NODE_ENV=production
 
-# Set app directory
-WORKDIR /usr/share/nginx/html
-
-# Copy built static website files
+# Copy app production build
 COPY --from=app_prod_build --link /app/dist .
 
 # Set exposed port
 ARG PORT=8080
-ENV PORT=${PORT}
+ENV NGINX_HTTP_PORT_NUMBER=${PORT}
 EXPOSE ${PORT}
-
-# Start nginx server
-CMD [ "nginx", "-g", "daemon off;" ]
