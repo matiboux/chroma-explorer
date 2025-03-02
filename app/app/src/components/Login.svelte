@@ -135,6 +135,19 @@ onMount(() => {
 		</p>
 		<div class="radio-group">
 			<input
+				type="radio" name="authProvider" value="none"
+				bind:group={formValues.authProvider}
+				id={`authProviderNone-${idSuffix}`}
+			/>
+			<label for={`authProviderNone-${idSuffix}`}>
+				{_({
+					'en': 'Public',
+					'fr': 'Public',
+				})}
+			</label>
+		</div>
+		<div class="radio-group">
+			<input
 				type="radio" name="authProvider" value="token" checked
 				bind:group={formValues.authProvider}
 				id={`authProviderToken-${idSuffix}`}
@@ -161,7 +174,9 @@ onMount(() => {
 		</div>
 	</div>
 
-	{#if formValues.authProvider === 'token'}
+	{#if formValues.authProvider === 'none'}
+		<!-- No additional input needed -->
+	{:else if formValues.authProvider === 'token'}
 		<div class="input-group">
 			<label for={`headerAuthorizationToken-${idSuffix}`}>
 				{_({
