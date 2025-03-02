@@ -1,7 +1,4 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { GetResponse } from 'chromadb'
-
 import { stateStore } from '~/stores/stateStore'
 
 import type { Locales } from '~/i18n'
