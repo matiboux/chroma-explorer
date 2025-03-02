@@ -16,12 +16,14 @@ export interface ConfigStore
 {
 	confirmed: boolean
 	serverUrl: string
+	apiVersion: 'v1' | 'v2'
 	authConfig: APIAuthConfig | BasicAuthConfig | null
 }
 
 const defaultConfig: ConfigStore = {
 	confirmed: false,
 	serverUrl: '',
+	apiVersion: 'v2',
 	authConfig: null,
 }
 

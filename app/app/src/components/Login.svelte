@@ -2,7 +2,7 @@
 import { onMount } from 'svelte'
 
 import LoginCheck from '~/components/LoginCheck.svelte'
-import { configStore } from '~/stores/configStore'
+import { configStore, type ConfigStore } from '~/stores/configStore'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
@@ -12,8 +12,19 @@ const _ = i18nFactory(locale)
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
-const defaultFormValues = {
+interface FormValues
+{
+	chromaServerUrl: string
+	apiVersion: ConfigStore['apiVersion']
+	authProvider: 'none' | 'token' | 'basic'
+	apiToken: string
+	basicUsername: string
+	basicPassword: string
+}
+
+const defaultFormValues: FormValues = {
 	chromaServerUrl: '',
+	apiVersion: 'v2',
 	authProvider: 'token',
 	apiToken: '',
 	basicUsername: '',
@@ -30,6 +41,7 @@ function onSubmit()
 		...$configStore,
 		confirmed: true,
 		serverUrl: formValues.chromaServerUrl,
+		apiVersion: formValues.apiVersion,
 		authConfig: (
 			  (formValues.authProvider === 'token' && formValues.apiToken)
 			? { token: formValues.apiToken }
@@ -85,6 +97,41 @@ onMount(() => {
 			})}
 			<a href="http://cors-proxy.matiboux.com/">CORS Proxy</a>.
 		</p>
+	</div>
+
+	<div class="input-group input-group-inline">
+		<p>
+			{_({
+				'en': 'API Version:',
+				'fr': 'Version de l\'API :',
+			})}
+		</p>
+		<div class="radio-group">
+			<input
+				type="radio" name="apiVersion" value="v1"
+				bind:group={formValues.apiVersion}
+				id={`apiVersionV1-${idSuffix}`}
+			/>
+			<label for={`apiVersionV1-${idSuffix}`}>
+				{_({
+					'en': 'Version 1',
+					'fr': 'Version 1',
+				})}
+			</label>
+		</div>
+		<div class="radio-group">
+			<input
+				type="radio" name="apiVersion" value="v2" checked
+				bind:group={formValues.apiVersion}
+				id={`apiVersionV2-${idSuffix}`}
+			/>
+			<label for={`apiVersionV2-${idSuffix}`}>
+				{_({
+					'en': 'Version 2',
+					'fr': 'Version 2',
+				})}
+			</label>
+		</div>
 	</div>
 
 	<div class="input-group input-group-inline">
