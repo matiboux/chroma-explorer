@@ -52,24 +52,14 @@ const localeMetadata: {
 @reference "tailwindcss/theme";
 
 .locale-switch {
-	@apply
-		flex
-		items-center
-		gap-2
-		;
+	@apply flex items-center gap-2;
 
 	.locale {
-		@apply
-			text-2xl
-			opacity-40
-			hover:opacity-60
-			active:opacity-80
-			;
+		@apply text-2xl;
+		@apply opacity-40 hover:opacity-60 active:opacity-80;
 
 		&.current {
-			@apply
-				opacity-100
-				;
+			@apply opacity-100;
 		}
 	}
 }

@@ -94,46 +94,29 @@ const buildVersion = githubSha ? githubSha.slice(0, 7) : 'dev'
 @reference "tailwindcss/theme";
 
 footer {
-	@apply
-		flex
-		flex-wrap
-		justify-around
-		items-start
-		space-y-8
-		sm:space-y-0
-		;
+	@apply flex flex-wrap justify-around items-start;
+	@apply space-y-8 sm:space-y-0;
 
 	> div {
-		@apply
-			w-full
+		@apply w-full
 			sm:w-auto
 			sm:max-w-[50%]
-			space-y-2
-
-			;
+			space-y-2;
 
 		h3 {
-			@apply
-				text-lg
-				;
+			@apply text-lg;
 		}
 
 		a {
-			@apply
-				text-blue-500
-				;
+			@apply text-blue-500;
 
 			&:hover {
-				@apply
-					text-blue-700
-					;
+				@apply text-blue-700;
 			}
 		}
 
 		b {
-			@apply
-				font-semibold
-				;
+			@apply font-semibold;
 		}
 	}
 }
