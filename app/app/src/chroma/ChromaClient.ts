@@ -1,4 +1,4 @@
-import { ChromaClient as BaseChromaClient } from 'chromadb'
+import { ChromaClient as BaseChromaClient, Collection } from 'chromadb'
 import type { ChromaClientParams } from 'chromadb'
 
 export class ChromaClient
@@ -78,28 +78,32 @@ export class ChromaClient
 	}
 
 	// listCollectionsAndMetadata
-}
+	// countCollections
 
-// return new ChromaClient({
-// 	path: serverUrl,
-// 	...(
-// 		isAPIAuthConfig(authConfig)
-// 		? ({
-// 			auth: {
-// 				provider: 'token',
-// 				credentials: authConfig.token,
-// 			},
-// 		})
-// 		: isBasicAuthConfig(authConfig)
-// 		? ({
-// 			auth: {
-// 				provider: 'basic',
-// 				credentials: {
-// 					username: authConfig.username,
-// 					password: authConfig.password,
-// 				},
-// 			},
-// 		})
-// 		: undefined
-// 	),
-// })
+	async getCollection(
+		args: Parameters<BaseChromaClient['getCollection']>[0],
+	): ReturnType<BaseChromaClient['getCollection']>
+	{
+		if (this.apiVersion === 'v1')
+		{
+			// await this.client.init();
+			const response = await this.client.api.getCollectionV1(
+				args.name,
+				this.client.tenant,
+				this.client.database,
+				this.client.api.options,
+			)
+			return new Collection(
+				(response as any).name,
+				(response as any).id,
+				this.client,
+				args.embeddingFunction,
+				(response as any).metadata,
+			);
+		}
+		else
+		{
+			return this.client.getCollection(args)
+		}
+	}
+}
