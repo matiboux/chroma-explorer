@@ -24,7 +24,7 @@ interface FormValues
 
 const defaultFormValues: FormValues = {
 	chromaServerUrl: '',
-	apiVersion: 'v2',
+	apiVersion: null,
 	authProvider: 'token',
 	apiToken: '',
 	basicUsername: '',
@@ -121,7 +121,7 @@ onMount(() => {
 		</div>
 		<div class="radio-group">
 			<input
-				type="radio" name="apiVersion" value="v2" checked
+				type="radio" name="apiVersion" value="v2"
 				bind:group={formValues.apiVersion}
 				id={`apiVersionV2-${idSuffix}`}
 			/>
