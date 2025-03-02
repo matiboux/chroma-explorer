@@ -164,24 +164,29 @@ async function getDocuments(
 	return documents
 }
 
+function hasStateChanged(
+	currentState: StateStore,
+	oldState: StateStore | undefined,
+	stateKey: keyof StateStore,
+): boolean
+{
+	return currentState[stateKey] !== (oldState?.[stateKey] ?? defaultState[stateKey])
+}
+
 stateStore.subscribe(async (currentState, oldState) =>
 {
-	if (!currentState.chroma)
-	{
-		// Reset state
-		stateStore.set(defaultState)
-		return
-	}
-
 	const state: StateStore = { ...currentState }
 	let changes: boolean = false
 
-	// state.chroma is not null
-
-	if (
-		// If state.chroma changed (and cannot be null)
-		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
-		// Or, if state.collections is null
+	if (!state.chroma)
+	{
+		// Reset state.collections
+		state.collections = defaultState.collections
+		changes = true
+	}
+	else if (
+		// state.chroma is not null
+		hasStateChanged(state, oldState, 'chroma') ||
 		state.collections === null
 	)
 	{
@@ -205,11 +210,31 @@ stateStore.subscribe(async (currentState, oldState) =>
 		}
 	}
 
+	if (!state.collections)
+	{
+		// Reset state.selectedCollection
+		state.selectedCollection = defaultState.selectedCollection
+		changes = true
+	}
+
 	if (
-		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
-		state.collections !== (oldState?.collections ?? defaultState.collections) ||
-		state.selectedCollection !== (oldState?.selectedCollection ?? defaultState.selectedCollection) ||
-		(state.selectedCollection !== null && state.collection === null) // Force reload
+		!state.chroma ||
+		!state.collections ||
+		!state.selectedCollection
+	)
+	{
+		// Reset collection
+		state.collection = defaultState.collection
+		changes = true
+	}
+	else if (
+		// state.chroma is not null
+		// state.collections is not null
+		// state.selectedCollection is not null
+		hasStateChanged(state, oldState, 'chroma') ||
+		hasStateChanged(state, oldState, 'collections') ||
+		hasStateChanged(state, oldState, 'selectedCollection') ||
+		state.collection === null
 	)
 	{
 		try
@@ -232,16 +257,26 @@ stateStore.subscribe(async (currentState, oldState) =>
 	}
 
 	if (
-		state.collection !== (oldState?.collection ?? defaultState.collection) ||
-		state.loadDocuments !== (oldState?.loadDocuments ?? defaultState.loadDocuments) ||
-		(state.loadDocuments && state.documents === null) // Force reload
+		!state.collection ||
+		!state.loadDocuments
+	)
+	{
+		// Reset state.documents
+		state.documents = defaultState.documents
+		changes = true
+	}
+	else if (
+		// state.collection is not null
+		// state.loadDocuments is true
+		hasStateChanged(state, oldState, 'collection') ||
+		hasStateChanged(state, oldState, 'loadDocuments') ||
+		state.documents === null
 	)
 	{
 		// Reload collection documents after input changes
 		try
 		{
-			const documents = await getDocuments(state.collection, state.loadDocuments)
-			state.documents = documents
+			state.documents = await getDocuments(state.collection, state.loadDocuments)
 			changes = true
 		}
 		catch (error: any)
