@@ -166,12 +166,23 @@ async function getDocuments(
 
 stateStore.subscribe(async (currentState, oldState) =>
 {
+	if (!currentState.chroma)
+	{
+		// Reset state
+		stateStore.set(defaultState)
+		return
+	}
+
 	const state: StateStore = { ...currentState }
 	let changes: boolean = false
 
+	// state.chroma is not null
+
 	if (
+		// If state.chroma changed (and cannot be null)
 		state.chroma !== (oldState?.chroma ?? defaultState.chroma) ||
-		(state.chroma !== null && state.collections === null) // Force reload
+		// Or, if state.collections is null
+		state.collections === null
 	)
 	{
 		try
