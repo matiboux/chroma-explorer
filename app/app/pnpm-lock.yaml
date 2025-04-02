@@ -35,12 +35,15 @@ importers:
       astro:
         specifier: ^5.4.1
         version: 5.4.1(@types/node@22.13.8)(jiti@2.4.2)(lightningcss@1.29.1)(rollup@4.31.0)(sass@1.85.0)(typescript@5.8.2)(yaml@2.6.0)
-      chromadb:
-        specifier: 1.10.4
-        version: 1.10.4
       chromadb-default-embed:
         specifier: ^2.13.2
         version: 2.13.2
+      chromadb-v1:
+        specifier: npm:chromadb@1.9.2
+        version: chromadb@1.9.2
+      chromadb-v2:
+        specifier: npm:chromadb@^1.10.5
+        version: chromadb@1.10.5
       csv-parse:
         specifier: ^5.6.0
         version: 5.6.0
@@ -1024,12 +1027,13 @@ packages:
   chromadb-default-embed@2.13.2:
     resolution: {integrity: sha512-mhqo5rLjkF2KkxAV0WS82vNIXWpVMzvz5y5ayIB2FxcebUbEBNlcRh6XSSqYChWMfJ9us1ZzLQU8RXqsy3sKaA==}
 
-  chromadb@1.10.4:
-    resolution: {integrity: sha512-K6HLpTvOby7GVQi2CftNGS2/mW0x1A+4Zo6TRFfbJCywgBKFBKZSJXbT75fJ+JGPe+8ULi7eUNjsRdSRIdOq4A==}
+  chromadb@1.10.5:
+    resolution: {integrity: sha512-+IeTjjf44pKUY3vp1BacwO2tFAPcWCd64zxPZZm98dVj/kbSBeaHKB2D6eX7iRLHS1PTVASuqoR6mAJ+nrsTBg==}
     engines: {node: '>=14.17.0'}
     peerDependencies:
       '@google/generative-ai': ^0.1.1
       cohere-ai: ^5.0.0 || ^6.0.0 || ^7.0.0
+      ollama: ^0.5.0
       openai: ^3.0.0 || ^4.0.0
       voyageai: ^0.0.3-1
     peerDependenciesMeta:
@@ -1037,9 +1041,26 @@ packages:
         optional: true
       cohere-ai:
         optional: true
+      ollama:
+        optional: true
       openai:
         optional: true
       voyageai:
+        optional: true
+
+  chromadb@1.9.2:
+    resolution: {integrity: sha512-JNeLKlrsPxld7oPJCNeF73yHyyYeyP950enWRkTa6WsJ6UohH2NQ1vXZu6lWO9WuA9EMypITyZFZ8KtcTV3y2Q==}
+    engines: {node: '>=14.17.0'}
+    peerDependencies:
+      '@google/generative-ai': ^0.1.1
+      cohere-ai: ^5.0.0 || ^6.0.0 || ^7.0.0
+      openai: ^3.0.0 || ^4.0.0
+    peerDependenciesMeta:
+      '@google/generative-ai':
+        optional: true
+      cohere-ai:
+        optional: true
+      openai:
         optional: true
 
   ci-info@4.1.0:
@@ -3520,7 +3541,14 @@ snapshots:
     transitivePeerDependencies:
       - bare-buffer
 
-  chromadb@1.10.4:
+  chromadb@1.10.5:
+    dependencies:
+      cliui: 8.0.1
+      isomorphic-fetch: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+
+  chromadb@1.9.2:
     dependencies:
       cliui: 8.0.1
       isomorphic-fetch: 3.0.0
