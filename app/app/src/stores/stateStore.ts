@@ -1,5 +1,9 @@
 import { atom } from 'nanostores'
-import type { CollectionParams, ChromaClient, GetResponse } from 'chromadb'
+import type { ChromaClient as ChromaClientV1, CollectionParams as CollectionParamsV1, GetResponse as GetResponseV1 } from 'chromadb-v1'
+import type { ChromaClient as ChromaClientV2, CollectionParams as CollectionParamsV2, GetResponse as GetResponseV2 } from 'chromadb-v2'
+type ChromaClient = ChromaClientV1 | ChromaClientV2
+type CollectionParams = CollectionParamsV1 | CollectionParamsV2
+type GetResponse = GetResponseV1 | GetResponseV2
 
 import { configStore } from '~/stores/configStore'
 import type ModalViewMode from '~/types/ModalViewMode.d.ts'
