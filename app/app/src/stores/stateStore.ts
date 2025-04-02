@@ -119,19 +119,14 @@ async function getCollections(
 }
 
 async function getCollection(
-	chroma: ChromaClient | null,
-	collections: Record<string, CollectionParams> | null,
-	selectedCollection: string | null,
+	chroma: ChromaClient,
+	collections: Record<string, CollectionParams>,
+	selectedCollection: string,
 ): Promise<Collection | null>
 {
-	// Inputs: chroma, collections, selectedCollection
-
-	if (!chroma || !collections || !collections[selectedCollection!])
+	if (!collections[selectedCollection!])
 	{
-		// Chroma client not initialized, or
-		// Unknown selected collection
-
-		// Clear the collection
+		// Invalid selected collection
 		return null
 	}
 
@@ -145,21 +140,9 @@ async function getCollection(
 }
 
 async function getDocuments(
-	collection: Collection | null,
-	loadDocuments: boolean,
-): Promise<GetResponse | null> // Promise<MultiGetResponse | null>
+	collection: Collection,
+): Promise<GetResponse> // Promise<MultiGetResponse>
 {
-	// Inputs: collection, loadDocuments
-
-	if (!collection || !loadDocuments)
-	{
-		// Collection not loaded, or
-		// Load documents disabled
-
-		// Clear the collection documents
-		return null
-	}
-
 	// Get collection documents
 	const documents = await collection.peek({
 		limit: 100,
@@ -182,24 +165,20 @@ stateStore.subscribe(async (currentState, oldState) =>
 	const state: StateStore = { ...currentState }
 	let changes: boolean = false
 
-	if (!state.chroma)
+	if (hasStateChanged(state, oldState, 'chroma'))
 	{
-		// Reset state.collections
+		// Chroma client changed
+		// Reset dependant state.collections
 		state.collections = defaultState.collections
 		changes = true
 	}
-	else if (
-		// state.chroma is not null
-		hasStateChanged(state, oldState, 'chroma') ||
-		state.collections === null
-	)
+
+	if (state.collections === null && state.chroma)
 	{
 		try
 		{
-			// Get collections list after input changes
-			const collections = await getCollections(state.chroma)
-			state.collections = collections
-			state.selectedCollection = collections?.[state.selectedCollection!] ? state.selectedCollection : null
+			// Get collections list
+			state.collections = await getCollections(state.chroma)
 			changes = true
 		}
 		catch (error: any)
@@ -214,38 +193,69 @@ stateStore.subscribe(async (currentState, oldState) =>
 		}
 	}
 
-	if (!state.collections)
+	let changedSelectedCollection = hasStateChanged(state, oldState, 'selectedCollection')
+
+	if (hasStateChanged(state, oldState, 'collections'))
 	{
-		// Reset state.selectedCollection
-		state.selectedCollection = defaultState.selectedCollection
-		changes = true
+		// Collections list changed
+		// Force checking selected collection
+		changedSelectedCollection = true
+
+		// if (!state.collections?.[state.selectedCollection!])
+		// {
+		// 	// Selected collection is not in the collections list
+		// 	// Reset dependant state.selectedCollection
+		// 	state.selectedCollection = defaultState.selectedCollection
+		// }
+
+		// // Reset dependant state.collection
+		// state.collection = defaultState.collection
+
+		// // Reset dependant state.documents
+		// state.documents = defaultState.documents
+
+		// // Reset dependant state.selectedDocument
+		// state.selectedDocument = defaultState.selectedDocument
+
+		// // Reset dependant state.document
+		// state.document = defaultState.document
+
+		// // Reset dependant state.loadDocuments
+		// state.loadDocuments = defaultState.loadDocuments
+
+		// // Reset dependant state.modalViewMode
+		// state.modalViewMode = defaultState.modalViewMode
+
+		// // Reset dependant state.contentViewMode
+		// state.contentViewMode = defaultState.contentViewMode
+
+		// changes = true
 	}
 
-	if (
-		!state.chroma ||
-		!state.collections ||
-		!state.selectedCollection
-	)
+	if (changedSelectedCollection)
 	{
-		// Reset collection
+		// Collections list changed, or selected collection changed
+
+		if (!state.collections?.[state.selectedCollection!])
+		{
+			// Selected collection is not in the collections list
+			// Reset invalid state.selectedCollection
+			state.selectedCollection = defaultState.selectedCollection
+			changes = true
+		}
+
+		// Reset dependant state.collection
 		state.collection = defaultState.collection
+
 		changes = true
 	}
-	else if (
-		// state.chroma is not null
-		// state.collections is not null
-		// state.selectedCollection is not null
-		hasStateChanged(state, oldState, 'chroma') ||
-		hasStateChanged(state, oldState, 'collections') ||
-		hasStateChanged(state, oldState, 'selectedCollection') ||
-		state.collection === null
-	)
+
+	if (state.collection === null && state.chroma && state.collections && state.selectedCollection)
 	{
 		try
 		{
-			// Get the collection after input changes
-			const collection = await getCollection(state.chroma, state.collections, state.selectedCollection)
-			state.collection = collection
+			// Get the collection
+			state.collection = await getCollection(state.chroma, state.collections, state.selectedCollection)
 			changes = true
 		}
 		catch (error: any)
@@ -260,27 +270,20 @@ stateStore.subscribe(async (currentState, oldState) =>
 		}
 	}
 
-	if (
-		!state.collection ||
-		!state.loadDocuments
-	)
+	if (hasStateChanged(state, oldState, 'collection'))
 	{
-		// Reset state.documents
+		// Collection changed
+		// Reset dependant state.documents
 		state.documents = defaultState.documents
 		changes = true
 	}
-	else if (
-		// state.collection is not null
-		// state.loadDocuments is true
-		hasStateChanged(state, oldState, 'collection') ||
-		hasStateChanged(state, oldState, 'loadDocuments') ||
-		state.documents === null
-	)
+
+	if (state.documents === null && state.collection && state.loadDocuments)
 	{
-		// Reload collection documents after input changes
 		try
 		{
-			state.documents = await getDocuments(state.collection, state.loadDocuments)
+			// Get collection documents
+			state.documents = await getDocuments(state.collection)
 			changes = true
 		}
 		catch (error: any)
@@ -294,6 +297,60 @@ stateStore.subscribe(async (currentState, oldState) =>
 			return
 		}
 	}
+
+	// let changedSelectedDocument = hasStateChanged(state, oldState, 'selectedDocument')
+
+	if (hasStateChanged(state, oldState, 'documents'))
+	{
+		// Documents list changed
+
+		// // Force checking selected document
+		// changedSelectedDocument = true
+
+		// Reset dependant state.selectedDocument
+		state.selectedDocument = defaultState.selectedDocument
+
+		// Reset dependant state.document
+		state.document = defaultState.document
+
+		// Reset dependant state.modalViewMode
+		state.modalViewMode = defaultState.modalViewMode
+
+		// Reset dependant state.contentViewMode
+		state.contentViewMode = defaultState.contentViewMode
+
+		changes = true
+	}
+
+	// if (changedSelectedDocument)
+	// {
+	// 	// Documents list changed, or selected document changed
+
+	// 	if (!state.documents?.ids?.includes(state.selectedDocument!))
+	// 	{
+	// 		// Selected document is not in the documents list
+	// 		// Reset invalid state.selectedDocument
+	// 		state.selectedDocument = defaultState.selectedDocument
+	// 		changes = true
+	// 	}
+
+	// 	// Reset dependant state.document
+	// 	state.document = defaultState.document
+
+	// 	changes = true
+	// }
+
+	// if (state.document === null && state.documents && state.selectedDocument)
+	// {
+	// 	// Get the selected document
+	// 	// ...
+	// }
+
+	// if (hasStateChanged(state, oldState, 'document'))
+	// {
+	// 	// Document changed
+	// 	// ...
+	// }
 
 	if (changes)
 	{
