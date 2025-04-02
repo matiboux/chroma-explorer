@@ -1,4 +1,5 @@
-import { ChromaClient } from 'chromadb'
+import { ChromaClient as ChromaClientV1 } from 'chromadb-v1'
+import { ChromaClient as ChromaClientV2 } from 'chromadb-v2'
 
 import type { ConfigStore, APIAuthConfig, BasicAuthConfig } from '~/stores/configStore'
 
@@ -17,13 +18,16 @@ function isBasicAuthConfig(
 }
 
 export function makeChromaClient(
+	chromaApiVersion: 'v1' | 'v2',
 	serverUrl: string,
 	authConfig: ConfigStore['authConfig'],
-): ChromaClient | null
+): ChromaClientV1 | ChromaClientV2 | null
 {
 	try
 	{
-		return new ChromaClient({
+		const chromaClientClass = chromaApiVersion === 'v1' ? ChromaClientV1 : ChromaClientV2
+
+		return new chromaClientClass({
 			path: serverUrl,
 			...(
 				isAPIAuthConfig(authConfig)

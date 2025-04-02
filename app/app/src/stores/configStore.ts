@@ -15,12 +15,14 @@ export interface BasicAuthConfig
 export interface ConfigStore
 {
 	confirmed: boolean
+	chromaApiVersion: 'v1' | 'v2'
 	serverUrl: string
 	authConfig: APIAuthConfig | BasicAuthConfig | null
 }
 
 const defaultConfig: ConfigStore = {
 	confirmed: false,
+	chromaApiVersion: 'v2',
 	serverUrl: '',
 	authConfig: null,
 }

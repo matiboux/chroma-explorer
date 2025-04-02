@@ -64,7 +64,7 @@ configStore.subscribe(async (config, oldConfig) =>
 		return
 	}
 
-	const chroma = makeChromaClient(config.serverUrl, config.authConfig)
+	const chroma = makeChromaClient(config.chromaApiVersion, config.serverUrl, config.authConfig)
 	if (!chroma)
 	{
 		// Failed to initialize Chroma client
