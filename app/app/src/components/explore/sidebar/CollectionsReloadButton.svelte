@@ -1,8 +1,4 @@
 <script lang="ts">
-import { onMount } from 'svelte'
-import { ChromaClient } from 'chromadb'
-
-import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
 import Button from '~/components/generic/Button.svelte'
 
