@@ -1,5 +1,7 @@
 <script lang="ts">
-import type { CollectionParams } from 'chromadb'
+import type { CollectionParams as CollectionParamsV1 } from 'chromadb-v1'
+import type { CollectionParams as CollectionParamsV2 } from 'chromadb-v2'
+type CollectionParams = CollectionParamsV1 | CollectionParamsV2
 
 import { configStore } from '~/stores/configStore'
 import { stateStore } from '~/stores/stateStore'
