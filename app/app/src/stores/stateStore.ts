@@ -1,8 +1,10 @@
 import { atom } from 'nanostores'
-import type { ChromaClient as ChromaClientV1, CollectionParams as CollectionParamsV1, GetResponse as GetResponseV1 } from 'chromadb-v1'
-import type { ChromaClient as ChromaClientV2, CollectionParams as CollectionParamsV2, GetResponse as GetResponseV2 } from 'chromadb-v2'
+import { ChromaClient as ChromaClientV1 } from 'chromadb-v1'
+import { ChromaClient as ChromaClientV2 } from 'chromadb-v2'
+import type { CollectionParams as CollectionParamsV1, GetResponse as GetResponseV1 } from 'chromadb-v1'
+import type { GetResponse as GetResponseV2 } from 'chromadb-v2'
 type ChromaClient = ChromaClientV1 | ChromaClientV2
-type CollectionParams = CollectionParamsV1 | CollectionParamsV2
+type CollectionParams = CollectionParamsV1 | Awaited<ReturnType<ChromaClientV2['listCollectionsAndMetadata']>>[0]
 type GetResponse = GetResponseV1 | GetResponseV2
 
 import { configStore } from '~/stores/configStore'
@@ -88,28 +90,19 @@ configStore.subscribe(async (config, oldConfig) =>
 })
 
 async function getCollections(
-	chroma: ChromaClient | null,
+	chroma: ChromaClient,
 ): Promise<Record<string, CollectionParams> | null>
 {
-	// Inputs: chroma
-
-	if (!chroma)
-	{
-		// Chroma client not initialized
-
-		// Clear collections list
-		return null
-	}
-
-	// Get collections list
 	const collections =
-		(await chroma.listCollections())
+		(chroma instanceof ChromaClientV1
+			? await chroma.listCollections()
+			: await chroma.listCollectionsAndMetadata())
 		.sort((a: any, b: any) => a.name.localeCompare(b.name))
 		.reduce<Record<string, CollectionParams>>(
 			// FIXME: Fix types
-			(collections, collection: any) =>
+			(collections, collection) =>
 			{
-				collections[collection.id as any] = collection
+				collections[collection.id] = collection
 				return collections
 			},
 			{} as Record<string, CollectionParams>,
