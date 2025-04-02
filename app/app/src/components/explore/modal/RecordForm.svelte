@@ -1,6 +1,7 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { GetResponse } from 'chromadb'
+import type { GetResponse as GetResponseV1 } from 'chromadb-v1'
+import type { GetResponse as GetResponseV2 } from 'chromadb-v2'
+type GetResponse = GetResponseV1 | GetResponseV2
 
 import { stateStore } from '~/stores/stateStore'
 

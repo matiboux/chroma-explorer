@@ -1,6 +1,4 @@
 <script lang="ts">
-import { ChromaClient } from 'chromadb'
-import type { GetResponse } from 'chromadb'
 import { stringify } from 'csv-stringify/browser/esm'
 
 import { stateStore } from '~/stores/stateStore'

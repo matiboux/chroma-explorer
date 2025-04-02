@@ -3,6 +3,7 @@ import { onMount } from 'svelte'
 
 import LoginCheck from '~/components/LoginCheck.svelte'
 import { configStore } from '~/stores/configStore'
+import type { ConfigStore } from '~/stores/configStore'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
@@ -13,6 +14,7 @@ const _ = i18nFactory(locale)
 const idSuffix = Math.random().toString(36).substring(2)
 
 const defaultFormValues = {
+	chromaApiVersion: 'v2' as ConfigStore['chromaApiVersion'],
 	chromaServerUrl: '',
 	authProvider: 'token',
 	apiToken: '',
@@ -29,6 +31,7 @@ function onSubmit()
 	$configStore = {
 		...$configStore,
 		confirmed: true,
+		chromaApiVersion: formValues.chromaApiVersion,
 		serverUrl: formValues.chromaServerUrl,
 		authConfig: (
 			  (formValues.authProvider === 'token' && formValues.apiToken)
@@ -50,6 +53,7 @@ function onReset()
 onMount(() => {
 	formValues = {
 		...defaultFormValues,
+		chromaApiVersion: $configStore.chromaApiVersion,
 		chromaServerUrl: $configStore.serverUrl,
 	}
 })
@@ -85,6 +89,41 @@ onMount(() => {
 			})}
 			<a href="http://cors-proxy.matiboux.com/">CORS Proxy</a>.
 		</p>
+	</div>
+
+	<div class="input-group input-group-inline">
+		<p>
+			{_({
+				'en': 'API version:',
+				'fr': 'Version de l\'API :',
+			})}
+		</p>
+		<div class="radio-group">
+			<input
+				type="radio" name="chromaApiVersion" value="v1"
+				bind:group={formValues.chromaApiVersion}
+				id={`chromaApiVersionV1-${idSuffix}`}
+			/>
+			<label for={`chromaApiVersionV1-${idSuffix}`}>
+				{_({
+					'en': 'V1 (up to 0.5.15)',
+					'fr': 'V1 (jusqu\'à 0.5.15)',
+				})}
+			</label>
+		</div>
+		<div class="radio-group">
+			<input
+				type="radio" name="chromaApiVersion" value="v2" checked
+				bind:group={formValues.chromaApiVersion}
+				id={`chromaApiVersionV2-${idSuffix}`}
+			/>
+			<label for={`chromaApiVersionV2-${idSuffix}`}>
+				{_({
+					'en': 'V2 (from 0.5.16)',
+					'fr': 'V2 (à partir de 0.5.16)',
+				})}
+			</label>
+		</div>
 	</div>
 
 	<div class="input-group input-group-inline">
