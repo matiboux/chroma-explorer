@@ -31,14 +31,14 @@ export function makeChromaClient(
 			path: serverUrl,
 			...(
 				isAPIAuthConfig(authConfig)
-				? ({
+				? {
 					auth: {
 						provider: 'token',
 						credentials: authConfig.token,
 					},
-				})
+				}
 				: isBasicAuthConfig(authConfig)
-				? ({
+				? {
 					auth: {
 						provider: 'basic',
 						credentials: {
@@ -46,8 +46,8 @@ export function makeChromaClient(
 							password: authConfig.password,
 						},
 					},
-				})
-				: undefined
+				}
+				: {}
 			),
 		})
 	}

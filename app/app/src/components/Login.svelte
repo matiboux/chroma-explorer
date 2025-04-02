@@ -2,8 +2,7 @@
 import { onMount } from 'svelte'
 
 import LoginCheck from '~/components/LoginCheck.svelte'
-import { configStore } from '~/stores/configStore'
-import type { ConfigStore } from '~/stores/configStore'
+import { configStore, type ConfigStore } from '~/stores/configStore'
 
 import type { Locales } from '~/i18n'
 import { i18nFactory } from '~/i18n'
@@ -13,8 +12,18 @@ const _ = i18nFactory(locale)
 // Generate a random suffix for id attributes
 const idSuffix = Math.random().toString(36).substring(2)
 
-const defaultFormValues = {
-	chromaApiVersion: 'v2' as ConfigStore['chromaApiVersion'],
+interface FormValues
+{
+	chromaApiVersion: ConfigStore['chromaApiVersion']
+	chromaServerUrl: string
+	authProvider: 'none' | 'token' | 'basic'
+	apiToken: string
+	basicUsername: string
+	basicPassword: string
+}
+
+const defaultFormValues: FormValues = {
+	chromaApiVersion: 'v2',
 	chromaServerUrl: '',
 	authProvider: 'token',
 	apiToken: '',
@@ -135,6 +144,19 @@ onMount(() => {
 		</p>
 		<div class="radio-group">
 			<input
+				type="radio" name="authProvider" value="none"
+				bind:group={formValues.authProvider}
+				id={`authProviderNone-${idSuffix}`}
+			/>
+			<label for={`authProviderNone-${idSuffix}`}>
+				{_({
+					'en': 'Public',
+					'fr': 'Public',
+				})}
+			</label>
+		</div>
+		<div class="radio-group">
+			<input
 				type="radio" name="authProvider" value="token" checked
 				bind:group={formValues.authProvider}
 				id={`authProviderToken-${idSuffix}`}
@@ -161,7 +183,9 @@ onMount(() => {
 		</div>
 	</div>
 
-	{#if formValues.authProvider === 'token'}
+	{#if formValues.authProvider === 'none'}
+		<!-- No additional input needed -->
+	{:else if formValues.authProvider === 'token'}
 		<div class="input-group">
 			<label for={`headerAuthorizationToken-${idSuffix}`}>
 				{_({
