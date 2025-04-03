@@ -51,8 +51,8 @@ export function makeChromaClient(
 				}
 				: {}
 			),
-			...(tenant != null ? { tenant } : {}),
-			...(database != null ? { database } : {}),
+			...(tenant ? { tenant } : {}),
+			...(database ? { database } : {}),
 		})
 	}
 	catch (error: unknown)
