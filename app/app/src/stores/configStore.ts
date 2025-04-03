@@ -15,16 +15,20 @@ export interface BasicAuthConfig
 export interface ConfigStore
 {
 	confirmed: boolean
-	chromaApiVersion: 'v1' | 'v2'
+	apiVersion: 'v1' | 'v2'
 	serverUrl: string
 	authConfig: APIAuthConfig | BasicAuthConfig | null
+	tenant: string | null
+	database: string | null
 }
 
 const defaultConfig: ConfigStore = {
 	confirmed: false,
-	chromaApiVersion: 'v2',
+	apiVersion: 'v2',
 	serverUrl: '',
 	authConfig: null,
+	tenant: null,
+	database: null,
 }
 
 export const configPersistentStore = persistentAtom('config', JSON.stringify(defaultConfig))
