@@ -14,21 +14,25 @@ const idSuffix = Math.random().toString(36).substring(2)
 
 interface FormValues
 {
-	chromaApiVersion: ConfigStore['chromaApiVersion']
-	chromaServerUrl: string
+	apiVersion: ConfigStore['apiVersion']
+	serverUrl: string
 	authProvider: 'none' | 'token' | 'basic'
 	apiToken: string
 	basicUsername: string
 	basicPassword: string
+	tenant: string
+	database: string
 }
 
 const defaultFormValues: FormValues = {
-	chromaApiVersion: 'v2',
-	chromaServerUrl: '',
+	apiVersion: 'v2',
+	serverUrl: '',
 	authProvider: 'token',
 	apiToken: '',
 	basicUsername: '',
 	basicPassword: '',
+	tenant: '',
+	database: '',
 }
 
 let formValues = {
@@ -40,8 +44,8 @@ function onSubmit()
 	$configStore = {
 		...$configStore,
 		confirmed: true,
-		chromaApiVersion: formValues.chromaApiVersion,
-		serverUrl: formValues.chromaServerUrl,
+		apiVersion: formValues.apiVersion,
+		serverUrl: formValues.serverUrl,
 		authConfig: (
 			  (formValues.authProvider === 'token' && formValues.apiToken)
 			? { token: formValues.apiToken }
@@ -49,6 +53,8 @@ function onSubmit()
 			? { username: formValues.basicUsername, password: formValues.basicPassword }
 			: null
 		),
+		tenant: formValues.tenant,
+		database: formValues.database,
 	}
 }
 
@@ -62,8 +68,8 @@ function onReset()
 onMount(() => {
 	formValues = {
 		...defaultFormValues,
-		chromaApiVersion: $configStore.chromaApiVersion,
-		chromaServerUrl: $configStore.serverUrl,
+		apiVersion: $configStore.apiVersion,
+		serverUrl: $configStore.serverUrl,
 	}
 })
 </script>
@@ -74,17 +80,17 @@ onMount(() => {
 >
 
 	<div class="input-group">
-		<label for={`chromaServerUrl-${idSuffix}`}>
+		<label for={`serverUrl-${idSuffix}`}>
 			{_({
 				'en': 'Chroma Server URL:',
 				'fr': 'URL du serveur Chroma :',
 			})}
 		</label>
 		<input
-			type="text" name="chromaServerUrl" required
-			bind:value={formValues.chromaServerUrl}
+			type="text" name="serverUrl" required
+			bind:value={formValues.serverUrl}
 			placeholder="http://localhost:8000"
-			id={`chromaServerUrl-${idSuffix}`}
+			id={`serverUrl-${idSuffix}`}
 		/>
 		<p class="hint">
 			<span class="icon icon-[mdi--information-outline] icon-align"></span>
@@ -110,7 +116,7 @@ onMount(() => {
 		<div class="radio-group">
 			<input
 				type="radio" name="chromaApiVersion" value="v1"
-				bind:group={formValues.chromaApiVersion}
+				bind:group={formValues.apiVersion}
 				id={`chromaApiVersionV1-${idSuffix}`}
 			/>
 			<label for={`chromaApiVersionV1-${idSuffix}`}>
@@ -123,7 +129,7 @@ onMount(() => {
 		<div class="radio-group">
 			<input
 				type="radio" name="chromaApiVersion" value="v2" checked
-				bind:group={formValues.chromaApiVersion}
+				bind:group={formValues.apiVersion}
 				id={`chromaApiVersionV2-${idSuffix}`}
 			/>
 			<label for={`chromaApiVersionV2-${idSuffix}`}>
@@ -244,6 +250,60 @@ onMount(() => {
 		</p>
 	{/if}
 
+	<div class="input-groups">
+		<div class="input-group">
+			<label for={`tenant-${idSuffix}`}>
+				{_({
+					'en': 'Tenant:',
+					'fr': 'Locataire (tenant) :',
+				})}
+			</label>
+			<input
+				type="text" name="tenant"
+				bind:value={formValues.tenant}
+				placeholder="default_tenant"
+				id={`tenant-${idSuffix}`}
+			/>
+			<p class="hint">
+				<span class="icon icon-[mdi--information-outline] icon-align"></span>
+				{_({
+					'en': 'Provide the tenant name.',
+					'fr': 'Entrez le nom du locataire.',
+				})}
+				{_({
+					'en': 'Leave empty for default tenant.',
+					'fr': 'Laissez vide pour le locataire par défaut.',
+				})}
+			</p>
+		</div>
+
+		<div class="input-group input-group-wide">
+			<label for={`database-${idSuffix}`}>
+				{_({
+					'en': 'Database:',
+					'fr': 'Base de données :',
+				})}
+			</label>
+			<input
+				type="text" name="database"
+				bind:value={formValues.database}
+				placeholder="default_database"
+				id={`database-${idSuffix}`}
+			/>
+			<p class="hint">
+				<span class="icon icon-[mdi--information-outline] icon-align"></span>
+				{_({
+					'en': 'Provide the database name (the logical grouping for collections).',
+					'fr': 'Entrez le nom de la base de données (le regroupement logique pour les collections).',
+				})}
+				{_({
+					'en': 'Leave empty for default database.',
+					'fr': 'Laissez vide pour la base de données par défaut.',
+				})}
+			</p>
+		</div>
+	</div>
+
 	<LoginCheck locale={locale} loginRedirect="/explore" />
 
 	<div class="button-group">
@@ -274,7 +334,11 @@ form {
 		@apply flex gap-4;
 
 		> .input-group {
-			@apply flex-grow;
+			@apply flex-grow w-1/4;
+
+			&.input-group-wide {
+				@apply flex-grow w-1/2;
+			}
 		}
 	}
 
