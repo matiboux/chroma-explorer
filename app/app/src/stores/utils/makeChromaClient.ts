@@ -18,14 +18,16 @@ function isBasicAuthConfig(
 }
 
 export function makeChromaClient(
-	chromaApiVersion: 'v1' | 'v2',
+	apiVersion: 'v1' | 'v2',
 	serverUrl: string,
 	authConfig: ConfigStore['authConfig'],
+	tenant: string | null,
+	database: string | null,
 ): ChromaClientV1 | ChromaClientV2 | null
 {
 	try
 	{
-		const chromaClientClass = chromaApiVersion === 'v1' ? ChromaClientV1 : ChromaClientV2
+		const chromaClientClass = apiVersion === 'v1' ? ChromaClientV1 : ChromaClientV2
 
 		return new chromaClientClass({
 			path: serverUrl,
@@ -49,6 +51,8 @@ export function makeChromaClient(
 				}
 				: {}
 			),
+			...(tenant != null ? { tenant } : {}),
+			...(database != null ? { database } : {}),
 		})
 	}
 	catch (error: unknown)
