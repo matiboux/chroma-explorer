@@ -1,6 +1,6 @@
 import { getLocaleByPath } from 'astro:i18n'
 
-function getUrlWithoutLocale(url: URL | string): string
+export function getUrlWithoutLocale(url: URL | string): string
 {
 	const urlPathnames = []
 	const urlParts = typeof url === 'string' ? url.split('/') : url.pathname.split('/')
@@ -35,5 +35,3 @@ function getUrlWithoutLocale(url: URL | string): string
 
 	return '/' + urlPathnames.join('/')
 }
-
-export default getUrlWithoutLocale

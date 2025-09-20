@@ -1,9 +1,12 @@
 import { getAbsoluteLocaleUrlList } from 'astro:i18n'
 
-import getLocaleByUrl from './getLocaleByUrl'
-import getUrlWithoutLocale from './getUrlWithoutLocale'
+import { getLocaleByUrl } from './getLocaleByUrl'
+import { getUrlWithoutLocale } from './getUrlWithoutLocale'
 
-function getLocaleUrlList(url: URL | string, excludeLocale?: string): {
+export function getLocaleUrlList(
+	url: URL | string,
+	excludeLocale?: string,
+): {
 	locale: string,
 	url: string
 }[]
@@ -11,12 +14,10 @@ function getLocaleUrlList(url: URL | string, excludeLocale?: string): {
 	const pathname = typeof url === 'string' ? url : url.pathname
 	const list =
 		(getAbsoluteLocaleUrlList(getUrlWithoutLocale(pathname)) as string[])
-			.map(url =>
-				({
-					locale: getLocaleByUrl(url),
-					url,
-				})
-			)
+			.map(url => ({
+				locale: getLocaleByUrl(url),
+				url,
+			}))
 
 	if (excludeLocale !== undefined)
 	{
@@ -25,5 +26,3 @@ function getLocaleUrlList(url: URL | string, excludeLocale?: string): {
 
 	return list
 }
-
-export default getLocaleUrlList
