@@ -8,11 +8,15 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "check": "astro check",
-    "build": "astro check && astro build",
+    "check": "astro check --tsconfig tsconfig.prod.json",
     "build-only": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "build": "pnpm run check && pnpm run build-only",
+    "astro": "astro",
+    "astro:sync": "astro sync",
+    "astro:preview": "astro preview",
+    "test:vitest": "vitest run",
+    "test:playwright": "playwright test",
+    "deps:update": "pnpx npm-check-updates -t semver -u && pnpm i"
   },
   "repository": {
     "type": "git",
