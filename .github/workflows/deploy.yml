@@ -1,5 +1,14 @@
 name: Deploy CD
 
+# GitHub variables:
+# - VERSION_TAG
+# - ASTRO_SITE_URL
+# - ASTRO_BASE_PATH
+# - ASTRO_ASSETS_PREFIX
+
+# GitHub secrets:
+# - CONFIG_PROD (optional)
+
 on:
 
   # Run on push on production branches
@@ -8,7 +17,7 @@ on:
       # Production
       - main
     paths:
-      # CI files
+      # CI/CD files
       - '.github/workflows/deploy.yml'
       - 'docker-compose.yml'
       - 'docker-compose.cicd.yml'
@@ -19,7 +28,7 @@ on:
   # Run on manual triggers
   workflow_dispatch:
 
-# Set GITHUB_TOKEN permissions for the workflow
+# Set default GITHUB_TOKEN permissions for the workflow
 permissions:
   contents: read
 
@@ -34,14 +43,52 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
 
-      # Steps dependencies
+      # Dependency steps
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Install jq
+        run: |
+          # apt-get install jq
+          sudo apt-get -q update
+          sudo apt-get -qy install --no-install-recommends jq
+
+      # Preparation steps
+
+      - name: Load app config in environment
+        env:
+          CONFIG_PROD: ${{ secrets.CONFIG_PROD }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_VARS: ${{ toJson(vars) }}
+        run: |
+          # Load app config in environment
+
+          # Load shell functions to load app config variables
+          . ./.github/workflows/scripts/load_app_config_functions.sh
+
+          echo '::group::Load app config variables'
+
+          # Deployment
+          load_var 'GITHUB_REPOSITORY_URL' 'false' "https://github.com/${GITHUB_REPOSITORY}"
+          load_var 'GITHUB_SHA' 'false' "${GITHUB_SHA}"
+          load_var 'VERSION_TAG' 'true' "${GITHUB_REF_NAME}"
+
+          # Astro
+          load_var 'ASTRO_SITE_URL' 'true'
+          load_var 'ASTRO_BASE_PATH' 'true'
+          load_var 'ASTRO_ASSETS_PREFIX' 'true'
+
+          # Application
+          # (Load env vars for your application here.)
+
+          echo '::endgroup::'
 
       # Execution steps
 
@@ -55,9 +102,18 @@ jobs:
 
       - name: Build for production
         env:
-          GITHUB_REPOSITORY_URL: https://github.com/${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
-          BUILD_CHECK: "false" # Skip type checks
+          # Build
+          BUILD_CHECK: 'false' # Skip type checks
+          # Deployment
+          GITHUB_REPOSITORY_URL: ${{ env.GITHUB_REPOSITORY_URL }}
+          GITHUB_SHA: ${{ env.GITHUB_SHA }}
+          VERSION_TAG: ${{ env.VERSION_TAG }}
+          # Astro
+          ASTRO_SITE_URL: ${{ env.ASTRO_SITE_URL }}
+          ASTRO_BASE_PATH: ${{ env.ASTRO_BASE_PATH }}
+          ASTRO_ASSETS_PREFIX: ${{ env.ASTRO_ASSETS_PREFIX }}
+          # Application
+          # (Add env vars for your application here.)
         run: |
           # docker compose build
           export DOCKER_UID="$(id -u)"
@@ -92,8 +148,8 @@ jobs:
 
     # Set GITHUB_TOKEN permissions for the job
     permissions:
-      pages: write
       id-token: write
+      pages: write
 
     # Set deployment environment
     environment:
@@ -101,6 +157,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
+
+      # Execution steps
 
       - name: Deploy to GitHub Pages
         id: deployment

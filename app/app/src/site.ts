@@ -1,3 +1,5 @@
+import { GITHUB_SHA, VERSION_TAG } from 'astro:env/client'
+
 import type { Props as BaseProps } from '~/layouts/Base.astro'
 
 export interface Site
@@ -5,6 +7,7 @@ export interface Site
 	lang?: BaseProps['lang']
 	title?: BaseProps['title']
 	description?: BaseProps['description']
+	version?: BaseProps['version']
 	author?: BaseProps['author']
 	keywords?: BaseProps['keywords']
 	generator?: BaseProps['generator']
@@ -26,6 +29,7 @@ export const site: Site = {
 		'en': 'Online tool to explore the contents of a Chroma database.',
 		'fr': 'Outil en ligne pour explorer le contenu d\'une base de données Chroma.',
 	},
+	version: GITHUB_SHA || VERSION_TAG || 'dev',
 	author: 'Matiboux',
 	themeColor: '#ffffff',
 	viewportScale: 1,
