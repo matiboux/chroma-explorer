@@ -1,4 +1,4 @@
-@layer utilities {
+@layer components {
 	.icon-align {
 		@apply align-[-0.125em];
 	}
