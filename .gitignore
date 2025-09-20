@@ -1,7 +1,7 @@
 # -- Generic rules:
 
 # Environment files
-.env*.local
+.env*.local*
 
 # Temporary files
 ._*
@@ -24,22 +24,28 @@ Thumbs.db
 .idea/
 
 # Other
-*.suo
-*.ntvs*
 *.njsproj
+*.ntvs*
 *.sln
+*.suo
 *.sw?
 
 # -- Application rules:
 
 # Node.js
-node_modules/
 .pnpm-store/
 dist/
+node_modules/
 
 # Astro
 .astro/
 .vite/
+
+# Playwright
+blob-report/
+playwright-report/
+playwright/.cache/
+test-results/
 
 # Application environment files
 */**/.env*
