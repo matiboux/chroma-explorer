@@ -16,7 +16,7 @@
     "astro:preview": "astro preview",
     "test:vitest": "vitest run",
     "test:playwright": "playwright test",
-    "deps:update": "pnpx npm-check-updates -t semver -u && pnpm i"
+    "npm:lockfile": "npm install --package-lock-only --ignore-scripts"
   },
   "repository": {
     "type": "git",
