@@ -1,0 +1,30 @@
+{
+  "extends": "astro/tsconfigs/strictest",
+  "compilerOptions": {
+    "rootDir": ".",
+
+    "paths": {
+      "//*": [ "./*" ],
+      "~/*": [ "./src/*" ]
+		},
+
+    "outDir": "./dist",
+
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "${configDir}/.astro/types.d.ts",
+    "${configDir}/src",
+    "${configDir}/*.ts"
+  ],
+  "exclude": [
+    "${configDir}/dist",
+    "${configDir}/node_modules"
+  ]
+}

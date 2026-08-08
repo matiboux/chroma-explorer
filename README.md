@@ -20,6 +20,7 @@ Use [DockerC](https://github.com/matiboux/dockerc) for shortened commands: `dock
 
 The site will be available at [http://localhost:8080](http://localhost:8080).
 
+
 ### Production
 
 Use this command to run the site locally for production:
@@ -36,6 +37,6 @@ The site will be available at [http://localhost:8080](http://localhost:8080).
 
 ## License
 
-Copyright (c) 2024-2025 [Matiboux](https://github.com/matiboux) ([matiboux.me](https://matiboux.me))
+Copyright (c) 2024-2026 [Matiboux](https://github.com/matiboux) ([matiboux.me](https://matiboux.me))
 
 Licensed under the [MIT License](https://opensource.org/license/MIT). You can see a copy in the [LICENSE](LICENSE) file.

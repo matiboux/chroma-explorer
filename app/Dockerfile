@@ -3,6 +3,10 @@
 # This Dockerfile uses the service folder as context.
 
 
+# ----------------
+# Global
+# ----------------
+
 # --
 # Global build arguments
 
@@ -12,59 +16,87 @@ ARG UID=1001
 # --
 # Upstream images
 
-FROM node:22-slim AS node_upstream
-FROM bitnamilegacy/nginx:1.29 AS nginx_upstream
+FROM alpine:3.22 AS alpine_upstream
+FROM node:24-slim AS node_upstream
+FROM nginx:1.29-alpine AS nginx_upstream
 
 
 # --
-# Base image
+# Alpine base stage
+
+FROM alpine_upstream AS alpine_base
+
+# Set app directory
+WORKDIR /app
+
+
+# --
+# Node base image
 
 FROM node_upstream AS node_base
 
 # Set app directory
 WORKDIR /app
 
-# Use temporary directory as home
+# Set home directory for cache
 ENV HOME=/tmp
 
 
 # --
-# Build binary base image
+# Build base stage
 
-FROM node_base AS node_build
+FROM node_base AS node_build_base
 
 # Install pnpm
 RUN --mount=type=cache,id=npm,target=/root/.npm \
-	npm install -g pnpm
+	npm install -g pnpm@11
 
 
-# --
-# Build base image
-
-FROM node_build AS deps_base
-
-# Copy build configuration
-COPY --link ./app/package.json ./app/pnpm-lock.yaml ./
-
+# ----------------
+# Dependencies
+# ----------------
 
 # --
-# Build dev image
+# Deps base stage
 
-FROM deps_base AS deps_dev
-
-# Install development dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-	pnpm install --frozen-lockfile
+FROM node_build_base AS deps_base
 
 # Create Astro runtime directory
 RUN mkdir -p ./.astro
 
+# Copy build configuration
+COPY --link ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
+
+# --
+# Deps dev stage
+
+FROM deps_base AS deps_dev
+
+# Install dev dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+	pnpm install --frozen-lockfile
+
+
+# --
+# Deps prod stage
+
+FROM deps_base AS deps_prod
+
+# Install prod dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+	pnpm install --prod --frozen-lockfile
+
+
+# ----------------
+# CLI
+# ----------------
 
 # --
 # CLI image
 
-FROM node_build AS app_cli
+FROM node_build_base AS app_cli
 
+# Build arguments
 ARG UID
 
 # Install sudo
@@ -79,150 +111,55 @@ RUN --mount=type=cache,sharing=locked,id=apt-cache,target=/var/cache/apt \
 # Create user 'user' in group 'root' & 'sudo'
 # (hadolint: Ignore unchecked pipe failures)
 # hadolint ignore=DL4006
-RUN USERNAME="$(getent passwd "${UID}" 2>/dev/null | cut -d: -f1)"; \
+RUN USERNAME="$(getent passwd "${UID}" 2>/dev/null | cut -d: -f1 || true)"; \
 	if [ -z "${USERNAME}" ]; then \
 		useradd -lm -u "${UID}" -U -G 0,sudo user; \
 	else \
 		usermod -a -G 0,sudo "${USERNAME}"; \
 	fi
 
-# Run as non-root user
-USER ${UID}:0
+# Run as created non-root user
+USER ${UID}
 
 # Mount source code
 VOLUME /app
 
-# Run CLI command
+# Copy scripts
 COPY --link --chmod=755 ./docker/cli-entrypoint.sh /usr/local/bin/app-cli-entrypoint
+
 ENTRYPOINT [ "app-cli-entrypoint" ]
-CMD [ "--help" ]
+CMD []
+
+
+# ----------------
+# Source code
+# ----------------
+
+# --
+# Source dev stage
+
+FROM alpine_base AS source_dev
+
+# Copy dev dependencies
+COPY --from=deps_dev --link /app/.astro/ ./.astro/
+COPY --from=deps_dev --link /app/node_modules/ ./node_modules/
+
+# Copy source code
+COPY --link ./ ./
 
 
 # --
-# Lint image
+# Source prod build stage
 
-FROM node_build AS app_lint
-
-ARG UID
-
-# Run as non-root user
-USER ${UID}:0
-
-CMD [ "/bin/sh", "-c", "exit 0" ]
-
-
-# --
-# Test base image
-
-FROM node_build AS test_base
-
-ARG UID
+FROM node_build_base AS source_prod_build
 
 # Set runtime environment
-ENV APP_ENV=test
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
+ENV NODE_ENV=production
 
-# Copy development dependencies
-ENV NODE_ENV=development
-COPY --from=deps_dev --link --chown="${UID}:0" /app/node_modules/ ./node_modules/
-
-
-# --
-# Test unit image
-
-FROM test_base AS test_unit
-
-ARG UID
-
-# Copy source code
-COPY --link --chown="${UID}:0" ./app/ ./
-
-# Run as non-root user
-USER ${UID}:0
-
-CMD [ "sh", "-c", "pnpm run test:vitest" ]
-
-
-# --
-# Test E2E image
-
-FROM test_base AS test_e2e
-
-# Build arguments
-ARG UID
-
-# Install Playwright dependencies
-ENV PLAYWRIGHT_BROWSERS_PATH=/etc/playwright/browsers
-COPY --from=deps_dev --link --chown="${UID}:0" /app/package.json /app/pnpm-lock.yaml ./
-RUN pnpm exec playwright install --with-deps
-
-# Copy source code
-COPY --link --chown="${UID}:0" ./app/ ./
-
-# Build application
-RUN pnpm run build-only
-
-# Run as non-root user
-USER ${UID}:0
-
-CMD [ "sh", "-c", "pnpm run test:playwright --output /tmp/playwright/test-results" ]
-
-
-# --
-# Dev image
-
-FROM node_build AS app_dev
-
-ARG UID
-
-# Set runtime environment
-ENV APP_ENV=dev
-
-# Copy development dependencies
-ENV NODE_ENV=development
-COPY --from=deps_dev --link --chown="${UID}:0" /app/.astro/ ./.astro/
-COPY --from=deps_dev --link --chown="${UID}:0" /app/node_modules/ ./node_modules/
-
-# Copy source code
-COPY --link --chown="${UID}:0" ./app/ ./
-
-# Create user 'user' in group 'root'
-# (hadolint: Ignore unchecked pipe failures)
-# hadolint ignore=DL4006
-RUN USERNAME="$(getent passwd "${UID}" 2>/dev/null | cut -d: -f1)"; \
-	if [ -z "${USERNAME}" ]; then \
-		useradd -lm -u "${UID}" -U -G 0 user; \
-	else \
-		usermod -a -G 0 "${USERNAME}"; \
-	fi
-
-# Run as non-root user
-USER ${UID}:0
-
-# Set exposed port
-ARG PORT=8080
-ENV PORT=${PORT}
-EXPOSE ${PORT}
-
-# Start development server
-CMD [ "sh", "-c", "pnpm run dev --host --port \"${PORT}\"" ]
-
-
-# --
-# Prod build image
-
-FROM node_build AS app_prod_build
-
-ARG UID
-
-# Set runtime environment
-ENV APP_ENV=prod
-
-# Copy development dependencies
-ENV NODE_ENV=development
-COPY --from=deps_dev --link --chown="${UID}:0" /app/node_modules/ ./node_modules/
-
-# Copy source code
-COPY --link --chown="${UID}:0" ./app/ ./
+# Copy dev dependencies & source code
+COPY --from=source_dev --link /app/ ./
 
 # Set app environment variables
 # : Deployment configuration
@@ -242,7 +179,7 @@ ENV ASTRO_ASSETS_PREFIX=${ASTRO_ASSETS_PREFIX}
 # : Application configuration
 # Add env vars for your application here.
 
-# Build application
+# Build application in dist/ directory
 ARG BUILD_CHECK='true'
 RUN if [ "${BUILD_CHECK}" = 'true' ]; then \
 		pnpm run build; \
@@ -252,17 +189,170 @@ RUN if [ "${BUILD_CHECK}" = 'true' ]; then \
 
 
 # --
+# Source prod stage
+
+FROM alpine_base AS source_prod
+
+# Copy prod dependencies
+COPY --from=deps_prod --link /app/node_modules/ ./node_modules/
+
+# Copy built prod application files
+COPY --from=source_prod_build --link /app/dist/ ./dist/
+
+
+# ----------------
+# Lint
+# ----------------
+
+# --
+# Lint image
+
+FROM node_build_base AS app_lint
+
+# Build arguments
+ARG UID
+
+# Set runtime environment
+ENV APP_ENV=test
+
+# Run as non-root user
+USER ${UID}:0
+
+CMD [ "sh", "-c", "exit 0" ]
+
+
+# ----------------
+# Test
+# ----------------
+
+# --
+# Test base stage
+
+FROM node_build_base AS test_base
+
+# Build arguments
+ARG UID
+
+# Set runtime environment
+ENV APP_ENV=test
+ENV NODE_ENV=development
+
+
+# --
+# Test unit image
+
+FROM test_base AS test_unit
+
+# Build arguments
+ARG UID
+
+# Copy dev dependencies & source code
+RUN chown "${UID}:0" .
+COPY --from=source_dev --link --chown="${UID}:0" /app/ ./
+
+# Run as non-root user
+USER ${UID}:0
+
+CMD [ "sh", "-c", "pnpm run test:vitest" ]
+
+
+# --
+# Test E2E image
+
+FROM test_base AS test_e2e
+
+# Build arguments
+ARG UID
+
+# Copy dev dependencies
+COPY --from=source_dev --link --chown="${UID}:0" /app/.astro/ ./.astro/
+COPY --from=source_dev --link --chown="${UID}:0" /app/node_modules/ ./node_modules/
+
+# Install Playwright dependencies
+ENV PLAYWRIGHT_BROWSERS_PATH=/etc/playwright/browsers
+COPY --from=deps_dev --link --chown="${UID}:0" /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
+RUN pnpm exec playwright install --with-deps
+
+# Copy dev source code
+RUN chown "${UID}:0" .
+COPY --from=source_dev --link --chown="${UID}:0" /app/ ./
+
+# Build application
+RUN pnpm run build-only
+
+# Run as non-root user
+USER ${UID}:0
+
+CMD [ "sh", "-c", "pnpm run test:playwright --output /tmp/playwright/test-results" ]
+
+
+# ----------------
+# Dev
+# ----------------
+
+# --
+# Dev image
+
+FROM node_build_base AS app_dev
+
+# Build arguments
+ARG UID
+
+# Set runtime environment
+ENV APP_ENV=dev
+ENV NODE_ENV=development
+
+# Copy dev dependencies & source code
+RUN chown "${UID}:0" .
+COPY --from=source_dev --link --chown="${UID}:0" /app/ ./
+
+# Create user 'user' in group 'root'
+# (hadolint: Ignore unchecked pipe failures)
+# hadolint ignore=DL4006
+RUN USERNAME="$(getent passwd "${UID}" 2>/dev/null | cut -d: -f1 || true)"; \
+	if [ -z "${USERNAME}" ]; then \
+		useradd -lm -u "${UID}" -U -G 0 user; \
+	else \
+		usermod -a -G 0 "${USERNAME}"; \
+	fi
+
+# Run as created non-root user
+USER ${UID}
+
+# Set exposed port
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+
+CMD [ "sh", "-c", "pnpm run dev --host --port \"${PORT}\"" ]
+
+
+# ----------------
+# Prod
+# ----------------
+
+# --
 # Prod image
 
 FROM nginx_upstream AS app_prod
 
+# Build arguments
+ARG UID
+
 # Set runtime environment
 ENV APP_ENV=prod
 
-# Copy app production built files
-COPY --from=app_prod_build --link /app/dist/ ./
+# Copy nginx configuration
+COPY --link ./nginx/default.conf.template /etc/nginx/templates/
+
+# Copy built prod application files
+COPY --from=source_prod --link --chown="${UID}:0" /app/dist/ /usr/share/nginx/html/
+
+# Set environment variables
+ARG NGINX_HOST='localhost'
+ENV NGINX_HOST=${NGINX_HOST}
 
 # Set exposed port
-ARG PORT=8080
-ENV NGINX_HTTP_PORT_NUMBER=${PORT}
+ARG PORT='8080'
+ENV NGINX_PORT=${PORT}
 EXPOSE ${PORT}
