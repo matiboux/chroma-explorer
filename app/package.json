@@ -51,5 +51,9 @@
     "@playwright/test": "^1.55.0",
     "@types/node": "^22.18.6",
     "vitest": "^3.2.4"
+  },
+  "imports": {
+    "#global.css": "./src/styles/global.css",
+    "#tailwind.css": "./src/styles/tailwind.css"
   }
 }
