@@ -1,5 +1,7 @@
 # Services definition for running CLI commands
 
+name: chroma-explorer-cli
+
 services:
 
   app-volumes:
@@ -11,12 +13,12 @@ services:
       VOLUMES: |
         /app
     volumes:
-      - ./app/app:/app
+      - ./app:/app
 
   app:
     # Extend
     extends:
-      file: ./app/docker-compose-app.yml
+      file: ./app/docker-compose.yml
       service: app
     # Build override
     image: ${IMAGES_PREFIX:-app}-cli:${IMAGES_TAG:-latest}
@@ -33,5 +35,5 @@ services:
     tmpfs:
       - /tmp:mode=1777,exec,uid=${DOCKER_UID:-${UID:-1000}},gid=0
     volumes:
-      - ./app/app:/app
+      - ./app:/app
     ports: !reset null
