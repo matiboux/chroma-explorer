@@ -2,17 +2,17 @@
 import LoginStatusText from '~/components/explore/LoginStatusText.svelte'
 import Logout from '~/components/explore/Logout.svelte'
 
-// import { i18nFactory } from '~/i18n'
-// import type { Locales } from '~/i18n'
-// const _ = i18nFactory(Astro.currentLocale as Locales | undefined)
+import { defaultLocale } from '~/i18n'
+import type { Locales } from '~/i18n'
+const locale = (Astro.currentLocale as Locales | undefined) ?? defaultLocale
 ---
 
 <div class="login-status-wrapper">
 	<div class="login-status">
-		<LoginStatusText client:visible locale={Astro.currentLocale} />
+		<LoginStatusText client:visible locale={locale} />
 	</div>
 	<div class="logout">
-		<Logout client:visible locale={Astro.currentLocale} logoutRedirect="/" />
+		<Logout client:visible locale={locale} logoutRedirect="/" />
 	</div>
 </div>
 
